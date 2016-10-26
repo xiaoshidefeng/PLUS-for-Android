@@ -1,6 +1,7 @@
 package com.example.cw.slidemeuetest;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -14,17 +15,29 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
+import android.widget.TextView;
 
-import com.example.cw.slidemeuetest.Register.Register_main;
 import com.xys.libzxing.zxing.activity.CaptureActivity;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    //检测网络情况的广播
+    private IntentFilter intentFilter;
+
+    private NetworkChangeReciver networkChangeReciver;
+
     //网页
     private WebView webView;
 
-    //Register
+    //Register情况
+    private TextView userName;
+
+    private TextView userEmail;
+
+    public String user;
+
+    public String email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +48,13 @@ public class MainActivity extends AppCompatActivity
         webView.getSettings().setJavaScriptEnabled(true);
         webView.loadUrl("http://lsuplus.top/");
         setSupportActionBar(toolbar);
+
+
+        //检测网络状态
+        intentFilter = new IntentFilter();
+        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        networkChangeReciver = new NetworkChangeReciver();
+        registerReceiver(networkChangeReciver,intentFilter);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -54,10 +74,29 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
     }
 
-
+//
+//    public class UserBroadcastReceiver extends BroadcastReceiver {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+//            String user = sharedPreferences.getString("user","");
+//            String email = sharedPreferences.getString("email","");
+//            userName =(TextView)findViewById(R.id.id_userNameText);
+//            userEmail =(TextView)findViewById(R.id.id_userEmailText);
+//            userName.setText(user);
+//            userEmail.setText(email);
+//            Toast.makeText(context,"testsss",Toast.LENGTH_LONG).show();
+//
+//        }
+//    }
+    //网络检测
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(networkChangeReciver);
+    }
 
     @Override
     public void onBackPressed() {
@@ -125,6 +164,15 @@ public class MainActivity extends AppCompatActivity
 
         Intent intent = new Intent(MainActivity.this, Register_main.class);
                 startActivity(intent);
+//        SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+//        String user = sharedPreferences.getString("user","");
+//        String email = sharedPreferences.getString("email","");
+//        userName =(TextView)findViewById(R.id.id_userNameText);
+//        userEmail =(TextView)findViewById(R.id.id_userEmailText);
+//        if(user!=""||!user.equals("")){
+//            userName.setText(user);
+//            userEmail.setText(email);
+//        }
     }
 }
 

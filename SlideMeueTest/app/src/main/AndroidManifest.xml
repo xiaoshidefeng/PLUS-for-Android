@@ -3,7 +3,8 @@
     package="com.example.cw.slidemeuetest">
 
     <uses-permission android:name="android.permission.INTERNET" />
-
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -20,7 +21,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Register.Register_main"></activity>
+        <activity android:name=".Register_main"></activity>
+
+        <receiver android:name=".UserBroadcastReceiver">
+            <intent-filter>
+                <action android:name="com.example.broadcasttest.USERUI_BROADCAST"/>
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

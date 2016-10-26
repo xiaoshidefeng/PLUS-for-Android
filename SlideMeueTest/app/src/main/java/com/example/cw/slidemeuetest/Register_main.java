@@ -1,7 +1,9 @@
-package com.example.cw.slidemeuetest.Register;
+package com.example.cw.slidemeuetest;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -14,8 +16,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.cw.slidemeuetest.R;
 import com.xys.libzxing.zxing.activity.CaptureActivity;
+
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -49,6 +52,9 @@ public class Register_main extends AppCompatActivity {
     //获取的密码
     private  String password=null;
 
+    //用户信息
+    private String userinfo=null;
+
     private Handler handler = new Handler(){
         public void handleMessage(Message msg){
             if (msg.what==0){
@@ -77,6 +83,15 @@ public class Register_main extends AppCompatActivity {
                         return;
                     }
                     sendHttpURLConnection();
+                    SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+                    String user = sharedPreferences.getString("user","");
+                    String email = sharedPreferences.getString("email","");
+
+
+                    Intent intent = new Intent();
+                    intent.setAction("com.example.broadcasttest.USERUI_BROADCAST");
+                    sendBroadcast(intent);
+                    Toast.makeText(Register_main.this,user,Toast.LENGTH_LONG).show();
                 }
 
             }
@@ -119,10 +134,26 @@ public class Register_main extends AppCompatActivity {
                         response.append(line);
 
                     }
+                    JSONObject userJSON = new JSONObject(response.toString());
+                    String status = userJSON.getString("status");
+                    if(status.equals("success")){
+                        JSONObject data = userJSON.getJSONObject("data");
+                        String user = data.getString("user");
+                        String email = data.getString("email");
+
+                        userinfo = user+"\n"+email;
+                        SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString("user",user);
+                        editor.putString("email",email);
+                        editor.commit();
+
+                    }
+
 
                     Message message = new Message();
                     message.what = 0;
-                    message.obj=response.toString();
+                    message.obj=userinfo.toString();
                     handler.sendMessage(message);
 
 

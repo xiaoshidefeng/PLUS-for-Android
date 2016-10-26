@@ -4,7 +4,7 @@
     android:id="@+id/activity_register_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.cw.slidemeuetest.Register.Register_main"
+    tools:context="com.example.cw.slidemeuetest.Register_main"
     android:orientation="vertical"
     >
 
