@@ -48,14 +48,24 @@
         android:text="扫码登录"
         android:id="@+id/id_btnScan"/>
 
-
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="result:"/>
+        android:id="@+id/id_Load"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/id_tvResult"
         android:textSize="24sp"/>
+</LinearLayout>
+    <ProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/id_LoninProgress"
+        android:progress="0"
+        android:max="100"/>
 </LinearLayout>

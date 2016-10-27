@@ -5,14 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,24 +54,38 @@ public class Register_main extends AppCompatActivity {
     //用户信息
     private String userinfo=null;
 
-    private Handler handler = new Handler(){
-        public void handleMessage(Message msg){
-            if (msg.what==0){
-                String responses =(String) msg.obj;
-                //显示结果
-                tvResult.setText(responses);
-            }
-        }
-    };
+    //load字样
+    private TextView loadText;
+
+    //进度显示
+    private TextView loadNumText;
+
+    //进度条
+    private ProgressBar progressBar;
+
+   // private  SendHttpURLConnection sendHttpURLConnection;
+
+//    private Handler handler = new Handler(){
+//        public void handleMessage(Message msg){
+//            if (msg.what==0){
+//                String responses =(String) msg.obj;
+//                //显示结果
+//                tvResult.setText(responses);
+//            }
+//        }
+//    };
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register_layout);
         initView();
+        progressBar.setVisibility(View.GONE);
         Btnlonin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                progressBar.setVisibility(View.VISIBLE);
+                //progressBar.setProgress(50);
                 if(view.getId()==R.id.id_Btnlogin){
                     account=etAccount.getText().toString();
                     password=etPassword.getText().toString();
@@ -82,16 +95,22 @@ public class Register_main extends AppCompatActivity {
                         tvResult.setText("null");
                         return;
                     }
+                    //sendHttpURLConnection.onPreExecute();
+                    //sendHttpURLConnection.execute(loninUrl);
+
+
                     sendHttpURLConnection();
-                    SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-                    String user = sharedPreferences.getString("user","");
-                    String email = sharedPreferences.getString("email","");
 
+//                    SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+//                    String user = sharedPreferences.getString("user","");
 
-                    Intent intent = new Intent();
-                    intent.setAction("com.example.broadcasttest.USERUI_BROADCAST");
-                    sendBroadcast(intent);
-                    Toast.makeText(Register_main.this,user,Toast.LENGTH_LONG).show();
+//                    try {
+//                        Thread.sleep(2000);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    };
+
+                    //finish();
                 }
 
             }
@@ -104,13 +123,88 @@ public class Register_main extends AppCompatActivity {
             }
         });
     }
+
+//    private class SendHttpURLConnection extends AsyncTask<String,Integer,String>{
+//
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//            loadText.setText("loading...");
+//            progressBar.setProgress(50);
+//        }
+//
+//        @Override
+//        protected String doInBackground(String... strings) {
+//            HttpURLConnection connection = null;
+//            try {
+//                String userpassword = account+":"+password;
+//                URL url = new URL(loninUrl+account);
+//                final String basicAuth = "Basic " + Base64.encodeToString(userpassword.getBytes(), Base64.NO_WRAP);
+//                connection = (HttpURLConnection)url.openConnection();
+//                connection.setRequestProperty ("Authorization", basicAuth);
+//                connection.setRequestMethod("GET");
+//                connection.connect();
+//
+//                connection.setConnectTimeout(8000);
+//                connection.setReadTimeout(8000);
+////                    connection.setInstanceFollowRedirects(true);
+//                //获取输入流
+//                InputStream in = connection.getInputStream();
+//
+//                //对获取的流进行读取
+//                BufferedReader reader = new BufferedReader(new InputStreamReader(in,"utf-8"));
+//                StringBuilder response = new StringBuilder();
+//                String line=null;
+//                while ((line=reader.readLine())!=null){
+//                    response.append(line);
+//                }
+//                JSONObject userJSON = new JSONObject(response.toString());
+//                String status = userJSON.getString("status");
+//                if(status.equals("success")){
+//                    JSONObject data = userJSON.getJSONObject("data");
+//                    String user = data.getString("user");
+//                    String email = data.getString("email");
+//
+//                    userinfo = user+"\n"+email;
+//                    SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+//                    SharedPreferences.Editor editor = sharedPreferences.edit();
+//                    editor.putString("user",user);
+//                    editor.putString("email",email);
+//                    editor.commit();
+//
+//                }
+////                Message message = new Message();
+////                message.what = 0;
+////                message.obj=userinfo.toString();
+////                handler.sendMessage(message);
+//
+//
+//            }   catch (Exception e) {
+//                Log.e("errss", e.getMessage());
+//            }
+//            return null;
+//        }
+//
+//        @Override
+//        protected void onProgressUpdate(Integer... values) {
+//            super.onProgressUpdate(values);
+//            //loadNumText.setText("load..." +"%");
+//        }
+//
+//        @Override
+//        protected void onPostExecute(String s) {
+//            super.onPostExecute(s);
+//
+//        }
+//    }
+
     private void sendHttpURLConnection() {
         //开启子线程访问网络
         new Thread(new Runnable() {
             @Override
             public void run() {
-                HttpURLConnection connection = null;
 
+                HttpURLConnection connection = null;
                 try {
                     String userpassword = account+":"+password;
                     URL url = new URL(loninUrl+account);
@@ -132,7 +226,6 @@ public class Register_main extends AppCompatActivity {
                     String line=null;
                     while ((line=reader.readLine())!=null){
                         response.append(line);
-
                     }
                     JSONObject userJSON = new JSONObject(response.toString());
                     String status = userJSON.getString("status");
@@ -148,18 +241,28 @@ public class Register_main extends AppCompatActivity {
                         editor.putString("email",email);
                         editor.commit();
 
+                        Intent intent = new Intent();
+                        //progressBar.setVisibility(View.GONE);
+                        intent.setAction("com.example.broadcasttest.USERUI_BROADCAST");
+                        sendBroadcast(intent);
                     }
+//                Message message = new Message();
+//                message.what = 0;
+//                message.obj=userinfo.toString();
+//                handler.sendMessage(message);
 
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(Register_main.this,"登录成功",Toast.LENGTH_SHORT).show();
+                            progressBar.setVisibility(View.GONE);
+                            finish();
 
-                    Message message = new Message();
-                    message.what = 0;
-                    message.obj=userinfo.toString();
-                    handler.sendMessage(message);
-
+                        }
+                    });
 
                 }   catch (Exception e) {
                     Log.e("errss", e.getMessage());
-
                 }
             }
         }).start();
@@ -172,6 +275,9 @@ public class Register_main extends AppCompatActivity {
         etAccount=(EditText)findViewById(R.id.id_ETaccount);
         etPassword=(EditText)findViewById(R.id.id_ETpassword);
         Btnlonin=(Button)findViewById(R.id.id_Btnlogin);
+        loadText=(TextView)findViewById(R.id.id_Load);
+        loadNumText=(TextView)findViewById(R.id.id_tvResult);
+        progressBar=(ProgressBar)findViewById(R.id.id_LoninProgress);
     }
 
     @Override

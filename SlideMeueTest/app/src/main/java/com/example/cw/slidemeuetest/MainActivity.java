@@ -1,7 +1,10 @@
 package com.example.cw.slidemeuetest;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -11,6 +14,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +25,7 @@ import com.xys.libzxing.zxing.activity.CaptureActivity;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
 
     //检测网络情况的广播
     private IntentFilter intentFilter;
@@ -38,6 +43,8 @@ public class MainActivity extends AppCompatActivity
     public String user;
 
     public String email;
+
+    //private DrawerLayout drawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,14 +72,55 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        registerBroadcastReceiver();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
+        //打开app时更新登录ui
+        drawer.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                if(slideOffset==0.1)
+                Log.d("slide", "onDrawerSlide: ");
+                SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+                String user = sharedPreferences.getString("user","");
+                String email = sharedPreferences.getString("email","");
+                userName =(TextView)findViewById(R.id.id_userNameText);
+                userEmail =(TextView)findViewById(R.id.id_userEmailText);
+                if(user!=""||!user.equals("")) {
+                    userName.setText(user);
+                    userEmail.setText(email);
+                }
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                Log.d("slide", "onDrawerOpened: ");
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                Log.d("slide", "onDrawerClosed: ");
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+                Log.d("slide", "onDrawerStateChanged: ");
+            }
+        });
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+
+
+
+
+
+
 
     }
 
@@ -91,6 +139,14 @@ public class MainActivity extends AppCompatActivity
 //
 //        }
 //    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(networkChangeReciver,intentFilter);
+    }
+
+
     //网络检测
     @Override
     protected void onDestroy() {
@@ -101,12 +157,15 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -173,6 +232,28 @@ public class MainActivity extends AppCompatActivity
 //            userName.setText(user);
 //            userEmail.setText(email);
 //        }
+    }
+
+    private void registerBroadcastReceiver(){
+        UserBroadcastReceiver receiver = new UserBroadcastReceiver();
+        IntentFilter filter = new IntentFilter("com.example.broadcasttest.USERUI_BROADCAST");
+        registerReceiver(receiver, filter);
+    }
+
+    public class UserBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+            String user = sharedPreferences.getString("user","");
+            String email = sharedPreferences.getString("email","");
+            userName =(TextView)findViewById(R.id.id_userNameText);
+            userEmail =(TextView)findViewById(R.id.id_userEmailText);
+            if(user!=""||!user.equals("")) {
+                userName.setText(user);
+                userEmail.setText(email);
+            }
+        }
+
     }
 }
 
