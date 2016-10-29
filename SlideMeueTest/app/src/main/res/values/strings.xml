@@ -5,4 +5,27 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+
+    <string name="id">请输入邮箱</string>
+    <string name="login">登录</string>
+    <string name="password">请输入密码</string>
+    <string name="misspassword">无法登录？</string>
+    <string name="newuser">新用户</string>
+    <string name="back">返回</string>
+    <string name="register">注册</string>
+    <string name="auth_code">验证码</string>
+    <string name="check">换一张</string>
+    <string name="isture">确认</string>
+    <string name="findpassword">找回密码</string>
+    <string name="truepassword">确认您的密码</string>
+    <string name="id_true">格式错误</string>
+    <string name="pstrue">密码不一致</string>
+    <string name="autetrue">验证码错误</string>
+    <string name="changepw">修改密码</string>
+    <string name="true_change">确认修改</string>
+    <string name="newpassword">请输入新密码</string>
+    <string name="oldpasswors">请输入旧密码</string>
+    <string name="idh">用户不存在</string>
+    <string name="wrongpw">密码输入错误</string>
+
 </resources>

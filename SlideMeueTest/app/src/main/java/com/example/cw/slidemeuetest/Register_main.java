@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -63,6 +64,10 @@ public class Register_main extends AppCompatActivity {
     //进度条
     private ProgressBar progressBar;
 
+    //返回
+    private TextView Btnback;
+
+
    // private  SendHttpURLConnection sendHttpURLConnection;
 
 //    private Handler handler = new Handler(){
@@ -79,25 +84,35 @@ public class Register_main extends AppCompatActivity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register_layout);
+        if (getSupportActionBar() != null){
+            getSupportActionBar().hide();
+        }
         initView();
         progressBar.setVisibility(View.GONE);
         Btnlonin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                progressBar.setVisibility(View.VISIBLE);
                 //progressBar.setProgress(50);
                 if(view.getId()==R.id.id_Btnlogin){
+                    //点击登录按钮后 强制隐藏键盘
+                    InputMethodManager immPw = (InputMethodManager)
+                            getSystemService(Context.INPUT_METHOD_SERVICE);
+                    immPw.hideSoftInputFromWindow(etPassword.getWindowToken(), 0);
+                    InputMethodManager immUn = (InputMethodManager)
+                            getSystemService(Context.INPUT_METHOD_SERVICE);
+                    immUn.hideSoftInputFromWindow(etAccount.getWindowToken(), 0);
+
                     account=etAccount.getText().toString();
                     password=etPassword.getText().toString();
                     if(account.equals("")||account==null||password.equals("")||password==null){
                         //提示输入为空
-                        Toast.makeText(Register_main.this,"请输入密码和账号",Toast.LENGTH_SHORT).show();
-                        tvResult.setText("null");
+                        Toast.makeText(Register_main.this,"请输入邮箱和密码",Toast.LENGTH_SHORT).show();
+                        //tvResult.setText("null");
                         return;
                     }
                     //sendHttpURLConnection.onPreExecute();
                     //sendHttpURLConnection.execute(loninUrl);
-
+                    progressBar.setVisibility(View.VISIBLE);
 
                     sendHttpURLConnection();
 
@@ -120,6 +135,13 @@ public class Register_main extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(Register_main.this, CaptureActivity.class);
                 startActivityForResult(intent,0);
+            }
+        });
+
+        Btnback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
             }
         });
     }
@@ -271,12 +293,13 @@ public class Register_main extends AppCompatActivity {
     private void initView() {
         //初始化控件
         btnScan=(Button)findViewById(R.id.id_btnScan);
-        tvResult=(TextView)findViewById(R.id.id_tvResult);
+//        tvResult=(TextView)findViewById(R.id.id_tvResult);
         etAccount=(EditText)findViewById(R.id.id_ETaccount);
         etPassword=(EditText)findViewById(R.id.id_ETpassword);
         Btnlonin=(Button)findViewById(R.id.id_Btnlogin);
-        loadText=(TextView)findViewById(R.id.id_Load);
-        loadNumText=(TextView)findViewById(R.id.id_tvResult);
+        Btnback=(TextView)findViewById(R.id.id_registerBackText);
+        //=(TextView)findViewById(R.id.id_Load);
+        //loadNumText=(TextView)findViewById(R.id.id_tvResult);
         progressBar=(ProgressBar)findViewById(R.id.id_LoninProgress);
     }
 

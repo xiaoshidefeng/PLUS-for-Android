@@ -18,9 +18,9 @@ public class NetworkChangeReciver extends BroadcastReceiver{
 
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         if(networkInfo != null && networkInfo.isAvailable()){
-            Toast.makeText(context,"网络已连接",Toast.LENGTH_LONG).show();
+            Toast.makeText(context,"网络已连接",Toast.LENGTH_SHORT).show();
         }else {
-            Toast.makeText(context,"网络未连接",Toast.LENGTH_LONG).show();
+            Toast.makeText(context,"网络未连接",Toast.LENGTH_SHORT).show();
         }
     }
 }
