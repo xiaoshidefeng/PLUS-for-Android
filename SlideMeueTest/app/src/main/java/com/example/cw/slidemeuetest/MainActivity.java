@@ -1,5 +1,6 @@
 package com.example.cw.slidemeuetest;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,6 +24,12 @@ import android.webkit.WebView;
 import android.widget.TextView;
 
 import com.xys.libzxing.zxing.activity.CaptureActivity;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -44,7 +52,15 @@ public class MainActivity extends AppCompatActivity
 
     public String email;
 
-    //private DrawerLayout drawer;
+    //用户id
+    private int id;
+
+    //扫码登录接口
+    public  String QRloninUrl="http://lsuplus.top/QRLogin/";
+
+    //扫码结果
+    private String QrScanResult;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,30 +131,8 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
-
-
-
-
-
-
-
     }
 
-//
-//    public class UserBroadcastReceiver extends BroadcastReceiver {
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//            SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-//            String user = sharedPreferences.getString("user","");
-//            String email = sharedPreferences.getString("email","");
-//            userName =(TextView)findViewById(R.id.id_userNameText);
-//            userEmail =(TextView)findViewById(R.id.id_userEmailText);
-//            userName.setText(user);
-//            userEmail.setText(email);
-//            Toast.makeText(context,"testsss",Toast.LENGTH_LONG).show();
-//
-//        }
-//    }
 
     @Override
     protected void onResume() {
@@ -200,6 +194,7 @@ public class MainActivity extends AppCompatActivity
             //二维码
             Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
             startActivityForResult(intent,0);
+
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {
@@ -223,15 +218,6 @@ public class MainActivity extends AppCompatActivity
 
         Intent intent = new Intent(MainActivity.this, Register_main.class);
                 startActivity(intent);
-//        SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-//        String user = sharedPreferences.getString("user","");
-//        String email = sharedPreferences.getString("email","");
-//        userName =(TextView)findViewById(R.id.id_userNameText);
-//        userEmail =(TextView)findViewById(R.id.id_userEmailText);
-//        if(user!=""||!user.equals("")){
-//            userName.setText(user);
-//            userEmail.setText(email);
-//        }
     }
 
     private void registerBroadcastReceiver(){
@@ -246,6 +232,7 @@ public class MainActivity extends AppCompatActivity
             SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
             String user = sharedPreferences.getString("user","");
             String email = sharedPreferences.getString("email","");
+            id = sharedPreferences.getInt("id",0);
             userName =(TextView)findViewById(R.id.id_userNameText);
             userEmail =(TextView)findViewById(R.id.id_userEmailText);
             if(user!=""||!user.equals("")) {
@@ -255,5 +242,63 @@ public class MainActivity extends AppCompatActivity
         }
 
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode== Activity.RESULT_OK){
+            QrScanResult= data.getExtras().getString("result");
+            sendQrloginHttpURLConnection();
+        }
+    }
+
+    private void sendQrloginHttpURLConnection() {
+        //开启子线程访问网络 扫码登录模块
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                HttpURLConnection connection = null;
+
+                //获取SharedPreferences里的用户信息
+                SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+                String user = sharedPreferences.getString("user","");
+                String email = sharedPreferences.getString("email","");
+                id = sharedPreferences.getInt("id",0);
+
+                try {
+                    String userpassword = userName+":"+userEmail;
+                    URL url = new URL(QRloninUrl+QrScanResult+"?userid="+id);
+
+                    //basic64加密
+                    final String basicAuth = "Basic " + Base64.encodeToString(userpassword.getBytes(), Base64.NO_WRAP);
+                    connection = (HttpURLConnection)url.openConnection();
+                    connection.setRequestProperty ("Authorization", basicAuth);
+                    connection.setRequestMethod("POST");
+                    connection.connect();
+
+                    //连接超时
+                    connection.setConnectTimeout(8000);
+                    connection.setReadTimeout(8000);
+
+                    //获取输入流
+                    InputStream in = connection.getInputStream();
+
+                    //对获取的流进行读取
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(in,"utf-8"));
+                    StringBuilder response = new StringBuilder();
+                    String line=null;
+                    while ((line=reader.readLine())!=null){
+                        response.append(line);
+
+                    }
+
+                }   catch (Exception e) {
+                    Log.e("errss", e.getMessage());
+
+                }
+            }
+        }).start();
+    }
+
 }
 
