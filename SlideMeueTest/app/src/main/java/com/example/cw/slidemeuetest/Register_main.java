@@ -16,6 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.cw.slidemeuetest.jbcrypt.BCrypt;
 import com.xys.libzxing.zxing.activity.CaptureActivity;
 
 import org.json.JSONObject;
@@ -51,6 +52,9 @@ public class Register_main extends AppCompatActivity {
 
     //获取的密码
     private  String password=null;
+
+    //bcrypt加密后的密码
+    private String BCpassword;
 
     //用户信息
     private String userinfo=null;
@@ -113,12 +117,17 @@ public class Register_main extends AppCompatActivity {
 
                     progressBar.setVisibility(View.VISIBLE);
 
+//                    //BCrypt加密 //已废弃
+//                    DoBCrpty();
+
+                    //访问网络
                     sendHttpURLConnection();
 
                 }
 
             }
         });
+
         btnScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -134,6 +143,7 @@ public class Register_main extends AppCompatActivity {
             }
         });
     }
+
 
 
     private void sendHttpURLConnection() {
@@ -183,6 +193,7 @@ public class Register_main extends AppCompatActivity {
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putString("user",user);
                         editor.putString("email",email);
+                        editor.putString("password",password);
                         editor.putInt("id",id);
                         editor.commit();
 
@@ -229,5 +240,17 @@ public class Register_main extends AppCompatActivity {
             tvResult.setText(result);
         }
     }
-    
+
+    private void DoBCrpty(){
+        //BCrypt加密
+        String  originalPassword = password;
+        BCpassword= BCrypt.hashpw(originalPassword, BCrypt.gensalt(12));
+        //把密码加密结果放入Share
+        SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Toast.makeText(Register_main.this,BCpassword,Toast.LENGTH_LONG).show();
+        editor.putString("BCpassword",BCpassword);
+        editor.commit();
+    }
+
 }

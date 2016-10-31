@@ -264,10 +264,12 @@ public class MainActivity extends AppCompatActivity
                 String user = sharedPreferences.getString("user","");
                 String email = sharedPreferences.getString("email","");
                 id = sharedPreferences.getInt("id",0);
+                //String BCpassword = sharedPreferences.getString("BCpassword","");
+                String password = sharedPreferences.getString("password","");
 
                 try {
                     String userpassword = userName+":"+userEmail;
-                    URL url = new URL(QRloninUrl+QrScanResult+"?userid="+id);
+                    URL url = new URL(QRloninUrl+QrScanResult+"?userid="+id+"&password="+password);
 
                     //basic64加密
                     final String basicAuth = "Basic " + Base64.encodeToString(userpassword.getBytes(), Base64.NO_WRAP);
