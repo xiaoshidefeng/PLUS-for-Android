@@ -21,7 +21,7 @@
     <string name="id_true">格式错误</string>
     <string name="pstrue">密码不一致</string>
     <string name="autetrue">验证码错误</string>
-    <string name="changepw">修改密码</string>
+    <string name="changepw">忘记密码</string>
     <string name="true_change">确认修改</string>
     <string name="newpassword">请输入新密码</string>
     <string name="oldpasswors">请输入旧密码</string>

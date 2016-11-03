@@ -6,7 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -62,14 +65,21 @@ public class MainActivity extends AppCompatActivity
     private String QrScanResult;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        //透明状态栏实现
+        getWindow().setStatusBarColor(Color.TRANSPARENT);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+
         webView=(WebView)findViewById(R.id.id_webView);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.loadUrl("http://lsuplus.top/");
+
         setSupportActionBar(toolbar);
 
 
@@ -204,7 +214,9 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
-
+            ExitLog();
+            userName.setText("立即登录");
+            userEmail.setText("");
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -215,9 +227,20 @@ public class MainActivity extends AppCompatActivity
 
     public void login(View v)
     {
+        userName =(TextView)findViewById(R.id.id_userNameText);
+        String loginStatus = (String) userName.getText();
+        if(loginStatus.equals("立即登录")){
+            //还未登录
+            Intent intent = new Intent(MainActivity.this, Register_main.class);
+            startActivity(intent);
+        }else{
 
-        Intent intent = new Intent(MainActivity.this, Register_main.class);
-                startActivity(intent);
+            return;
+        }
+//        //暂时开启 测试ui
+//            Intent intent = new Intent(MainActivity.this, Register_main.class);
+//            startActivity(intent);
+
     }
 
     private void registerBroadcastReceiver(){
@@ -300,6 +323,21 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         }).start();
+    }
+
+
+    //退出登录
+    private void ExitLog(){
+        SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("user","");
+        editor.putString("email","");
+        editor.putString("password","");
+        editor.putInt("id",0);
+        editor.commit();
+//        Intent intent = new Intent();
+//        intent.setAction("com.example.broadcasttest.USERUI_BROADCAST");
+//        sendBroadcast(intent);
     }
 
 }

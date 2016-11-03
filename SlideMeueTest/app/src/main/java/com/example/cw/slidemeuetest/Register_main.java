@@ -4,7 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
@@ -17,7 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.cw.slidemeuetest.jbcrypt.BCrypt;
-import com.xys.libzxing.zxing.activity.CaptureActivity;
 
 import org.json.JSONObject;
 
@@ -39,7 +41,7 @@ public class Register_main extends AppCompatActivity {
     private Button Btnlonin;
 
     //扫码登录按钮
-    private Button btnScan;
+//    private Button btnScan;
 
     //扫码结果显示
     private TextView tvResult;
@@ -75,11 +77,15 @@ public class Register_main extends AppCompatActivity {
     private TextView Btnback;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register_layout);
 
+        getWindow().setStatusBarColor(Color.TRANSPARENT);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
         //隐藏标题栏
         if (getSupportActionBar() != null){
             getSupportActionBar().hide();
@@ -128,13 +134,13 @@ public class Register_main extends AppCompatActivity {
             }
         });
 
-        btnScan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Register_main.this, CaptureActivity.class);
-                startActivityForResult(intent,0);
-            }
-        });
+//        btnScan.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(Register_main.this, CaptureActivity.class);
+//                startActivityForResult(intent,0);
+//            }
+//        });
 
         Btnback.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -224,7 +230,7 @@ public class Register_main extends AppCompatActivity {
 
     private void initView() {
         //初始化控件
-        btnScan=(Button)findViewById(R.id.id_btnScan);
+       // btnScan=(Button)findViewById(R.id.id_btnScan);
         etAccount=(EditText)findViewById(R.id.id_ETaccount);
         etPassword=(EditText)findViewById(R.id.id_ETpassword);
         Btnlonin=(Button)findViewById(R.id.id_Btnlogin);
@@ -252,5 +258,6 @@ public class Register_main extends AppCompatActivity {
         editor.putString("BCpassword",BCpassword);
         editor.commit();
     }
+
 
 }
