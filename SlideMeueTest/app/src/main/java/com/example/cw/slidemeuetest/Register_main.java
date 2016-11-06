@@ -230,7 +230,7 @@ public class Register_main extends AppCompatActivity {
 
     private void initView() {
         //初始化控件
-       // btnScan=(Button)findViewById(R.id.id_btnScan);
+        // btnScan=(Button)findViewById(R.id.id_btnScan);
         etAccount=(EditText)findViewById(R.id.id_ETaccount);
         etPassword=(EditText)findViewById(R.id.id_ETpassword);
         Btnlonin=(Button)findViewById(R.id.id_Btnlogin);
