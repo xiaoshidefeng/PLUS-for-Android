@@ -2,12 +2,14 @@ package com.example.cw.slidemeuetest;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
@@ -76,6 +78,9 @@ public class Register_main extends AppCompatActivity {
     //返回
     private TextView Btnback;
 
+    //忘记密码
+    private Button BtnforgetPass;
+
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -142,10 +147,29 @@ public class Register_main extends AppCompatActivity {
 //            }
 //        });
 
+        //返回
         Btnback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
+            }
+        });
+
+        //忘记密码
+        BtnforgetPass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final EditText inputEmail = new EditText(Register_main.this);
+                new AlertDialog.Builder(Register_main.this).setTitle("请输入邮箱").
+                        setIcon(android.R.drawable.ic_dialog_info).setView(
+inputEmail).setPositiveButton("确定", null).setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialogInterface) {
+                        Toast.makeText(Register_main.this,inputEmail.getText().toString(), Toast.LENGTH_LONG).show();
+                    }
+                }).setNegativeButton("取消", null).show();
+                //Toast.makeText(Register_main.this,inputEmail.getText().toString(), Toast.LENGTH_LONG).show();
+                
             }
         });
     }
@@ -236,6 +260,7 @@ public class Register_main extends AppCompatActivity {
         Btnlonin=(Button)findViewById(R.id.id_Btnlogin);
         Btnback=(TextView)findViewById(R.id.id_registerBackText);
         progressBar=(ProgressBar)findViewById(R.id.id_LoninProgress);
+        BtnforgetPass = (Button) findViewById(R.id.loginChangePw);
     }
 
     @Override
