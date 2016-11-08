@@ -287,7 +287,6 @@ public class MainActivity extends AppCompatActivity
                 String user = sharedPreferences.getString("user","");
                 String email = sharedPreferences.getString("email","");
                 id = sharedPreferences.getInt("id",0);
-                //String BCpassword = sharedPreferences.getString("BCpassword","");
                 String password = sharedPreferences.getString("password","");
 
                 try {

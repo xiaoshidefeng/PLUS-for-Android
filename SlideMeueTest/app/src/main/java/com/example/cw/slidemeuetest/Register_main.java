@@ -51,6 +51,9 @@ public class Register_main extends AppCompatActivity {
     //登录接口
     public  String loninUrl="http://lsuplus.top/api/v1/user/";
 
+    //修改密码接口
+    private String forgetUrl = "http://lsuplus.top/password/email/?email=";
+
     //获取的账号
     private String account=null;
 
@@ -80,6 +83,10 @@ public class Register_main extends AppCompatActivity {
 
     //忘记密码
     private Button BtnforgetPass;
+
+    //要修改的邮箱
+    private String forgetEmail;
+
 
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -160,16 +167,27 @@ public class Register_main extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 final EditText inputEmail = new EditText(Register_main.this);
-                new AlertDialog.Builder(Register_main.this).setTitle("请输入邮箱").
-                        setIcon(android.R.drawable.ic_dialog_info).setView(
-inputEmail).setPositiveButton("确定", null).setOnCancelListener(new DialogInterface.OnCancelListener() {
+                new AlertDialog.Builder(Register_main.this).setTitle("请输入要修改的邮箱")
+                       // setMessage("请输入要修改的邮箱：").
+                        .setView(
+inputEmail).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onCancel(DialogInterface dialogInterface) {
-                        Toast.makeText(Register_main.this,inputEmail.getText().toString(), Toast.LENGTH_LONG).show();
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //点击确定按钮时 用post方法发送
+                        forgetEmail=inputEmail.getText().toString();
+                        sendForgetpasswordHttpURLConnection();
+
+                        //点击确定按钮后 强制隐藏键盘
+                        InputMethodManager immPw = (InputMethodManager)
+                                getSystemService(Context.INPUT_METHOD_SERVICE);
+                        immPw.hideSoftInputFromWindow(etPassword.getWindowToken(), 0);
+                        InputMethodManager immUn = (InputMethodManager)
+                                getSystemService(Context.INPUT_METHOD_SERVICE);
+                        immUn.hideSoftInputFromWindow(etAccount.getWindowToken(), 0);
+                        Toast.makeText(Register_main.this,"已发送邮件到"+forgetEmail+"请注意查收", Toast.LENGTH_LONG).show();
                     }
                 }).setNegativeButton("取消", null).show();
-                //Toast.makeText(Register_main.this,inputEmail.getText().toString(), Toast.LENGTH_LONG).show();
-                
+
             }
         });
     }
@@ -192,9 +210,9 @@ inputEmail).setPositiveButton("确定", null).setOnCancelListener(new DialogInte
                     connection.setRequestMethod("GET");
                     connection.connect();
 
+                    //连接超时设置
                     connection.setConnectTimeout(8000);
                     connection.setReadTimeout(8000);
-//                    connection.setInstanceFollowRedirects(true);
                     //获取输入流
                     InputStream in = connection.getInputStream();
 
@@ -254,7 +272,6 @@ inputEmail).setPositiveButton("确定", null).setOnCancelListener(new DialogInte
 
     private void initView() {
         //初始化控件
-        // btnScan=(Button)findViewById(R.id.id_btnScan);
         etAccount=(EditText)findViewById(R.id.id_ETaccount);
         etPassword=(EditText)findViewById(R.id.id_ETpassword);
         Btnlonin=(Button)findViewById(R.id.id_Btnlogin);
@@ -282,6 +299,33 @@ inputEmail).setPositiveButton("确定", null).setOnCancelListener(new DialogInte
         Toast.makeText(Register_main.this,BCpassword,Toast.LENGTH_LONG).show();
         editor.putString("BCpassword",BCpassword);
         editor.commit();
+    }
+
+    //修改密码 发送post请求至服务器
+    private void sendForgetpasswordHttpURLConnection() {
+        //开启子线程访问网络 修改密码模块
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                HttpURLConnection connection = null;
+
+                try {
+                    URL url = new URL(forgetUrl+forgetEmail);
+                    connection = (HttpURLConnection)url.openConnection();
+                    connection.setRequestMethod("POST");
+                    connection.connect();
+
+                    //连接超时
+                    connection.setConnectTimeout(8000);
+                    connection.setReadTimeout(8000);
+
+
+                }   catch (Exception e) {
+                    Log.e("errss", e.getMessage());
+
+                }
+            }
+        }).start();
     }
 
 
