@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:orientation="vertical"
+        android:id="@+id/id_registerTops">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/id_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:fitsSystemWindows="true"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/registTop"
+        style="@style/title_relayout"
+        android:layout_below="@id/id_registerTops"
+        >
+        <ImageView
+            android:id="@+id/id_back"
+            style="@style/back_btn" />
+
+        <TextView
+            android:id="@+id/loginTitle"
+            style="@style/title_text"
+            android:text="@string/login" />
+
+        <TextView
+            android:id="@+id/id_registerBackText"
+            style="@style/back_text"
+            android:layout_alignBaseline="@+id/loginTitle"
+            android:layout_alignBottom="@+id/loginTitle"
+            android:layout_toRightOf="@+id/id_back"
+            android:layout_toEndOf="@+id/id_back" />
+    </RelativeLayout>
+
+    <!--     <ImageView
+            android:id="@+id/loginUser"
+            android:layout_width="130dip"
+            android:layout_height="130dip"
+            android:layout_below="@id/loginTop"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:contentDescription="@string/login"
+            android:src="@drawable/pluss" /> -->
+
+    <LinearLayout
+        android:id="@+id/registli"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/registTop"
+        android:background="#ffffff"
+        android:orientation="vertical"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/id_userNameWarpperregist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/id_ETaccountregist"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginLeft="20dp"
+                android:background="@null"
+                android:hint="@string/id"
+                android:textColorHint="#CDCDC1"
+                android:inputType="textEmailAddress"
+                android:textSize="16sp" />
+
+
+        </android.support.design.widget.TextInputLayout>
+
+        <LinearLayout
+            android:id="@+id/registline"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#D7D7D7"
+            android:orientation="vertical" >
+        </LinearLayout>
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/id_passwordWarpperregistone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/id_ETpasswordOne"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginLeft="20dp"
+                android:background="@null"
+                android:hint="@string/password"
+                android:inputType="textPassword"
+                android:textColorHint="#CDCDC1"
+                android:textSize="16sp"
+                android:imeActionId="@+id/login"
+                android:imeActionLabel="@string/action_sign_in_short"
+                android:imeOptions="actionUnspecified"
+                android:maxLines="1"
+                android:singleLine="true" />/>
+        </android.support.design.widget.TextInputLayout>
+
+        <LinearLayout
+            android:id="@+id/registlineTwo"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#D7D7D7"
+            android:orientation="vertical" >
+        </LinearLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/id_passwordWarpperregisttwo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/id_ETpasswordTwo"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginLeft="20dp"
+                android:background="@null"
+                android:hint="@string/truepassword"
+                android:inputType="textPassword"
+                android:textColorHint="#CDCDC1"
+                android:textSize="16sp"
+                android:imeActionId="@+id/login"
+                android:imeActionLabel="@string/action_sign_in_short"
+                android:imeOptions="actionUnspecified"
+                android:maxLines="1"
+                android:singleLine="true" />/>
+        </android.support.design.widget.TextInputLayout>
+    </LinearLayout>
+
+
+    <Button
+        android:id="@+id/id_Btnregist"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_below="@id/registli"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/btnbg"
+        android:includeFontPadding="false"
+        android:text="@string/register"
+        android:textColor="#ffffff" />
+    <!--     <Button
+            android:id="@+id/loginChangePw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/id_Btnlogin"
+            android:includeFontPadding="false"
+            android:background="#00000000"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="15dp"
+            android:text="@string/changepw"
+            android:textSize="14sp"
+            android:textColor="#00AFEF" /> -->
+    <ProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/id_Btnregist"
+        android:id="@+id/id_LoninProgress"
+        android:progress="0"
+        android:max="100"/>
+
+    <Button
+        android:id="@+id/id_btnAbout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="15dp"
+        android:background="#00000000"
+        android:text="关于LSUPLUS俱乐部"
+        android:textColor="#00AFEF"
+        android:textSize="14sp" />
+
+    <!--     <Button
+            android:id="@+id/id_register"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="15dp"
+            android:background="#00000000"
+            android:text="帮助说明"
+            android:textColor="#00AFEF"
+            android:textSize="14sp" /> -->
+
+
+</RelativeLayout>

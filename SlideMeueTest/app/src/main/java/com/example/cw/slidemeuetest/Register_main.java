@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -87,6 +88,12 @@ public class Register_main extends AppCompatActivity {
     //要修改的邮箱
     private String forgetEmail;
 
+    //注册账号
+    private Button BtnRegist;
+
+    //帮助按钮
+    private Button BtnHelp;
+
 
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -126,33 +133,22 @@ public class Register_main extends AppCompatActivity {
                     account=etAccount.getText().toString();
                     password=etPassword.getText().toString();
 
-                    //测试输入是否正常
-                    if(account.equals("")||account==null||password.equals("")||password==null){
-                        //提示输入为空
-                        Toast.makeText(Register_main.this,"请输入邮箱和密码",Toast.LENGTH_SHORT).show();
-                        return;
-                    }
+//                    //测试输入是否正常
+//                    if(account.equals("")||account==null||password.equals("")||password==null){
+//                        //提示输入为空
+//                        Toast.makeText(Register_main.this,"请输入邮箱和密码",Toast.LENGTH_SHORT).show();
+//                        return;
+//                    }
 
-                    progressBar.setVisibility(View.VISIBLE);
+                    //尝试登录
+                    attemptLogin();
 
-//                    //BCrypt加密 //已废弃
-//                    DoBCrpty();
-
-                    //访问网络
-                    sendHttpURLConnection();
 
                 }
 
             }
         });
 
-//        btnScan.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(Register_main.this, CaptureActivity.class);
-//                startActivityForResult(intent,0);
-//            }
-//        });
 
         //返回
         Btnback.setOnClickListener(new View.OnClickListener() {
@@ -188,6 +184,24 @@ inputEmail).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     }
                 }).setNegativeButton("取消", null).show();
 
+            }
+        });
+
+        //注册账号
+        BtnRegist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Register_main.this,Regist.class);
+                startActivity(intent);
+            }
+        });
+
+        //帮助
+        BtnHelp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Register_main.this,LoginActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -278,6 +292,8 @@ inputEmail).setPositiveButton("确定", new DialogInterface.OnClickListener() {
         Btnback=(TextView)findViewById(R.id.id_registerBackText);
         progressBar=(ProgressBar)findViewById(R.id.id_LoninProgress);
         BtnforgetPass = (Button) findViewById(R.id.loginChangePw);
+        BtnRegist = (Button)findViewById(R.id.id_btnRegist);
+        BtnHelp = (Button)findViewById(R.id.id_btnHelp);
     }
 
     @Override
@@ -328,5 +344,72 @@ inputEmail).setPositiveButton("确定", new DialogInterface.OnClickListener() {
         }).start();
     }
 
+    //输入格式提示
+    /**
+     * Attempts to sign in or register the account specified by the login form.
+     * If there are form errors (invalid email, missing fields, etc.), the
+     * errors are presented and no actual login attempt is made.
+     */
+    private void attemptLogin() {
+//        if (mAuthTask != null) {
+//            return;
+//        }
 
+        // Reset errors.
+        etAccount.setError(null);
+        etPassword.setError(null);
+
+        boolean cancel = false;
+        View focusView = null;
+
+        // Check for a valid password, if the user entered one.
+        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+            etPassword.setError(getString(R.string.error_invalid_password));
+            focusView = etPassword;
+            cancel = true;
+        }else if(password.equals("")||password==null){
+            etPassword.setError(getString(R.string.error_null_password));
+            focusView = etPassword;
+            cancel = true;
+        }
+
+        // Check for a valid email address.
+        if (TextUtils.isEmpty(account)) {
+            etAccount.setError(getString(R.string.error_field_required));
+            focusView = etAccount;
+            cancel = true;
+        } else if (!isEmailValid(account)) {
+            etAccount.setError(getString(R.string.error_invalid_email));
+            focusView = etAccount;
+            cancel = true;
+        }
+
+        if (cancel) {
+            // There was an error; don't attempt login and focus the first
+            // form field with an error.
+            focusView.requestFocus();
+        } else {
+            // Show a progress spinner, and kick off a background task to
+            // perform the user login attempt.
+            // showProgress(true);
+            // mAuthTask = new UserLoginTask(email, password);
+            // mAuthTask.execute((Void) null);
+
+            //进度条开始转动
+            progressBar.setVisibility(View.VISIBLE);
+
+            //访问网络
+            sendHttpURLConnection();
+        }
+    }
+
+    private boolean isEmailValid(String email) {
+        //TODO: Replace this with your own logic
+        return email.contains("@");
+    }
+
+    private boolean isPasswordValid(String password) {
+        //TODO: Replace this with your own logic
+        return password.length() > 4;
+    }
 }
