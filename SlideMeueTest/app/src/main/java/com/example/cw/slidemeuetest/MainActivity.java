@@ -325,6 +325,7 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+
     //退出登录
     private void ExitLog(){
         SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
@@ -334,9 +335,39 @@ public class MainActivity extends AppCompatActivity
         editor.putString("password","");
         editor.putInt("id",0);
         editor.commit();
+
+        //退出登录 sendLogout
+        sendLogoutHttpURLConnection();
 //        Intent intent = new Intent();
 //        intent.setAction("com.example.broadcasttest.USERUI_BROADCAST");
 //        sendBroadcast(intent);
+    }
+
+    //退出登录 sendLogout
+    private void sendLogoutHttpURLConnection() {
+        //开启子线程访问网络 退出登录模块
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                HttpURLConnection connection = null;
+
+                try {
+                    URL url = new URL("http://lsuplus.top/auth/logout");
+                    connection = (HttpURLConnection)url.openConnection();
+                    connection.setRequestMethod("GET");
+                    connection.connect();
+
+                    //连接超时
+                    connection.setConnectTimeout(8000);
+                    connection.setReadTimeout(8000);
+
+
+                }   catch (Exception e) {
+                    Log.e("errss", e.getMessage());
+
+                }
+            }
+        }).start();
     }
 
 }

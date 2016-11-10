@@ -10,7 +10,7 @@
     <string name="login">登录</string>
     <string name="password">请输入密码</string>
     <string name="misspassword">无法登录？</string>
-    <string name="newuser">新用户</string>
+    <string name="newuser">姓名</string>
     <string name="back">返回</string>
     <string name="register">注册</string>
     <string name="auth_code">验证码</string>

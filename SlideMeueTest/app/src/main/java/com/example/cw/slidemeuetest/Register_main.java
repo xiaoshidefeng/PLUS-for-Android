@@ -133,12 +133,6 @@ public class Register_main extends AppCompatActivity {
                     account=etAccount.getText().toString();
                     password=etPassword.getText().toString();
 
-//                    //测试输入是否正常
-//                    if(account.equals("")||account==null||password.equals("")||password==null){
-//                        //提示输入为空
-//                        Toast.makeText(Register_main.this,"请输入邮箱和密码",Toast.LENGTH_SHORT).show();
-//                        return;
-//                    }
 
                     //尝试登录
                     attemptLogin();
@@ -196,14 +190,14 @@ inputEmail).setPositiveButton("确定", new DialogInterface.OnClickListener() {
             }
         });
 
-        //帮助
-        BtnHelp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Register_main.this,LoginActivity.class);
-                startActivity(intent);
-            }
-        });
+//        //帮助
+//        BtnHelp.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(Register_main.this,LoginActivity.class);
+//                startActivity(intent);
+//            }
+//        });
     }
 
 
@@ -312,7 +306,7 @@ inputEmail).setPositiveButton("确定", new DialogInterface.OnClickListener() {
         //把密码加密结果放入Share
         SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        Toast.makeText(Register_main.this,BCpassword,Toast.LENGTH_LONG).show();
+        Toast.makeText(Register_main.this,BCpassword,Toast.LENGTH_SHORT).show();
         editor.putString("BCpassword",BCpassword);
         editor.commit();
     }
