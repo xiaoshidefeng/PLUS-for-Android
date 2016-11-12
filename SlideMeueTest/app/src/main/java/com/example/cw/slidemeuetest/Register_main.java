@@ -190,14 +190,7 @@ inputEmail).setPositiveButton("确定", new DialogInterface.OnClickListener() {
             }
         });
 
-//        //帮助
-//        BtnHelp.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(Register_main.this,LoginActivity.class);
-//                startActivity(intent);
-//            }
-//        });
+
     }
 
 

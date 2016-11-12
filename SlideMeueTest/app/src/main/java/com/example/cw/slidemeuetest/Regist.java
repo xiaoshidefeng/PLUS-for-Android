@@ -258,6 +258,7 @@ public class Regist extends AppCompatActivity {
         }).start();
     }
 
+
     //后台登录 获取用户信息
     private void sendLoginHttpURLConnection() {
         //开启子线程访问网络 后台登录模块
