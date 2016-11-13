@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -61,12 +60,20 @@ public class Regist extends AppCompatActivity {
     //用户密码2
     private String passwordTwo;
 
+    //用户id
+    private int id;
+
+    //管理员
+    private String admin = "";
+
     //注册接口
-    String RegistUrl = "http://lsuplus.top/auth/register/";
+    String RegistUrl = "http://lsuplus.top/api/register/";
 
-    //登录接口
-    public  String loninUrl="http://lsuplus.top/api/v1/user/";
+    //登录接口 用token获取用户信息
+    private String getUserInfoUrl = "http://lsuplus.top/api/user/me/?token=";
 
+    //获取的token
+    private String token = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -213,7 +220,7 @@ public class Regist extends AppCompatActivity {
 
     //注册账号 发送post请求至服务器
     private void sendRegistHttpURLConnection() {
-        //开启子线程访问网络 注册模块
+        //开启子线程访问网络 注册模块 获取token值
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -221,8 +228,7 @@ public class Regist extends AppCompatActivity {
 
                 try {
                     URL url = new URL(RegistUrl+"?email="+email+
-                    "&name="+name+"&password="+passwordOne+"&password_confirmation="+passwordTwo);
-//                    URL url =new URL("http://lsuplus.top/auth/register/?email=17@qq.com&name=17e&password=123456&password_confirmation=123456");
+                    "&name="+name+"&password="+passwordOne);
                     connection = (HttpURLConnection)url.openConnection();
                     connection.setRequestMethod("POST");
                     connection.connect();
@@ -243,12 +249,23 @@ public class Regist extends AppCompatActivity {
 
                     }
 
-                    //后台登录
-                    sendLoginHttpURLConnection();
+                    //创建JSON对象
+                    JSONObject userJSON = new JSONObject(response.toString());
 
-                    //回到主界面
-                    Intent intent1 = new Intent(Regist.this,MainActivity.class);
-                    startActivity(intent1);
+                    if(userJSON.has("token")){
+                        //如果登录成功
+                        token = userJSON.getString("token");
+
+                        //GET获取用户信息
+                        sendHttpURLConnectionGETuserInfo();
+
+                    }else {
+                        Toast.makeText(Regist.this,"未知错误！",Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+
+
 
                 }   catch (Exception e) {
                     Log.e("errss", e.getMessage());
@@ -259,20 +276,19 @@ public class Regist extends AppCompatActivity {
     }
 
 
-    //后台登录 获取用户信息
-    private void sendLoginHttpURLConnection() {
-        //开启子线程访问网络 后台登录模块
+    //通过GET方法 用token获取用户信息
+    private void sendHttpURLConnectionGETuserInfo() {
+        //开启子线程访问网络 获取用户信息模块
         new Thread(new Runnable() {
             @Override
             public void run() {
 
                 HttpURLConnection connection = null;
                 try {
-                    String userpassword = email+":"+passwordOne;
-                    URL url = new URL(loninUrl+email);
-                    final String basicAuth = "Basic " + Base64.encodeToString(userpassword.getBytes(), Base64.NO_WRAP);
+
+                    URL url = new URL(getUserInfoUrl+token);
+
                     connection = (HttpURLConnection)url.openConnection();
-                    connection.setRequestProperty ("Authorization", basicAuth);
                     connection.setRequestMethod("GET");
                     connection.connect();
 
@@ -292,42 +308,57 @@ public class Regist extends AppCompatActivity {
 
                     //创建JSON对象
                     JSONObject userJSON = new JSONObject(response.toString());
-                    String status = userJSON.getString("status");
 
-                    //解析JSON数据
-                    if(status.equals("success")){
-                        JSONObject data = userJSON.getJSONObject("data");
-                        String user = data.getString("user");
-                        String email = data.getString("email");
-                        int id = data.getInt("id");
-                        String userinfo = user+"\n"+email;
+                    if(userJSON.has("user")){
+                        //token成功
+                        JSONObject userJ = userJSON.getJSONObject("user");
+                        id = userJ.getInt("id");
+                        String name = userJ.getString("name");
+                        String email = userJ.getString("email");
+                        String created_at = userJ.getString("created_at");
+                        String updated_at = userJ.getString("updated_at");
+                        if(userJ.has("admin")){
+                            //是否为管理员
+                            admin = userJ.getString("admin");
+                        }
 
-                        //将用户信息放入SharedPrerences中保存
+                        //保存用户信息
                         SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putString("user",user);
-                        editor.putString("email",email);
-                        editor.putString("password",passwordOne);
+                        editor.putString("token",token);
                         editor.putInt("id",id);
+                        editor.putString("name",name);
+                        editor.putString("email",email);
+                        editor.putString("created_at",created_at);
+                        editor.putString("updated_at",updated_at);
+                        editor.putString("admin",admin);
                         editor.commit();
 
                         //发送广播 通知MainActivity更新用户ui
                         Intent intent = new Intent();
                         intent.setAction("com.example.broadcasttest.USERUI_BROADCAST");
                         sendBroadcast(intent);
-                    }
 
-                    //开启ui线程来通知用户登录成功
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(Regist.this,"注册成功",Toast.LENGTH_SHORT).show();
-                            //隐藏进度条
-                            progressBar.setVisibility(View.GONE);
-                            //返回MainActivity
-                            finish();
-                        }
-                    });
+                        //开启ui线程来通知用户注册成功
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                Toast.makeText(Regist.this,"注册成功",Toast.LENGTH_SHORT).show();
+
+                                //隐藏进度条
+                                progressBar.setVisibility(View.GONE);
+
+                                //返回MainActivity
+                                Intent intent1 = new Intent(Regist.this,MainActivity.class);
+                                startActivity(intent1);
+                            }
+                        });
+
+                    }else {
+                        Toast.makeText(Regist.this,"未知错误！",Toast.LENGTH_SHORT).show();
+                        return;
+                    }
 
                 }   catch (Exception e) {
                     Log.e("errss", e.getMessage());
@@ -335,7 +366,6 @@ public class Regist extends AppCompatActivity {
             }
         }).start();
     }
-
 
     //退出登录 sendLogout
     private void sendLogoutHttpURLConnection() {

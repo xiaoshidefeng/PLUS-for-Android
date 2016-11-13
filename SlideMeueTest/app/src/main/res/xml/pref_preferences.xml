@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="设置">
+    <CheckBoxPreference
+        android:title="Test me?"
+        android:summaryOn="Yes,I Test you!"
+        android:summaryOff="No,I am sorry."
+        android:defaultValue="true">
+    </CheckBoxPreference>
+</PreferenceScreen>

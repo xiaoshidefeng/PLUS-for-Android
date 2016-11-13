@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        registerReceiver(networkChangeReciver,intentFilter);
+        //registerReceiver(networkChangeReciver,intentFilter);
     }
 
 
@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(networkChangeReciver);
+        //unregisterReceiver(networkChangeReciver);
     }
 
     @Override
@@ -287,13 +287,13 @@ public class MainActivity extends AppCompatActivity
 
                 //获取SharedPreferences里的用户信息
                 SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-                String user = sharedPreferences.getString("user","");
-                String email = sharedPreferences.getString("email","");
+                name = sharedPreferences.getString("name","");
+                email = sharedPreferences.getString("email","");
                 id = sharedPreferences.getInt("id",0);
                 String password = sharedPreferences.getString("password","");
 
                 try {
-                    String userpassword = userName+":"+userEmail;
+                    String userpassword = name+":"+email;
                     URL url = new URL(QRloninUrl+QrScanResult+"?userid="+id+"&password="+password);
 
                     //basic64加密
