@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity
 
     private TextView userEmail;
 
-    public String user;
+    public String name;
 
     public String email;
 
@@ -112,12 +112,12 @@ public class MainActivity extends AppCompatActivity
                 if(slideOffset==0.1)
                 Log.d("slide", "onDrawerSlide: ");
                 SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-                String user = sharedPreferences.getString("user","");
-                String email = sharedPreferences.getString("email","");
+                name = sharedPreferences.getString("name","");
+                email = sharedPreferences.getString("email","");
                 userName =(TextView)findViewById(R.id.id_userNameText);
                 userEmail =(TextView)findViewById(R.id.id_userEmailText);
-                if(user!=""||!user.equals("")) {
-                    userName.setText(user);
+                if(name!=""||!name.equals("")) {
+                    userName.setText(name);
                     userEmail.setText(email);
                 }
             }
@@ -256,13 +256,13 @@ public class MainActivity extends AppCompatActivity
         @Override
         public void onReceive(Context context, Intent intent) {
             SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-            String user = sharedPreferences.getString("user","");
-            String email = sharedPreferences.getString("email","");
+            name = sharedPreferences.getString("name","");
+            email = sharedPreferences.getString("email","");
             id = sharedPreferences.getInt("id",0);
             userName =(TextView)findViewById(R.id.id_userNameText);
             userEmail =(TextView)findViewById(R.id.id_userEmailText);
-            if(user!=""||!user.equals("")) {
-                userName.setText(user);
+            if(name!=""||!name.equals("")) {
+                userName.setText(name);
                 userEmail.setText(email);
             }
         }
@@ -333,7 +333,7 @@ public class MainActivity extends AppCompatActivity
     private void ExitLog(){
         SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("user","");
+        editor.putString("name","");
         editor.putString("email","");
         editor.putString("password","");
         editor.putInt("id",0);
@@ -341,9 +341,7 @@ public class MainActivity extends AppCompatActivity
 
         //退出登录 sendLogout
         sendLogoutHttpURLConnection();
-//        Intent intent = new Intent();
-//        intent.setAction("com.example.broadcasttest.USERUI_BROADCAST");
-//        sendBroadcast(intent);
+
     }
 
     //退出登录 sendLogout

@@ -12,7 +12,6 @@ import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -49,8 +48,11 @@ public class Register_main extends AppCompatActivity {
     //扫码结果显示
     private TextView tvResult;
 
-    //登录接口
-    public  String loninUrl="http://lsuplus.top/api/v1/user/";
+    //登录接口 新的token验证 获取token值
+    private  String loninUrl="http://lsuplus.top/api/user/login/";
+
+    //登录接口 用token获取用户信息
+    private String getUserInfoUrl = "http://lsuplus.top/api/user/me/?token=";
 
     //修改密码接口
     private String forgetUrl = "http://lsuplus.top/password/email/?email=";
@@ -61,6 +63,9 @@ public class Register_main extends AppCompatActivity {
     //获取的密码
     private  String password=null;
 
+    //获取的token
+    private String token;
+
     //bcrypt加密后的密码
     private String BCpassword;
 
@@ -69,6 +74,9 @@ public class Register_main extends AppCompatActivity {
 
     //用户id
     private int id;
+
+    //管理员
+    private String admin = "";
 
     //load字样
     private TextView loadText;
@@ -196,18 +204,70 @@ inputEmail).setPositiveButton("确定", new DialogInterface.OnClickListener() {
 
 
     private void sendHttpURLConnection() {
-        //开启子线程访问网络
+        //开启子线程访问网络 获取token模块
         new Thread(new Runnable() {
             @Override
             public void run() {
 
                 HttpURLConnection connection = null;
                 try {
-                    String userpassword = account+":"+password;
-                    URL url = new URL(loninUrl+account);
-                    final String basicAuth = "Basic " + Base64.encodeToString(userpassword.getBytes(), Base64.NO_WRAP);
+                    String userpassword = "?email="+account+"&password="+password;
+                    URL url = new URL(loninUrl+userpassword);
+
                     connection = (HttpURLConnection)url.openConnection();
-                    connection.setRequestProperty ("Authorization", basicAuth);
+                    connection.setRequestMethod("POST");
+                    connection.connect();
+
+                    //连接超时设置
+                    connection.setConnectTimeout(8000);
+                    connection.setReadTimeout(8000);
+                    //获取输入流
+                    InputStream in = connection.getInputStream();
+
+                    //对获取的流进行读取
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(in,"utf-8"));
+                    StringBuilder response = new StringBuilder();
+                    String line=null;
+                    while ((line=reader.readLine())!=null){
+                        response.append(line);
+                    }
+
+                    //创建JSON对象
+                    JSONObject userJSON = new JSONObject(response.toString());
+
+                    if(userJSON.has("token")){
+                        //如果登录成功
+                        token = userJSON.getString("token");
+
+                        //GET获取用户信息
+                        sendHttpURLConnectionGETuserInfo();
+
+                    }else if(userJSON.has("error")){
+                        Toast.makeText(Register_main.this,"账号密码错误！",Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+
+                }   catch (Exception e) {
+                    Log.e("errss", e.getMessage());
+                }
+            }
+        }).start();
+    }
+
+    //通过GET方法 用token获取用户信息
+    private void sendHttpURLConnectionGETuserInfo() {
+        //开启子线程访问网络 获取用户信息模块
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                HttpURLConnection connection = null;
+                try {
+
+                    URL url = new URL(getUserInfoUrl+token);
+
+                    connection = (HttpURLConnection)url.openConnection();
                     connection.setRequestMethod("GET");
                     connection.connect();
 
@@ -227,42 +287,53 @@ inputEmail).setPositiveButton("确定", new DialogInterface.OnClickListener() {
 
                     //创建JSON对象
                     JSONObject userJSON = new JSONObject(response.toString());
-                    String status = userJSON.getString("status");
 
-                    //解析JSON数据
-                    if(status.equals("success")){
-                        JSONObject data = userJSON.getJSONObject("data");
-                        String user = data.getString("user");
-                        String email = data.getString("email");
-                        id = data.getInt("id");
-                        userinfo = user+"\n"+email;
+                    if(userJSON.has("user")){
+                        //token成功
+                        JSONObject userJ = userJSON.getJSONObject("user");
+                        id = userJ.getInt("id");
+                        String name = userJ.getString("name");
+                        String email = userJ.getString("email");
+                        String created_at = userJ.getString("created_at");
+                        String updated_at = userJ.getString("updated_at");
+                        if(userJ.has("admin")){
+                            //是否为管理员
+                            admin = userJ.getString("admin");
+                        }
 
-                        //将用户信息放入SharedPrerences中保存
+                        //保存用户信息
                         SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putString("user",user);
-                        editor.putString("email",email);
-                        editor.putString("password",password);
+                        editor.putString("token",token);
                         editor.putInt("id",id);
+                        editor.putString("name",name);
+                        editor.putString("email",email);
+                        editor.putString("created_at",created_at);
+                        editor.putString("updated_at",updated_at);
+                        editor.putString("admin",admin);
                         editor.commit();
 
                         //发送广播 通知MainActivity更新用户ui
                         Intent intent = new Intent();
                         intent.setAction("com.example.broadcasttest.USERUI_BROADCAST");
                         sendBroadcast(intent);
-                    }
 
-                    //开启ui线程来通知用户登录成功
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(Register_main.this,"登录成功",Toast.LENGTH_SHORT).show();
-                            //隐藏进度条
-                            progressBar.setVisibility(View.GONE);
-                            //返回MainActivity
-                            finish();
-                        }
-                    });
+                        //开启ui线程来通知用户登录成功
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(Register_main.this,"登录成功",Toast.LENGTH_SHORT).show();
+                                //隐藏进度条
+                                progressBar.setVisibility(View.GONE);
+                                //返回MainActivity
+                                finish();
+                            }
+                        });
+
+                    }else {
+                        Toast.makeText(Register_main.this,"未知错误！",Toast.LENGTH_SHORT).show();
+                        return;
+                    }
 
                 }   catch (Exception e) {
                     Log.e("errss", e.getMessage());
