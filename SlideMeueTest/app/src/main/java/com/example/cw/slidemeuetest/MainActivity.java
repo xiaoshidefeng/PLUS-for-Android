@@ -26,6 +26,7 @@ import android.view.View;
 import android.webkit.WebView;
 import android.widget.TextView;
 
+import com.example.cw.slidemeuetest.Setting.Setting;
 import com.xys.libzxing.zxing.activity.CaptureActivity;
 
 import java.io.BufferedReader;
@@ -211,7 +212,7 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_manage) {
             //设置
-            Intent intent = new Intent(MainActivity.this,SettingsActivity.class);
+            Intent intent = new Intent(MainActivity.this,Setting.class);
             startActivity(intent);
 
         } else if (id == R.id.nav_share) {

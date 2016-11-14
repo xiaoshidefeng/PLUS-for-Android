@@ -35,7 +35,7 @@
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" />
-        <activity android:name=".Setting"></activity>
+        <activity android:name=".Setting.Setting"></activity>
     </application>
 
 </manifest>

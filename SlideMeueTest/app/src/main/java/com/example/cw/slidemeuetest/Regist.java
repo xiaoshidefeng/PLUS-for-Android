@@ -259,6 +259,12 @@ public class Regist extends AppCompatActivity {
                         //GET获取用户信息
                         sendHttpURLConnectionGETuserInfo();
 
+                    } else if (userJSON.has("status_code")){
+                        int code = userJSON.getInt("status_code");
+                        if(code==500){
+                            Toast.makeText(Regist.this,"该账号已被注册！",Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                     }else {
                         Toast.makeText(Regist.this,"未知错误！",Toast.LENGTH_SHORT).show();
                         return;

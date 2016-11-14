@@ -1,11 +1,50 @@
-<?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
+    android:layout="@layout/preference_item"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:title="设置">
-    <CheckBoxPreference
-        android:title="Test me?"
-        android:summaryOn="Yes,I Test you!"
-        android:summaryOff="No,I am sorry."
-        android:defaultValue="true">
-    </CheckBoxPreference>
+    android:title="@string/settingTitle">
+    <PreferenceCategory
+        android:layout="@layout/preference_category_widget"
+        android:title="基本设置">
+
+        <CheckBoxPreference
+            android:layout="@layout/preference_item"
+            android:title="省流量模式"
+            android:key="notify_priority"
+            android:summaryOn="仅在Wi-Fi环境下自动加载图片"
+            android:summaryOff="当前为一般模式(默认)"
+            android:defaultValue="false"/>
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="example_switch"
+            android:summary="@string/darkModesummary"
+            android:title="@string/darkMode" />
+        <!--<Preference-->
+            <!--android:layout="@layout/preference_item"-->
+            <!--android:title="在通知栏显示音标"-->
+            <!--android:summary="当前为不显示"-->
+            <!--android:defaultValue="false"/>-->
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:layout="@layout/preference_category_widget"
+        android:title="账号设置">
+
+        <EditTextPreference
+            android:hint="请输入要修改的邮箱"
+            android:inputType="textEmailAddress"
+            android:maxLines="1"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/changepassword" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+    android:layout="@layout/preference_category_widget"
+    android:title="感谢有你">
+    <Preference
+        android:layout="@layout/preference_item"
+        android:summary="我的项目地址：https://github.com/xiaoshidefeng/PLUS-for-Android"
+        android:title="作者：小时的疯"/>
+</PreferenceCategory>
 </PreferenceScreen>

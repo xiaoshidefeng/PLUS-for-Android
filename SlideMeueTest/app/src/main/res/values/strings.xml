@@ -28,6 +28,9 @@
     <string name="idh">用户不存在</string>
     <string name="wrongpw">密码输入错误</string>
     <string name="title_activity_login">Sign in</string>
+    <string name="changepassword">修改密码</string>
+
+    <string name="settingTitle">设置</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -45,6 +48,8 @@
     </string>
     <string name="title_activity_settings">Settings</string>
 
+    <string name="darkMode">夜间模式</string>
+    <string name="darkModesummary">光线较暗的环境下用夜间模式更护眼哦</string>
     <!-- Strings related to Settings -->
 
     <!-- Example General settings -->
