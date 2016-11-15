@@ -15,7 +15,7 @@
             android:defaultValue="false"/>
         <SwitchPreference
             android:defaultValue="false"
-            android:key="example_switch"
+            android:key="night_switch"
             android:summary="@string/darkModesummary"
             android:title="@string/darkMode" />
         <!--<Preference-->

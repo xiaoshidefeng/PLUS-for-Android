@@ -21,6 +21,7 @@ public class Setting extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        setTheme(themeId);
         setContentView(R.layout.activity_setting);
 
         if (savedInstanceState == null) {
@@ -35,6 +36,8 @@ public class Setting extends ActionBarActivity {
                 finish();
             }
         });
+
+
     }
 
     private void initView() {
@@ -47,13 +50,5 @@ public class Setting extends ActionBarActivity {
         fragmentManager.beginTransaction().replace(viewId, fragment).commit();
     }
 
-    public class PreferenceFragment extends android.preference.PreferenceFragment {
-
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_preferences);
-        }
-    }
 
 }

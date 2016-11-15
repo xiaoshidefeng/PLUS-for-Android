@@ -7,4 +7,16 @@
     <color name="colorWhite">#ffffff</color>
     <color name="colorBlack2">#3D3D3D</color>
     <color name="colorBlack3">#4A4A4A</color>
+
+
+    <color name="colorPrimary_night">#36648B</color>
+    <color name="colorPrimaryDark_night">#36648B</color>
+    <color name="colorAccent_night">#3399FF</color>
+    <color name="colorBlack_night">#999999</color>
+    <color name="colorWhite_night">#333333</color>
+    <color name="colorBlack2_night">#3D3D3D</color>
+    <color name="colorBlack3_night">#4A4A4A</color>
+
+
 </resources>
+
