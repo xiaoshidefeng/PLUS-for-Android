@@ -207,6 +207,9 @@ public class MainActivity extends AppCompatActivity
             startActivityForResult(intent,0);
 
         } else if (id == R.id.nav_gallery) {
+            Intent intent = new Intent("com.example.cw.slidemeuetest.ACTION_START");
+            intent.addCategory("android.intent.category.DEFAULT");
+            startActivity(intent);
 
         } else if (id == R.id.nav_slideshow) {
 
@@ -328,9 +331,14 @@ public class MainActivity extends AppCompatActivity
         }).start();
     }
 
+    //更新token
+    private void RefreshToken(){
 
 
-    //退出登录
+    }
+
+
+    //退出登录 ui
     private void ExitLog(){
         SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();

@@ -24,7 +24,8 @@
     <string name="changepw">忘记密码</string>
     <string name="true_change">确认修改</string>
     <string name="newpassword">请输入新密码</string>
-    <string name="oldpasswors">请输入旧密码</string>
+    <string name="oldpassword">请输入旧密码</string>
+    <string name="confirmpassword">请确认新密码</string>
     <string name="idh">用户不存在</string>
     <string name="wrongpw">密码输入错误</string>
     <string name="title_activity_login">Sign in</string>

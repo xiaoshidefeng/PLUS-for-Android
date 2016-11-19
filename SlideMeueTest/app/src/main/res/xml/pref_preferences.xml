@@ -29,13 +29,18 @@
         android:layout="@layout/preference_category_widget"
         android:title="账号设置">
 
-        <EditTextPreference
-            android:hint="请输入要修改的邮箱"
-            android:inputType="textEmailAddress"
-            android:maxLines="1"
-            android:selectAllOnFocus="true"
-            android:singleLine="true"
-            android:title="@string/changepassword" />
+        <PreferenceScreen
+            android:layout="@layout/preference_item"
+            android:summary="修改当前用户密码"
+            android:title="@string/changepassword"
+            android:key="key_changepw">
+
+            <!--<intent-->
+                <!--android:action="android.intent.action.MAIN"-->
+                <!--android:targetPackage="com.example.Setting"-->
+                <!--android:targetClass="com.example.Setting.ChangePwActivity"-->
+                <!--/>-->
+        </PreferenceScreen>
 
     </PreferenceCategory>
 

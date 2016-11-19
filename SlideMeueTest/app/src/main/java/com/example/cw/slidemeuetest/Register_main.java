@@ -238,18 +238,24 @@ inputEmail).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     if(userJSON.has("token")){
                         //如果登录成功
                         token = userJSON.getString("token");
-
                         //GET获取用户信息
                         sendHttpURLConnectionGETuserInfo();
 
                     }else if(userJSON.has("error")){
-                        Toast.makeText(Register_main.this,"账号密码错误！",Toast.LENGTH_SHORT).show();
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(Register_main.this,"账号密码错误！",Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
                         return;
                     }
 
 
                 }   catch (Exception e) {
-                    Log.e("errss", e.getMessage());
+                    Log.e("error", e.getMessage());
                 }
             }
         }).start();

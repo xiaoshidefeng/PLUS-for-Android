@@ -27,6 +27,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
         <activity android:name=".Register_main" />
         <activity
             android:name=".LoginActivity"
@@ -35,7 +37,14 @@
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" />
-        <activity android:name=".Setting.Setting"></activity>
+        <activity android:name=".Setting.Setting" />
+
+        <activity android:name=".Setting.ChangePwActivity">
+            <intent-filter>
+                <action android:name="com.example.cw.slidemeuetest.ACTION_START"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

@@ -30,6 +30,8 @@ public class Setting extends ActionBarActivity {
         }
 
         initView();
+
+        //返回按钮
         Btnback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -38,7 +40,9 @@ public class Setting extends ActionBarActivity {
         });
 
 
+
     }
+
 
     private void initView() {
         Btnback= (TextView)findViewById(R.id.id_registerBackText);
@@ -49,6 +53,7 @@ public class Setting extends ActionBarActivity {
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction().replace(viewId, fragment).commit();
     }
+
 
 
 }
