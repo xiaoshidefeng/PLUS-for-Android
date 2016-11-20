@@ -27,7 +27,8 @@
 
     <PreferenceCategory
         android:layout="@layout/preference_category_widget"
-        android:title="账号设置">
+        android:title="账号设置"
+        android:key="key_usersetting">
 
         <PreferenceScreen
             android:layout="@layout/preference_item"
@@ -46,10 +47,27 @@
 
     <PreferenceCategory
     android:layout="@layout/preference_category_widget"
-    android:title="感谢有你">
-    <Preference
-        android:layout="@layout/preference_item"
-        android:summary="我的项目地址：https://github.com/xiaoshidefeng/PLUS-for-Android"
-        android:title="作者：小时的疯"/>
-</PreferenceCategory>
+    android:title="关于与帮助"
+        android:key="key_about_help">
+        <Preference
+            android:layout="@layout/preference_item"
+            android:title="@string/suggestion"
+            android:key="key_suggestion"/>
+
+        <Preference
+            android:layout="@layout/preference_item"
+            android:title="@string/checkupdate"
+            android:key="key_checkupdate"/>
+
+        <Preference
+            android:layout="@layout/preference_item"
+            android:summary="我的项目地址：https://github.com/xiaoshidefeng/PLUS-for-Android"
+            android:title="作者：小时的疯"
+            android:key="key_aboutprojectlink"/>
+
+        <Preference
+            android:layout="@layout/preference_item_exit"
+            android:title="@string/exitlogin"
+            android:key="key_exit"/>
+    </PreferenceCategory>
 </PreferenceScreen>

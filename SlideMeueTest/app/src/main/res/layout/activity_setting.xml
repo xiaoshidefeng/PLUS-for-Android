@@ -22,7 +22,7 @@
 
 
     <RelativeLayout
-        android:id="@+id/registTop"
+        android:id="@+id/settingTop"
         style="@style/title_relayout"
         android:layout_below="@id/id_registerTops"
         >
@@ -43,13 +43,28 @@
             android:layout_toRightOf="@+id/id_back"
             android:layout_toEndOf="@+id/id_back" />
     </RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/settingTop"
+        android:orientation="vertical">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-    <FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/settings_container"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_below="@+id/registTop"
-    android:background="#ffffff"/>
+                <FrameLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/settings_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#ffffff"/>
 
+            </LinearLayout>
+
+        </ScrollView>
+    </LinearLayout>
 </RelativeLayout>

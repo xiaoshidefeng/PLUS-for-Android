@@ -18,6 +18,7 @@ import android.widget.Toast;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -215,7 +216,7 @@ public class Regist extends AppCompatActivity {
 
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
-        return password.length() > 4;
+        return password.length() > 5;
     }
 
     //注册账号 发送post请求至服务器
@@ -248,7 +249,6 @@ public class Regist extends AppCompatActivity {
                         response.append(line);
 
                     }
-
                     //创建JSON对象
                     JSONObject userJSON = new JSONObject(response.toString());
 
@@ -259,13 +259,7 @@ public class Regist extends AppCompatActivity {
                         //GET获取用户信息
                         sendHttpURLConnectionGETuserInfo();
 
-                    } else if (userJSON.has("status_code")){
-                        int code = userJSON.getInt("status_code");
-                        if(code==500){
-                            Toast.makeText(Regist.this,"该账号已被注册！",Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                    }else {
+                    } else {
                         Toast.makeText(Regist.this,"未知错误！",Toast.LENGTH_SHORT).show();
                         return;
                     }
@@ -274,6 +268,23 @@ public class Regist extends AppCompatActivity {
 
 
                 }   catch (Exception e) {
+
+                    try {
+                        int status_code = connection.getResponseCode();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    //隐藏进度条
+                                    progressBar.setVisibility(View.GONE);
+
+                                    Toast.makeText(Regist.this,"该账号已被注册！",Toast.LENGTH_SHORT).show();
+
+                                }
+                            });
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+
                     Log.e("errss", e.getMessage());
 
                 }
@@ -362,11 +373,32 @@ public class Regist extends AppCompatActivity {
                         });
 
                     }else {
-                        Toast.makeText(Regist.this,"未知错误！",Toast.LENGTH_SHORT).show();
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                //隐藏进度条
+                                progressBar.setVisibility(View.GONE);
+
+                                Toast.makeText(Regist.this,"注册失败！",Toast.LENGTH_SHORT).show();
+
+                            }
+                        });
+
                         return;
                     }
 
                 }   catch (Exception e) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //隐藏进度条
+                            progressBar.setVisibility(View.GONE);
+
+                            Toast.makeText(Regist.this,"注册失败！",Toast.LENGTH_SHORT).show();
+
+                        }
+                    });
                     Log.e("errss", e.getMessage());
                 }
             }

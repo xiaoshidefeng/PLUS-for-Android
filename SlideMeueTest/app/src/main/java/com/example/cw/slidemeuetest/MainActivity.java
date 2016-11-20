@@ -120,6 +120,9 @@ public class MainActivity extends AppCompatActivity
                 if(name!=""||!name.equals("")) {
                     userName.setText(name);
                     userEmail.setText(email);
+                }else{
+                    userName.setText("立即登录");
+                    userEmail.setText("");
                 }
             }
 
@@ -221,9 +224,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
-            ExitLog();
-            userName.setText("立即登录");
-            userEmail.setText("");
+
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -337,21 +338,6 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-
-    //退出登录 ui
-    private void ExitLog(){
-        SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("name","");
-        editor.putString("email","");
-        editor.putString("password","");
-        editor.putInt("id",0);
-        editor.commit();
-
-        //退出登录 sendLogout
-        sendLogoutHttpURLConnection();
-
-    }
 
     //退出登录 sendLogout
     private void sendLogoutHttpURLConnection() {

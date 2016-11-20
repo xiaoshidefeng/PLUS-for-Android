@@ -17,10 +17,12 @@ import android.widget.Toast;
 
 import com.example.cw.slidemeuetest.MainActivity;
 import com.example.cw.slidemeuetest.R;
+import com.example.cw.slidemeuetest.Register_main;
 
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -199,7 +201,7 @@ public class ChangePwActivity extends AppCompatActivity {
 
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
-        return password.length() > 4;
+        return password.length() > 5;
     }
 
     //点击确定按钮后 强制隐藏键盘
@@ -261,6 +263,42 @@ public class ChangePwActivity extends AppCompatActivity {
                     sendHttpURLConnectionChangePw();
 
                 }   catch (Exception e) {
+                    try {
+                        int status_code = connection.getResponseCode();
+                        if (status_code==400){
+                            String error = connection.getResponseMessage();
+                            if(error == "token_invalid"){
+                                //登录时间到达两周 需要重新登录
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        //隐藏进度条
+                                        progressBar.setVisibility(View.GONE);
+
+                                        Toast.makeText(ChangePwActivity.this,"长时间未登录 请重新登录！",Toast.LENGTH_SHORT).show();
+
+                                        //跳转到登录界面
+                                        Intent intent = new Intent(ChangePwActivity.this, Register_main.class);
+                                        startActivity(intent);
+                                    }
+                                });
+                            }else {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        //隐藏进度条
+                                        progressBar.setVisibility(View.GONE);
+
+                                        Toast.makeText(ChangePwActivity.this,"旧密码错误！",Toast.LENGTH_SHORT).show();
+
+                                    }
+                                });
+                            }
+
+                        }
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
                     Log.e("errss", e.getMessage());
                 }
             }
@@ -326,7 +364,10 @@ public class ChangePwActivity extends AppCompatActivity {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast.makeText(ChangePwActivity.this,"密码错误",Toast.LENGTH_SHORT).show();
+                                    //隐藏进度条
+                                    progressBar.setVisibility(View.GONE);
+
+                                    Toast.makeText(ChangePwActivity.this,"旧密码错误",Toast.LENGTH_SHORT).show();
                                 }
                             });
                         }

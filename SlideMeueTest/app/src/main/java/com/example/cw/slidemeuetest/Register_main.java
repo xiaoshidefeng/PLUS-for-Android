@@ -26,6 +26,7 @@ import com.example.cw.slidemeuetest.jbcrypt.BCrypt;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -241,20 +242,32 @@ inputEmail).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         //GET获取用户信息
                         sendHttpURLConnectionGETuserInfo();
 
-                    }else if(userJSON.has("error")){
-
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(Register_main.this,"账号密码错误！",Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                    }else{
 
                         return;
                     }
 
 
                 }   catch (Exception e) {
+
+                    try {
+                        int status_code = connection.getResponseCode();
+                        if (status_code==401){
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    //隐藏进度条
+                                    progressBar.setVisibility(View.GONE);
+
+                                    Toast.makeText(Register_main.this,"账号或密码错误！",Toast.LENGTH_SHORT).show();
+
+                                }
+                            });
+                        }
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+
                     Log.e("error", e.getMessage());
                 }
             }
@@ -337,7 +350,14 @@ inputEmail).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         });
 
                     }else {
-                        Toast.makeText(Register_main.this,"未知错误！",Toast.LENGTH_SHORT).show();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                //隐藏进度条
+                                progressBar.setVisibility(View.GONE);
+                                Toast.makeText(Register_main.this,"未知错误！",Toast.LENGTH_SHORT).show();
+                            }
+                        });
                         return;
                     }
 
@@ -474,6 +494,6 @@ inputEmail).setPositiveButton("确定", new DialogInterface.OnClickListener() {
 
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
-        return password.length() > 4;
+        return password.length() > 5;
     }
 }

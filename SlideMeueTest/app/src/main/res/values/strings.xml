@@ -51,6 +51,10 @@
 
     <string name="darkMode">夜间模式</string>
     <string name="darkModesummary">光线较暗的环境下用夜间模式更护眼哦</string>
+    
+    <string name="suggestion">意见反馈</string>
+    <string name="checkupdate">检查更新</string>
+    <string name="exitlogin">退出账号</string>
     <!-- Strings related to Settings -->
 
     <!-- Example General settings -->
