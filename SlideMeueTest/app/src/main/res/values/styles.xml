@@ -15,14 +15,22 @@
         <item name="colorAccent">@color/colorAccent_night</item>
     </style>
 
+    <!--去除bar底部阴影-->
+    <style name="MyAppTheme" parent="android:Theme.Holo.Light">
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light">
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
 
     <style name="title_relayout">
         <item name="android:layout_width">match_parent</item>

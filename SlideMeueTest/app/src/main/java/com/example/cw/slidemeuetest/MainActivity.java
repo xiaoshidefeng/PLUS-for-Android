@@ -13,7 +13,10 @@ import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -26,6 +29,9 @@ import android.view.View;
 import android.webkit.WebView;
 import android.widget.TextView;
 
+import com.example.cw.slidemeuetest.MainActivityFragment.FragmentOne;
+import com.example.cw.slidemeuetest.MainActivityFragment.FragmentThree;
+import com.example.cw.slidemeuetest.MainActivityFragment.FragmentTwo;
 import com.example.cw.slidemeuetest.Setting.Setting;
 import com.xys.libzxing.zxing.activity.CaptureActivity;
 
@@ -34,10 +40,27 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    //ViewPager声明
+    private ViewPager mViewPager;
+
+    //ViewPager适配器
+    private FragmentPagerAdapter mAdapter;
+
+    //Fragment列表
+    private List<android.support.v4.app.Fragment> mDatas;
+
+    //tab 里的文本 1
+    private TextView texttabone;
+    //tab 里的文本 2
+    private TextView texttabtwo;
+    //tab 里的文本 3
+    private TextView texttabthree;
 
     //检测网络情况的广播
     private IntentFilter intentFilter;
@@ -65,7 +88,6 @@ public class MainActivity extends AppCompatActivity
     //扫码结果
     private String QrScanResult;
 
-
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,12 +99,16 @@ public class MainActivity extends AppCompatActivity
         getWindow().setStatusBarColor(Color.TRANSPARENT);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
 
-        webView=(WebView)findViewById(R.id.id_webView);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.loadUrl("http://lsuplus.top/");
+//        webView=(WebView)findViewById(R.id.id_webView);
+//        webView.getSettings().setJavaScriptEnabled(true);
+//        webView.loadUrl("http://lsuplus.top/");
 
+//        AppCompatActivity mAppCompatActivity = new AppCompatActivity();
+//        Toolbar toolbar = (Toolbar) mAppCompatActivity.findViewById(R.id.toolbar);
+//        mAppCompatActivity.setSupportActionBar(toolbar);
         setSupportActionBar(toolbar);
 
+        initViewPager();
 
         //检测网络状态
         intentFilter = new IntentFilter();
@@ -144,6 +170,79 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+
+    }
+
+    private void initViewPager() {
+        //初始化ViewPager相关控件
+        mViewPager = (ViewPager)findViewById(R.id.id_viewpager);
+        texttabone = (TextView)findViewById(R.id.id_TVtabone);
+        texttabtwo = (TextView)findViewById(R.id.id_TVtabtwo);
+        texttabthree = (TextView)findViewById(R.id.id_TVtabthree);
+
+
+        mDatas = new ArrayList<android.support.v4.app.Fragment>();
+        FragmentOne fragmentone = new FragmentOne();
+        FragmentTwo fragmenttwo = new FragmentTwo();
+        FragmentThree fragmentthree = new FragmentThree();
+
+        //添加到列表里
+        mDatas.add(fragmentone);
+        mDatas.add(fragmenttwo);
+        mDatas.add(fragmentthree);
+
+        //重写适配器方法
+        mAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
+            @Override
+            public Fragment getItem(int position) {
+                return mDatas.get(position);
+            }
+
+            @Override
+            public int getCount() {
+                return mDatas.size();
+            }
+        };
+
+        //设置适配器
+        mViewPager.setAdapter(mAdapter);
+
+        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                    
+                resetTextView();
+                switch (position)
+                {
+                    case 0:
+                        texttabone.setTextColor(Color.WHITE);
+                        break;
+                    case 1:
+                        texttabtwo.setTextColor(Color.WHITE);
+                        break;
+                    case 2:
+                        texttabthree.setTextColor(Color.WHITE);
+                        break;
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+    }
+
+    private void resetTextView() {
+        //改变字体颜色
+        texttabone.setTextColor(Color.parseColor("#CCCCCC"));
+        texttabtwo.setTextColor(Color.parseColor("#CCCCCC"));
+        texttabthree.setTextColor(Color.parseColor("#CCCCCC"));
 
     }
 
