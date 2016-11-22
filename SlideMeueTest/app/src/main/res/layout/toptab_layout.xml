@@ -4,60 +4,69 @@
     android:layout_height="40dp">
 
     <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="37dp"
-        android:orientation="horizontal">
-
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:orientation="vertical">
         <LinearLayout
-            android:layout_width="3dp"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:background="@color/colorPrimary"
-            android:gravity="center">
+            android:layout_width="fill_parent"
+            android:layout_height="37dp"
+            android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:textColor="@color/colorWhite"
-                android:text="官网"
-                android:id="@+id/id_TVtabone"/>
+            <LinearLayout
+                android:layout_width="3dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:gravity="center"
+                android:id="@+id/id_LLaoutOne">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="@color/colorWhite"
+                    android:text="官网"
+                    android:id="@+id/id_TVtabone"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="3dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:gravity="center"
+                android:id="@+id/id_LLaoutTwo">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorWhite2"
+                    android:text="论坛"
+                    android:id="@+id/id_TVtabtwo"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="3dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:gravity="center"
+                android:id="@+id/id_LLaoutThree">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorWhite2"
+                    android:text="图书"
+                    android:id="@+id/id_TVtabthree"/>
+            </LinearLayout>
+
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="3dp"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:background="@color/colorPrimary"
-            android:gravity="center">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/colorWhite2"
-                android:text="论坛"
-                android:id="@+id/id_TVtabtwo"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="3dp"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:background="@color/colorPrimary"
-            android:gravity="center">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/colorWhite2"
-                android:text="图书"
-                android:id="@+id/id_TVtabthree"/>
-        </LinearLayout>
-
-    </LinearLayout>
 
     <ImageView
-        android:layout_width="100dp"
-        android:layout_height="3dp"
-        android:background="@drawable/tabline"
-        />
-
+    android:layout_width="100dp"
+    android:layout_height="2dp"
+    android:background="@drawable/tabline"
+    android:id="@+id/id_ivTabline"
+    />
+    </LinearLayout>
 </LinearLayout>

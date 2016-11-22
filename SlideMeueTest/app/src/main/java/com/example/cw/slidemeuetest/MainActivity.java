@@ -21,12 +21,16 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Base64;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.cw.slidemeuetest.MainActivityFragment.FragmentOne;
@@ -54,13 +58,21 @@ public class MainActivity extends AppCompatActivity
 
     //Fragment列表
     private List<android.support.v4.app.Fragment> mDatas;
-
+    //tab里的LinearLayout
+    private LinearLayout L1;
+    private LinearLayout L2;
+    private LinearLayout L3;
     //tab 里的文本 1
     private TextView texttabone;
     //tab 里的文本 2
     private TextView texttabtwo;
     //tab 里的文本 3
     private TextView texttabthree;
+    //tab下的指示线
+    private ImageView mTabline;
+    private int mScreen1_3;
+    //当前页数
+    private int mCurrentIndex;
 
     //检测网络情况的广播
     private IntentFilter intentFilter;
@@ -81,6 +93,9 @@ public class MainActivity extends AppCompatActivity
 
     //用户id
     private int id;
+
+    //用户token
+    private String token;
 
     //扫码登录接口
     public  String QRloninUrl="http://lsuplus.top/QRLogin/";
@@ -108,6 +123,11 @@ public class MainActivity extends AppCompatActivity
 //        mAppCompatActivity.setSupportActionBar(toolbar);
         setSupportActionBar(toolbar);
 
+        //初始化tabline
+        initTabline();
+
+
+        //初始化viewpager
         initViewPager();
 
         //检测网络状态
@@ -173,13 +193,30 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    private void initTabline() {
+        //初始化tabline
+        mTabline = (ImageView)findViewById(R.id.id_ivTabline);
+        //获取屏幕宽度和高度
+        Display display = getWindow().getWindowManager().getDefaultDisplay();
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        display.getMetrics(outMetrics);
+
+        mScreen1_3 = outMetrics.widthPixels/3;
+        ViewGroup.LayoutParams lp = mTabline.getLayoutParams();
+        lp.width = mScreen1_3;
+        mTabline.setLayoutParams(lp);
+    }
+
+
     private void initViewPager() {
         //初始化ViewPager相关控件
         mViewPager = (ViewPager)findViewById(R.id.id_viewpager);
         texttabone = (TextView)findViewById(R.id.id_TVtabone);
         texttabtwo = (TextView)findViewById(R.id.id_TVtabtwo);
         texttabthree = (TextView)findViewById(R.id.id_TVtabthree);
-
+        L1 = (LinearLayout)findViewById(R.id.id_LLaoutOne);
+        L2 = (LinearLayout)findViewById(R.id.id_LLaoutTwo);
+        L3 = (LinearLayout)findViewById(R.id.id_LLaoutThree);
 
         mDatas = new ArrayList<android.support.v4.app.Fragment>();
         FragmentOne fragmentone = new FragmentOne();
@@ -210,12 +247,32 @@ public class MainActivity extends AppCompatActivity
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                
+                //滑动时
+                LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) mTabline.getLayoutParams();
+
+
+                //如果从0到1
+                if(mCurrentIndex==0&&position==0){
+                    layoutParams.leftMargin = (int) (positionOffset*mScreen1_3
+                                                +mCurrentIndex*mScreen1_3);
+                }else if(mCurrentIndex==1&&position==0){
+                    //第一页到第0页
+                    layoutParams.leftMargin = (int) (mCurrentIndex*mScreen1_3+(positionOffset-1)*mScreen1_3);
+                }else if(mCurrentIndex==1&&position==1){
+                    //从1到2
+                    layoutParams.leftMargin = (int)(mCurrentIndex*mScreen1_3+positionOffset*mScreen1_3);
+                }else if(mCurrentIndex==2&&position==1){
+                    //从2到1
+                    layoutParams.leftMargin = (int) (mCurrentIndex*mScreen1_3+(positionOffset-1)*mScreen1_3);
+                }
+                mTabline.setLayoutParams(layoutParams);
+
+
             }
 
             @Override
             public void onPageSelected(int position) {
-                    
+                    //滑动结束
                 resetTextView();
                 switch (position)
                 {
@@ -229,6 +286,7 @@ public class MainActivity extends AppCompatActivity
                         texttabthree.setTextColor(Color.WHITE);
                         break;
                 }
+                mCurrentIndex = position;
             }
 
             @Override
@@ -236,6 +294,11 @@ public class MainActivity extends AppCompatActivity
 
             }
         });
+
+        //添加监听事件
+        L1.setOnClickListener(new MyOnClickListener(0));
+        L2.setOnClickListener(new MyOnClickListener(1));
+        L3.setOnClickListener(new MyOnClickListener(2));
     }
 
     private void resetTextView() {
@@ -391,19 +454,13 @@ public class MainActivity extends AppCompatActivity
 
                 //获取SharedPreferences里的用户信息
                 SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-                name = sharedPreferences.getString("name","");
-                email = sharedPreferences.getString("email","");
-                id = sharedPreferences.getInt("id",0);
-                String password = sharedPreferences.getString("password","");
+                token = sharedPreferences.getString("token","");
 
                 try {
-                    String userpassword = name+":"+email;
-                    URL url = new URL(QRloninUrl+QrScanResult+"?userid="+id+"&password="+password);
+                    URL url = new URL(QRloninUrl+QrScanResult+"/?token="+token);
+                    //URL url = new URL("http://lsuplus.top/QRLogin/49831742"+"/?token="+token);
 
-                    //basic64加密
-                    final String basicAuth = "Basic " + Base64.encodeToString(userpassword.getBytes(), Base64.NO_WRAP);
                     connection = (HttpURLConnection)url.openConnection();
-                    connection.setRequestProperty ("Authorization", basicAuth);
                     connection.setRequestMethod("POST");
                     connection.connect();
 
@@ -465,5 +522,17 @@ public class MainActivity extends AppCompatActivity
         }).start();
     }
 
+    //点击tab监听
+    private class MyOnClickListener implements View.OnClickListener {
+        private int index = 0;
+        public MyOnClickListener(int i) {
+            index = i;
+        }
+
+        @Override
+        public void onClick(View view) {
+            mViewPager.setCurrentItem(index);
+        }
+    }
 }
 

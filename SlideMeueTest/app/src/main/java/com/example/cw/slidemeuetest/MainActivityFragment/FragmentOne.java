@@ -30,6 +30,9 @@ public class FragmentOne extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+//        webView=(WebView)getActivity().findViewById(R.id.id_webViewOne);
+//        webView.getSettings().setJavaScriptEnabled(true);
+//        webView.loadUrl("http://lsuplus.top/");
         return inflater.inflate(R.layout.tabone_layout,container,false);
     }
 }

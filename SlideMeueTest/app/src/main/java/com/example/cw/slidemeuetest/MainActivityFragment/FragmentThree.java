@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.TextView;
 
 import com.example.cw.slidemeuetest.R;
 
@@ -17,6 +18,7 @@ import com.example.cw.slidemeuetest.R;
 public class FragmentThree extends Fragment {
     //讨论
     private WebView webView;
+    private TextView textView;
 //
 //    @Override
 //    public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -29,6 +31,7 @@ public class FragmentThree extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        textView= (TextView)getActivity().findViewById(R.id.id_TVtabtwo);
         return inflater.inflate(R.layout.tabthree_layout,container,false);
     }
 }
