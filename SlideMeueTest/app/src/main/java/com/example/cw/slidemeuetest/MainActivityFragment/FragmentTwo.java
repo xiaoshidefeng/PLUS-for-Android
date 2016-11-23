@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 
 import com.example.cw.slidemeuetest.R;
 
@@ -15,19 +16,25 @@ import com.example.cw.slidemeuetest.R;
 
 public class FragmentTwo extends Fragment {
     //讨论
-//    private WebView webView;
+    private WebView webView;
 //
 //    @Override
 //    public void onCreate(@Nullable Bundle savedInstanceState) {
 //        super.onCreate(savedInstanceState);
-//        webView=(WebView)getView().findViewById(R.id.id_webViewTwo);
-//        webView.getSettings().setJavaScriptEnabled(true);
-//        webView.loadUrl("http://discuss.lsuplus.top/");
+
 //    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.tabtwo_layout,container,false);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        webView=(WebView)getView().findViewById(R.id.id_webViewTwo);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.loadUrl("http://lsuplus.top/discuss");
     }
 }

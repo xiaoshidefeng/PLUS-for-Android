@@ -324,9 +324,9 @@ inputEmail).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             admin = userJ.getString("admin");
                         }
 
-                        //获取新token
-                        token = connection.getHeaderField("Authorization");
-                        token = token.substring(7,token.length());
+
+                        Log.e("token2",token+String.valueOf(id));
+                        //Log.e("user", );
 
                         //保存用户信息
                         SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
@@ -340,6 +340,7 @@ inputEmail).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         editor.putString("admin",admin);
                         editor.commit();
 
+
                         //发送广播 通知MainActivity更新用户ui
                         Intent intent = new Intent();
                         intent.setAction("com.example.broadcasttest.USERUI_BROADCAST");
@@ -352,7 +353,7 @@ inputEmail).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                 Toast.makeText(Register_main.this,"登录成功",Toast.LENGTH_SHORT).show();
                                 //隐藏进度条
                                 progressBar.setVisibility(View.GONE);
-                                Log.e("token",token);
+                                Log.e("token3",token);
                                 //返回MainActivity
                                 finish();
                             }

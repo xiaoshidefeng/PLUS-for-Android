@@ -34,4 +34,12 @@ public class FragmentThree extends Fragment {
         textView= (TextView)getActivity().findViewById(R.id.id_TVtabtwo);
         return inflater.inflate(R.layout.tabthree_layout,container,false);
     }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        webView=(WebView)getView().findViewById(R.id.id_webViewThree);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.loadUrl("http://lsuplus.top/library/index");
+    }
 }
