@@ -458,7 +458,11 @@ public class MainActivity extends AppCompatActivity
 
                 try {
                     URL url = new URL(QRloninUrl+QrScanResult+"/?token="+token);
-                    //URL url = new URL("http://lsuplus.top/QRLogin/49831742"+"/?token="+token);
+//                    URL url = new URL("http://lsuplus.top/QRLogin/93774468/?token=eyJ0eXAiOiJKV" +
+//                            "1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjU1LCJpc3MiOiJodHRwOlwvXC9sc3V" +
+//                            "wbHVzLnRvcFwvYXBpXC91c2VyXC9sb2dpbiIsImlhdCI6MTQ3OTg3NzM3NCwiZXhwIj" +
+//                            "oxNDc5ODgwOTc0LCJuYmYiOjE0Nzk4NzczNzQsImp0aSI6ImQwMzQ1OWJmMjUzMmE1Yjl" +
+//                            "mODVmN2Q5Yzg4YjJjZjA1In0.GDgeiDYMkQzrOOJfXfn02Je5fzn9vzfiz9WWz-edAdc");
 
                     connection = (HttpURLConnection)url.openConnection();
                     connection.setRequestMethod("POST");
@@ -479,7 +483,7 @@ public class MainActivity extends AppCompatActivity
                         response.append(line);
 
                     }
-
+                    Log.e("url", url.toString());
                 }   catch (Exception e) {
                     Log.e("errss", e.getMessage());
 

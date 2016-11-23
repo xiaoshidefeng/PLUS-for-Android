@@ -239,6 +239,8 @@ inputEmail).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     if(userJSON.has("token")){
                         //如果登录成功
                         token = userJSON.getString("token");
+                        Log.e("token1",token);
+
                         //GET获取用户信息
                         sendHttpURLConnectionGETuserInfo();
 
@@ -304,6 +306,8 @@ inputEmail).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         response.append(line);
                     }
 
+
+
                     //创建JSON对象
                     JSONObject userJSON = new JSONObject(response.toString());
 
@@ -319,6 +323,10 @@ inputEmail).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             //是否为管理员
                             admin = userJ.getString("admin");
                         }
+
+                        //获取新token
+                        token = connection.getHeaderField("Authorization");
+                        token = token.substring(7,token.length());
 
                         //保存用户信息
                         SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
@@ -344,6 +352,7 @@ inputEmail).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                 Toast.makeText(Register_main.this,"登录成功",Toast.LENGTH_SHORT).show();
                                 //隐藏进度条
                                 progressBar.setVisibility(View.GONE);
+                                Log.e("token",token);
                                 //返回MainActivity
                                 finish();
                             }
@@ -367,6 +376,7 @@ inputEmail).setPositiveButton("确定", new DialogInterface.OnClickListener() {
             }
         }).start();
     }
+
 
     private void initView() {
         //初始化控件
