@@ -4,6 +4,8 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <string name="lsuplus">"@LSUPLUS俱乐部"</string>
+
     <string name="action_settings">Settings</string>
 
     <string name="id">请输入邮箱</string>
@@ -51,7 +53,7 @@
 
     <string name="darkMode">夜间模式</string>
     <string name="darkModesummary">光线较暗的环境下用夜间模式更护眼哦</string>
-    
+
     <string name="suggestion">意见反馈</string>
     <string name="checkupdate">检查更新</string>
     <string name="exitlogin">退出账号</string>
@@ -126,5 +128,18 @@
     <string name="pref_ringtone_silent">Silent</string>
 
     <string name="pref_title_vibrate">Vibrate</string>
+
+    <string name="specialthanks">特别感谢</string>
+    <string name="specialthanksmsg">Robinson 提供的后台接口
+                他的项目地址：https://github.com/Robinson28years/lsuplusclub
+                去给他点个赞吧 </string>
+
+    <string name="gotogithub">好嘞(｡･_･)ﾉﾞ</string>
+
+    <string name="aboutproject">关于项目</string>
+    <string name="aboutprojectmsg">去项目地址给作者一个点个Star,鼓励下作者吧^_^
+                 项目地址：https://github.com/xiaoshidefeng/PLUS-for-Android
+                 去给他点个赞吧</string>
+
 
 </resources>

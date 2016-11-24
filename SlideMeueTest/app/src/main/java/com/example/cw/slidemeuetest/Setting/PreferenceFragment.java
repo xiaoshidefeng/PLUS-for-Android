@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceGroup;
@@ -29,6 +30,12 @@ public class PreferenceFragment extends android.preference.PreferenceFragment {
     //关于与帮助key设置
     private static final String PREF_KEY_ABOUTHELP = "key_about_help";
 
+    //特别感谢
+    private static final String PREF_KEY_SPECIALTHANKS = "key_specialthanks";
+
+    //关于项目
+    private static final String PREF_KEY_ABOUTPROJECT = "key_aboutproject";
+
     //账号设置 key设置
     private static final String PREF_KEY_USERSETTING = "key_usersetting";
 
@@ -48,12 +55,19 @@ public class PreferenceFragment extends android.preference.PreferenceFragment {
     //用户名
     private String username;
 
+    //特别感谢
+    private Preference thanks;
+
+    //关于项目
+    private Preference aboutproject;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.pref_preferences);
 
+
+        
         getusername();
         if(username==null||username.equals("")){
             ((PreferenceGroup)findPreference(PREF_KEY_ABOUTHELP)).removePreference(findPreference(PREF_KEY_EXIT));
@@ -61,6 +75,10 @@ public class PreferenceFragment extends android.preference.PreferenceFragment {
 
             //没有登录时的控件初始化
             initViewNoUser();
+
+            //点击监听
+            ClickEvent();
+
         }else {
             //登录时的控件初始化
             initViewHaveUser();
@@ -82,6 +100,11 @@ public class PreferenceFragment extends android.preference.PreferenceFragment {
                     return false;
                 }
             });
+
+
+            //点击监听
+            ClickEvent();
+
         }
 
 
@@ -97,9 +120,90 @@ public class PreferenceFragment extends android.preference.PreferenceFragment {
 
     }
 
+    //点击监听
+    private void ClickEvent() {
+        thanks.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                SpecialThanks();
+                return false;
+            }
+
+
+        });
+
+        aboutproject.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                AboutProject();
+                return false;
+            }
+        });
+    }
+
+
+
+    //关于项目
+    private void AboutProject(){
+        AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
+        builder.setTitle(R.string.aboutproject);//设置对话框的标题
+        builder.setMessage(R.string.aboutprojectmsg);
+        builder.setPositiveButton(R.string.gotogithub, new DialogInterface.OnClickListener() {  //这个是设置确定按钮
+
+            @Override
+            public void onClick(DialogInterface arg0, int arg1) {
+                //去点赞
+                Uri uri = Uri.parse("https://github.com/xiaoshidefeng/PLUS-for-Android");
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+
+            }
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {  //取消按钮
+
+            @Override
+            public void onClick(DialogInterface arg0, int arg1) {
+                return;
+
+            }
+        });
+        AlertDialog b=builder.create();
+        b.show();  //必须show一下才能看到对话框，跟Toast一样的道理
+    }
+    //特别感谢
+    private void SpecialThanks() {
+        AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
+        builder.setTitle(R.string.specialthanks);//设置对话框的标题
+        builder.setMessage(R.string.specialthanksmsg);
+        builder.setPositiveButton(R.string.gotogithub, new DialogInterface.OnClickListener() {  //这个是设置确定按钮
+
+            @Override
+            public void onClick(DialogInterface arg0, int arg1) {
+                //去点赞
+                Uri uri = Uri.parse("https://github.com/Robinson28years/lsuplusclub");
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+
+            }
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {  //取消按钮
+
+            @Override
+            public void onClick(DialogInterface arg0, int arg1) {
+                return;
+
+            }
+        });
+        AlertDialog b=builder.create();
+        b.show();  //必须show一下才能看到对话框，跟Toast一样的道理
+    }
+
+
     private void initViewNoUser() {
         //没有登录时的控件初始化
         nightModeSwitch = (SwitchPreference)findPreference(PREF_KEY_NIGHTMODE);
+        thanks = (Preference)findPreference(PREF_KEY_SPECIALTHANKS);
+        aboutproject = (Preference)findPreference(PREF_KEY_ABOUTPROJECT);
 
     }
 
@@ -115,6 +219,8 @@ public class PreferenceFragment extends android.preference.PreferenceFragment {
         nightModeSwitch = (SwitchPreference)findPreference(PREF_KEY_NIGHTMODE);
         changePws = (PreferenceScreen)findPreference(PREF_KEY_CHANGEPW);
         exit = (Preference)findPreference(PREF_KEY_EXIT);
+        thanks = (Preference)findPreference(PREF_KEY_SPECIALTHANKS);
+        aboutproject = (Preference)findPreference(PREF_KEY_ABOUTPROJECT);
     }
 
     //退出登录

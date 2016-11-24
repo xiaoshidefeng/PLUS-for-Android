@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import com.example.cw.slidemeuetest.R;
 
@@ -16,7 +17,7 @@ import com.example.cw.slidemeuetest.R;
 
 public class FragmentTwo extends Fragment {
     //讨论
-    private WebView webView;
+    private static WebView webView;
 //
 //    @Override
 //    public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,5 +37,26 @@ public class FragmentTwo extends Fragment {
         webView=(WebView)getView().findViewById(R.id.id_webViewTwo);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.loadUrl("http://lsuplus.top/discuss");
+        webView.setWebViewClient(new WebViewClient(){
+            //重写加载方法 不跳转浏览器
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                view.loadUrl(url);
+                return super.shouldOverrideUrlLoading(view, url);
+            }
+
+        });
+    }
+
+    //go back
+    public static boolean goback() {
+        if (webView.canGoBack()) {
+            //网页能返回则优先返回网页
+            webView.goBack();
+            return true;
+        }
+        return false;
+
     }
 }

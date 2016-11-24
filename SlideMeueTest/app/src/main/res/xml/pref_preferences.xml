@@ -57,17 +57,32 @@
         <Preference
             android:layout="@layout/preference_item"
             android:title="@string/checkupdate"
+            android:summary="当前版本 1.0.0"
             android:key="key_checkupdate"/>
 
         <Preference
             android:layout="@layout/preference_item"
-            android:summary="我的项目地址：https://github.com/xiaoshidefeng/PLUS-for-Android"
-            android:title="作者：小时的疯"
-            android:key="key_aboutprojectlink"/>
-
+            android:summary=""
+            android:title="特别感谢"
+            android:key="key_specialthanks"/>
+        <Preference
+            android:layout="@layout/preference_item"
+            android:summary=""
+            android:title="关于项目"
+            android:key="key_aboutproject"/>
+        <!--<Preference-->
+            <!--android:layout="@layout/preference_item"-->
+            <!--android:summary="项目地址：https://github.com/Robinson28years/lsuplusclub"-->
+            <!--android:title="后台：Robinson"-->
+            <!--android:key="key_aboutprojectlinkforRobins"/>-->
         <Preference
             android:layout="@layout/preference_item_exit"
             android:title="@string/exitlogin"
-            android:key="key_exit"/>
+            android:key="key_exit"
+            android:id="@+id/preference2" />
+
+        <Preference
+            android:layout="@layout/preference_right_sreserved"
+            />
     </PreferenceCategory>
 </PreferenceScreen>

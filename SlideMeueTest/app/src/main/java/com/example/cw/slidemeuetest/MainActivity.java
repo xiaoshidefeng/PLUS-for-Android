@@ -1,20 +1,27 @@
 package com.example.cw.slidemeuetest;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -24,6 +31,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,6 +40,7 @@ import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.cw.slidemeuetest.MainActivityFragment.FragmentOne;
 import com.example.cw.slidemeuetest.MainActivityFragment.FragmentThree;
@@ -79,9 +88,14 @@ public class MainActivity extends AppCompatActivity
 
     private NetworkChangeReciver networkChangeReciver;
 
+    //是否退出
+    private static Boolean isQuit = false;
+
     //网页
     private WebView webView;
 
+    //DrawerLayout声明
+    private DrawerLayout drawer;
     //Register情况
     private TextView userName;
 
@@ -130,6 +144,8 @@ public class MainActivity extends AppCompatActivity
         //初始化viewpager
         initViewPager();
 
+
+
         //检测网络状态
         intentFilter = new IntentFilter();
         intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
@@ -146,7 +162,7 @@ public class MainActivity extends AppCompatActivity
         });
 
         registerBroadcastReceiver();
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -368,6 +384,9 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_camera) {
             // Handle the camera action
+            //相机权限申请
+                requestPermission();
+
             //二维码
             Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
             startActivityForResult(intent,0);
@@ -534,5 +553,117 @@ public class MainActivity extends AppCompatActivity
             mViewPager.setCurrentItem(index);
         }
     }
+
+    //权限请求
+    private void requestPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            //第一次被拒绝后，第二次访问时，向用户说明为什么需要此权限
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
+                Toast.makeText(this, "开启后使用相机功能", Toast.LENGTH_SHORT).show();
+            }
+            //若权限没有开启，则请求权限
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA}, 0x01);
+        }
+    }
+
+
+    //相机权限反馈 6.0以上机型使用
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 0x01) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                return;
+            } else {
+                //请求失败则提醒用户
+                Toast.makeText(MainActivity.this, "请求权限失败！", Toast.LENGTH_SHORT).show();
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    //延迟发送
+    Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            isQuit = false;
+        }
+    };
+    //实体按键检测
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+
+            if (BackOrExit())
+                return true;
+
+
+        }
+        return false;
+    }
+
+    //判断是网页返回还是app退出
+    private boolean BackOrExit() {
+        if(mCurrentIndex==0){
+            if(FragmentOne.goback()){
+                //如果网页能返回 则返回true 直接跳出
+                return true;
+            }
+            //如果网页不能返回 则判断按两次退出app
+            if (!isQuit) {
+                isQuit = true;
+                Toast.makeText(getApplicationContext(), "再按一次退出程序",
+                        Toast.LENGTH_SHORT).show();
+                // 利用handler延迟发送更改状态信息
+                mHandler.sendEmptyMessageDelayed(0, 2000);
+            } else {
+                //留在后台
+                moveTaskToBack(false);
+
+            }
+        }else if(mCurrentIndex == 1){
+            if(FragmentTwo.goback()){
+                //如果网页能返回 则返回true 直接跳出
+                return true;
+            }
+            //如果网页不能返回 则判断按两次退出app
+            if (!isQuit) {
+                isQuit = true;
+                Toast.makeText(getApplicationContext(), "再按一次退出程序",
+                        Toast.LENGTH_SHORT).show();
+                // 利用handler延迟发送更改状态信息
+                mHandler.sendEmptyMessageDelayed(0, 2000);
+            } else {
+                //留在后台
+                moveTaskToBack(false);
+//                finish();
+//                System.exit(0);
+            }
+        }else if(mCurrentIndex == 2){
+            if(FragmentThree.goback()){
+                //如果网页能返回 则返回true 直接跳出
+                return true;
+            }
+            //如果网页不能返回 则判断按两次退出app
+            if (!isQuit) {
+                isQuit = true;
+                Toast.makeText(getApplicationContext(), "再按一次退出程序",
+                        Toast.LENGTH_SHORT).show();
+                // 利用handler延迟发送更改状态信息
+                mHandler.sendEmptyMessageDelayed(0, 2000);
+            } else {
+                //留在后台
+                moveTaskToBack(false);
+//                finish();
+//                System.exit(0);
+            }
+        }
+        return false;
+    }
+
+
 }
 
