@@ -49,6 +49,7 @@ import com.example.cw.slidemeuetest.Setting.Setting;
 import com.xys.libzxing.zxing.activity.CaptureActivity;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -110,6 +111,9 @@ public class MainActivity extends AppCompatActivity
 
     //用户token
     private String token;
+
+    //更新token api
+    private static String tokenValidTestUrl = "http://lsuplus.top/api/refresh/?token=";
 
     //扫码登录接口
     public  String QRloninUrl="http://lsuplus.top/QRLogin/";
@@ -465,7 +469,8 @@ public class MainActivity extends AppCompatActivity
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode== Activity.RESULT_OK){
             QrScanResult= data.getExtras().getString("result");
-            sendQrloginHttpURLConnection();
+            RefreshToken();
+            //sendQrloginHttpURLConnection();
         }
     }
 
@@ -515,9 +520,84 @@ public class MainActivity extends AppCompatActivity
     //更新token
     private void RefreshToken(){
 
+        //取出token
+        SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        token = sharedPreferences.getString("token","");
+
+        //测试token是否过期
+        //开启子线程访问网络 测试token模块
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                HttpURLConnection connection = null;
+                try {
+
+                    URL url = new URL(tokenValidTestUrl+token);
+
+                    connection = (HttpURLConnection)url.openConnection();
+                    connection.setRequestMethod("GET");
+                    connection.connect();
+
+                    //连接超时设置
+                    connection.setConnectTimeout(8000);
+                    connection.setReadTimeout(8000);
+
+                    //获取输入流
+                    InputStream in = connection.getInputStream();
+
+                    //对获取的流进行读取
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(in,"utf-8"));
+                    final StringBuilder response = new StringBuilder();
+                    String line=null;
+                    while ((line=reader.readLine())!=null){
+                        response.append(line);
+                    }
+
+                    token = connection.getHeaderField("Authorization");
+                    token = token.substring(7,token.length());
+                    savaToken();
+                    sendQrloginHttpURLConnection();
+
+                }   catch (Exception e) {
+                    try {
+                        int status_code = connection.getResponseCode();
+                        if (status_code==400){
+                            String error = connection.getResponseMessage();
+                            if(error == "token_invalid"){
+                                //登录时间到达两周 需要重新登录
+
+                                        Toast.makeText(MainActivity.this,"长时间未登录 请重新登录！",Toast.LENGTH_SHORT).show();
+
+                                        //跳转到登录界面
+                                        Intent intent = new Intent(MainActivity.this, Register_main.class);
+                                        startActivity(intent);
+
+
+                            }else {
+
+                                        Toast.makeText(MainActivity.this,"未知错误！",Toast.LENGTH_SHORT).show();
+
+                            }
+
+                        }
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                    Log.e("errss", e.getMessage());
+                }
+            }
+        }).start();
 
     }
 
+    private void savaToken() {
+        //保存token
+        SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("token",token);
+        editor.commit();
+    }
 
     //退出登录 sendLogout
     private void sendLogoutHttpURLConnection() {

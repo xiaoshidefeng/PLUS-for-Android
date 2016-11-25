@@ -52,7 +52,7 @@ public class ChangePwActivity extends AppCompatActivity {
     private String token;
 
     //更新token api
-    private String tokenValidTestUrl = "http://lsuplus.top/api/refresh/?token=";
+    private static String tokenValidTestUrl = "http://lsuplus.top/api/refresh/?token=";
 
     //修改密码api
     private String tokenChangeUrl = "http://lsuplus.top/api/resetpaw/";
