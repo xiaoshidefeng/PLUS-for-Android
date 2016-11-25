@@ -231,6 +231,10 @@ public class MainActivity extends AppCompatActivity
         texttabone = (TextView)findViewById(R.id.id_TVtabone);
         texttabtwo = (TextView)findViewById(R.id.id_TVtabtwo);
         texttabthree = (TextView)findViewById(R.id.id_TVtabthree);
+
+        //缓存页数设置
+        mViewPager.setOffscreenPageLimit(2);
+
         L1 = (LinearLayout)findViewById(R.id.id_LLaoutOne);
         L2 = (LinearLayout)findViewById(R.id.id_LLaoutTwo);
         L3 = (LinearLayout)findViewById(R.id.id_LLaoutThree);
@@ -499,6 +503,7 @@ public class MainActivity extends AppCompatActivity
 
                     }
                     Log.e("url", url.toString());
+
                 }   catch (Exception e) {
                     Log.e("errss", e.getMessage());
 

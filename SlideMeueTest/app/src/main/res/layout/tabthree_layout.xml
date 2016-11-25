@@ -3,10 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/id_refreshthree"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     <WebView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/id_webViewThree"></WebView>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
     <!--<TextView-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="match_parent"-->

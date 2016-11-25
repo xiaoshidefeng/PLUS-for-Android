@@ -10,6 +10,8 @@
     <color name="colorBlack4">#B0B0B0</color>
     <color name="colorRed">#ff0000</color>
     <color name="colorWhite2">#CCCCCC</color>
+    <color name="colorYello">#FFFF00</color>
+    <color name="colorGreen">#99CC00</color>
 
 
     <color name="colorPrimary_night">#36648B</color>
