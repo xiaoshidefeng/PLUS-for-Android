@@ -46,6 +46,9 @@ import com.example.cw.slidemeuetest.MainActivityFragment.FragmentOne;
 import com.example.cw.slidemeuetest.MainActivityFragment.FragmentThree;
 import com.example.cw.slidemeuetest.MainActivityFragment.FragmentTwo;
 import com.example.cw.slidemeuetest.Setting.Setting;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.generic.RoundingParams;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.xys.libzxing.zxing.activity.CaptureActivity;
 
 import java.io.BufferedReader;
@@ -109,6 +112,8 @@ public class MainActivity extends AppCompatActivity
     //用户id
     private int id;
 
+    //用户头像
+    private SimpleDraweeView userImg;
     //用户token
     private String token;
 
@@ -118,6 +123,9 @@ public class MainActivity extends AppCompatActivity
     //扫码登录接口
     public  String QRloninUrl="http://lsuplus.top/QRLogin/";
 
+    //plus网址
+    private String plus = "http://lsuplus.top";
+
     //扫码结果
     private String QrScanResult;
 
@@ -125,6 +133,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Fresco.initialize(this);
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -183,9 +194,12 @@ public class MainActivity extends AppCompatActivity
                 email = sharedPreferences.getString("email","");
                 userName =(TextView)findViewById(R.id.id_userNameText);
                 userEmail =(TextView)findViewById(R.id.id_userEmailText);
-                if(name!=""||!name.equals("")) {
+                Log.d("slide", name);
+                if((name!="")&&(!name.equals(""))) {
+
                     userName.setText(name);
                     userEmail.setText(email);
+
                 }else{
                     userName.setText("立即登录");
                     userEmail.setText("");
@@ -195,6 +209,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onDrawerOpened(View drawerView) {
                 Log.d("slide", "onDrawerOpened: ");
+                GetHeadImg();
             }
 
             @Override
@@ -214,6 +229,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initTabline() {
+
         //初始化tabline
         mTabline = (ImageView)findViewById(R.id.id_ivTabline);
         //获取屏幕宽度和高度
@@ -456,9 +472,15 @@ public class MainActivity extends AppCompatActivity
             id = sharedPreferences.getInt("id",0);
             userName =(TextView)findViewById(R.id.id_userNameText);
             userEmail =(TextView)findViewById(R.id.id_userEmailText);
+
+            userName =(TextView)findViewById(R.id.id_userNameText);
+            userEmail =(TextView)findViewById(R.id.id_userEmailText);
+
             if(name!=""||!name.equals("")) {
+                GetHeadImg();
                 userName.setText(name);
                 userEmail.setText(email);
+
             }
         }
 
@@ -472,6 +494,20 @@ public class MainActivity extends AppCompatActivity
             RefreshToken();
             //sendQrloginHttpURLConnection();
         }
+    }
+
+    private void GetHeadImg(){
+        SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+
+        String userimgurl = sharedPreferences.getString("imgurl","");
+
+            userImg = (SimpleDraweeView)findViewById(R.id.UserHeadImg);
+            userImg.setImageURI(plus+userimgurl);
+            RoundingParams roundingParams = RoundingParams.fromCornersRadius(5f);
+            roundingParams.setBorder(R.color.colorWhite, (float) 1.0);
+            roundingParams.setRoundAsCircle(true);
+            userImg.getHierarchy().setRoundingParams(roundingParams);
+
     }
 
     private void sendQrloginHttpURLConnection() {

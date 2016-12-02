@@ -49,6 +49,10 @@ public class Register_main extends AppCompatActivity {
     //扫码结果显示
     private TextView tvResult;
 
+    //plus网址
+    private String plus = "http://lsuplus.top";
+
+
     //登录接口 新的token验证 获取token值
     private  String loninUrl="http://lsuplus.top/api/user/login/";
 
@@ -57,6 +61,10 @@ public class Register_main extends AppCompatActivity {
 
     //修改密码接口
     private String forgetUrl = "http://lsuplus.top/password/email/?email=";
+
+
+    //头像Url
+    private String ImgUrl;
 
     //获取的账号
     private String account=null;
@@ -323,6 +331,9 @@ inputEmail).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             //是否为管理员
                             admin = userJ.getString("admin");
                         }
+                        if(userJ.has("avatar")){
+                            ImgUrl = userJ.getString("avatar");
+                        }
 
 
                         Log.e("token2",token+String.valueOf(id));
@@ -338,6 +349,7 @@ inputEmail).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         editor.putString("created_at",created_at);
                         editor.putString("updated_at",updated_at);
                         editor.putString("admin",admin);
+                        editor.putString("imgurl",ImgUrl);
                         editor.commit();
 
 
@@ -377,6 +389,7 @@ inputEmail).setPositiveButton("确定", new DialogInterface.OnClickListener() {
             }
         }).start();
     }
+
 
 
     private void initView() {

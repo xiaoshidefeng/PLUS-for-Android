@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.cw.slidemeuetest.R;
@@ -38,7 +39,16 @@ public class FragmentTwo extends Fragment {
 
     private String GetAllPostUrl = "http://lsuplus.top/api/discuss";
 
-    private List<ItemBean> itemBeen;
+    private List<ItemBean> itemBeen = new ArrayList<>();
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //sendHttpURLConnectionGETuserInfo();
+
+
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -69,8 +79,20 @@ public class FragmentTwo extends Fragment {
 //            }
 //
 //        });
+//        ListView listView = (ListView) getActivity().findViewById(R.id.id_Discusslistview);
+//        List<ItemBean> dataList = new ArrayList<>();
+//        // 创建假数据
+//        for (int i = 0; i < 20; i++) {
+//            dataList.add(new ItemBean(
+//                    R.mipmap.ic_launcher,
+//                    "我是标题" + i,
+//                    "我是内容" + i));
+//        }
+//        // 设置适配器
+//        listView.setAdapter(new MyAdapter(this.getActivity(), dataList));
 
         ItemListener();
+        sendHttpURLConnectionGETuserInfo();
 
 
     }
@@ -89,7 +111,7 @@ public class FragmentTwo extends Fragment {
                             Message message = new Message();
                             message.what=1;
                             myhandler.sendMessage(message);
-
+                            sendHttpURLConnectionGETuserInfo();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -110,6 +132,7 @@ public class FragmentTwo extends Fragment {
         public  void handleMessage(Message message){
             switch (message.what) {
                 case 1:
+                    //sendHttpURLConnectionGETuserInfo();
                     refreshtwo.setRefreshing(false);
                     Toast.makeText(getContext(),"刷新完成",Toast.LENGTH_SHORT).show();
                     break;
@@ -150,10 +173,9 @@ public class FragmentTwo extends Fragment {
                     }
 
 
-
                     //创建JSON对象
                     JSONObject AllPostJson = new JSONObject(response.toString());
-
+                    Log.e("errss", response.toString());
                     if(AllPostJson.has("data")){
                         //创建JSON数组
                         JSONArray dataArray = AllPostJson.getJSONArray("data");
@@ -161,14 +183,25 @@ public class FragmentTwo extends Fragment {
                             JSONObject OnePostJson = dataArray.getJSONObject(i);
                             String title = OnePostJson.getString("title");
                             String created_at = OnePostJson.getString("created_at");
+                            Log.e("errss", OnePostJson.toString());
 
                             itemBeen.add(new ItemBean(
                                     R.mipmap.ic_launcher,
                                     title,
-                                    created_at
+                                    "创建于"+created_at
                             ));
 
+                            //开启ui线程来通知用户登录成功
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ListView listView = (ListView)getActivity().findViewById(R.id.id_Discusslistview);
+
+                                    listView.setAdapter(new MyAdapter(getContext(),itemBeen));
+                                }
+                            });
                         }
+
 
 
 
@@ -183,6 +216,7 @@ public class FragmentTwo extends Fragment {
             }
         }).start();
     }
+
 
     //go back
 //    public static boolean goback() {

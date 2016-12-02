@@ -42,7 +42,6 @@ public class PreferenceFragment extends android.preference.PreferenceFragment {
     //退出账号 key设置
     private static final String PREF_KEY_EXIT = "key_exit";
 
-
     //夜间模式开关
     private SwitchPreference nightModeSwitch;
 
@@ -235,6 +234,7 @@ public class PreferenceFragment extends android.preference.PreferenceFragment {
         editor.putString("created_at","");
         editor.putString("updated_at","");
         editor.putString("admin","");
+        editor.putString("imgurl",null);
         editor.commit();
         ((PreferenceGroup)findPreference(PREF_KEY_ABOUTHELP)).removePreference(findPreference(PREF_KEY_EXIT));
         getPreferenceScreen().removePreference(findPreference(PREF_KEY_USERSETTING));
