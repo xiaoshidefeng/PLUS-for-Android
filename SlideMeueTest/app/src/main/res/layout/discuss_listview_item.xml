@@ -1,31 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="10dp">
+    android:layout_height="wrap_content">
 
-    <ImageView
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:layout_width="45dp"
+        android:layout_height="45dp"
         android:id="@+id/id_IMGhead"
-        android:layout_width="60dp"
-        android:layout_height="60dp" />
+        android:layout_marginTop="12dp"
+        android:layout_marginLeft="15dp"
+        />
 
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_toEndOf="@+id/id_IMGhead"
+    android:layout_toRightOf="@+id/id_IMGhead"
+    android:layout_marginTop="12dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/id_TvDiscussName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:textColor="@color/colorBlack5"
+        android:text="Name"/>
     <TextView
         android:id="@+id/id_TvDiscussTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/id_IMGhead"
-        android:layout_toRightOf="@+id/id_IMGhead"
-        android:textSize="20sp"
+        android:layout_marginTop="6dp"
+        android:textSize="18sp"
+        android:textColor="@color/colorBlack3"
         android:text="Title"/>
+
     <TextView
         android:id="@+id/id_TvDiscussContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/id_TvDiscussTitle"
+        android:layout_marginTop="5dp"
+        android:textSize="15sp"
+        android:textColor="@color/colorBlack5"
+        android:text="Content"/>
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/id_IMGcontent"
+        android:layout_marginTop="12dp"
+        />
+
+    <TextView
+        android:id="@+id/id_TvDiscussTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_toEndOf="@+id/id_IMGhead"
         android:layout_toRightOf="@+id/id_IMGhead"
         android:gravity="center_vertical"
-        android:textSize="10sp"
-        android:text="Content"/>
+        android:layout_marginTop="15dp"
+        android:textSize="12sp"
+        android:textColor="@color/colorBlack4"
+        android:text="Time"
+        />
 
+</LinearLayout>
 </RelativeLayout>

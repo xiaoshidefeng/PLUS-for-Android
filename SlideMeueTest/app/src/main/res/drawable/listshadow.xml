@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<shape xmlns:android="http://schemas.android.com/tools">
+    <!-- 一个层叠效果,通过阴影表现出立体效果 -->
+    <gradient
+        android:startColor="@color/colorWhite2"
+        android:centerColor="@color/colorBlack"
+        android:endColor="@color/colorWhite2"
+        />
+
+</shape>

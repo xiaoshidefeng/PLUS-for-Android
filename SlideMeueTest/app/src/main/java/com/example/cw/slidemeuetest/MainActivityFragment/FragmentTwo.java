@@ -39,7 +39,17 @@ public class FragmentTwo extends Fragment {
 
     private String GetAllPostUrl = "http://lsuplus.top/api/discuss";
 
+    //plus网址
+    private String plus = "http://lsuplus.top";
+
+    //图片检测
+    private String imgfind = "http://lsuplus.top/uploads";
+
+    private String content;
+
     private List<ItemBean> itemBeen = new ArrayList<>();
+
+    private ListView listView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -111,6 +121,7 @@ public class FragmentTwo extends Fragment {
                             Message message = new Message();
                             message.what=1;
                             myhandler.sendMessage(message);
+                            itemBeen.clear();
                             sendHttpURLConnectionGETuserInfo();
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -183,11 +194,43 @@ public class FragmentTwo extends Fragment {
                             JSONObject OnePostJson = dataArray.getJSONObject(i);
                             String title = OnePostJson.getString("title");
                             String created_at = OnePostJson.getString("created_at");
-                            Log.e("errss", OnePostJson.toString());
+                            String userimgurl = OnePostJson.getString("avatar");
+                            String username = OnePostJson.getString("name");
+                            content = OnePostJson.getString("body");
+                            String contentimgurl = haveImg(content);
+
+                            if(contentimgurl!=null&&(!contentimgurl.equals(""))){
+                                //删文字
+                                int fir = content.indexOf("![\\");
+                                int last1 = content.indexOf(contentimgurl);
+                                int last2 = 0;
+                                if(contentimgurl.contains(".jpg")){
+                                    last2 = contentimgurl.indexOf(".jpg");
+                                }else if(contentimgurl.contains(".jpeg")){
+                                    last2 = contentimgurl.indexOf(".jpeg");
+                                }else if(contentimgurl.contains(".png")){
+                                    last2 = contentimgurl.indexOf(".png");
+                                }
+                                content = content.substring(0,fir)+
+                                        content.substring(last2+last1+4,content.length());
+                            }
+
+                            if(created_at.length()>10){
+                                //时间过久
+                                JSONObject creatat = new JSONObject(created_at.toString());
+                                    created_at = creatat.getString("date");
+                                    created_at = created_at.substring(0,19);
+                            }
+
+                            //Log.e("errss", created_at.toString());
+
 
                             itemBeen.add(new ItemBean(
-                                    R.mipmap.ic_launcher,
+                                    username,
+                                    content,
+                                    plus+userimgurl,
                                     title,
+                                    contentimgurl,
                                     "创建于"+created_at
                             ));
 
@@ -195,9 +238,11 @@ public class FragmentTwo extends Fragment {
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    ListView listView = (ListView)getActivity().findViewById(R.id.id_Discusslistview);
+                                    listView = (ListView)getActivity().findViewById(R.id.id_Discusslistview);
 
                                     listView.setAdapter(new MyAdapter(getContext(),itemBeen));
+
+
                                 }
                             });
                         }
@@ -211,10 +256,38 @@ public class FragmentTwo extends Fragment {
                     }
 
                 }   catch (Exception e) {
-                    Log.e("errss", e.getMessage());
+                    Log.e("errss catch", e.getMessage());
                 }
             }
         }).start();
+    }
+
+    private String haveImg(String content) {
+        String contentImg = null;
+        if(content.contains(imgfind)){
+            Log.e("errssimg", content);
+
+
+            int first = content.indexOf(imgfind);
+            contentImg = content.substring(first,content.length());
+
+            if(contentImg.contains(".jpg")){
+                first=0;
+                contentImg = contentImg.substring(first,contentImg.indexOf(".jpeg")+5);
+            }else if(contentImg.contains(".jpeg")){
+                first=0;
+                contentImg = contentImg.substring(first,contentImg.indexOf(".jpg")+4);
+            }else if(contentImg.contains(".png")){
+                first=0;
+                contentImg = contentImg.substring(first,contentImg.indexOf(".png")+4);
+
+            }
+
+            return contentImg;
+        }else {
+            return null;
+        }
+
     }
 
 
