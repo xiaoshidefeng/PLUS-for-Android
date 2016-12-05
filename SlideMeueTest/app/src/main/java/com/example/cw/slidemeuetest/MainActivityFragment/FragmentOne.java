@@ -54,6 +54,13 @@ public class FragmentOne extends Fragment {
             }
 
         });
+//        webView.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View view, MotionEvent motionEvent) {
+//                ((WebView)view).requestDisallowInterceptTouchEvent(true);
+//                return false;
+//            }
+//        });
 
         //监听
         ItemListener();

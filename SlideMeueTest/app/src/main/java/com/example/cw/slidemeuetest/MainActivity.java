@@ -63,6 +63,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private Toolbar toolbar;
+
     //ViewPager声明
     private ViewPager mViewPager;
 
@@ -129,6 +131,12 @@ public class MainActivity extends AppCompatActivity
     //扫码结果
     private String QrScanResult;
 
+//    private int mFirstY;
+//    private int mCurrentY;
+//    private int mTouchSlop;//系统可以认为的最小滑动距离
+//    private int direction = -1; //0 为上,1为下
+//    private ObjectAnimator mAnimator;
+//    private boolean mShow = true; //默认显示toolBar
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,7 +145,8 @@ public class MainActivity extends AppCompatActivity
         Fresco.initialize(this);
 
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.id_toolbar);
+//        mTouchSlop = ViewConfiguration.get(this).getScaledTouchSlop();
 
         //透明状态栏实现
         getWindow().setStatusBarColor(Color.TRANSPARENT);
@@ -224,7 +233,6 @@ public class MainActivity extends AppCompatActivity
         });
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
 
     }
 
@@ -340,7 +348,61 @@ public class MainActivity extends AppCompatActivity
         L1.setOnClickListener(new MyOnClickListener(0));
         L2.setOnClickListener(new MyOnClickListener(1));
         L3.setOnClickListener(new MyOnClickListener(2));
+
+//        mViewPager.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View view, MotionEvent motionEvent) {
+//                switch (motionEvent.getAction()) {
+//                    case MotionEvent.ACTION_DOWN:
+//                        mFirstY = (int) motionEvent.getY();
+//                        break;
+//                    case MotionEvent.ACTION_MOVE:
+//                        mCurrentY = (int) motionEvent.getY();
+//
+//                        if(mCurrentY > mFirstY){//向下
+//                            if(( mCurrentY - mFirstY) > mTouchSlop){
+//                                direction = 1;//下
+//                                if(!mShow){
+//                                    animToolBar(direction);//显示toolBar
+//                                    mShow = !mShow;
+//                                }
+//                            }
+//                        }else{
+//                            if ((mFirstY-mCurrentY  )> mTouchSlop){
+//                                direction = 0;//上
+//                                if(mShow){
+//                                    animToolBar(direction);//隐藏toolBar
+//                                    mShow = !mShow;
+//                                }
+//                            }
+//                        }
+//
+//                        break;
+//                    case MotionEvent.ACTION_UP:
+//                        Log.d("xinwa", "Action_up");
+//                        break;
+//                }
+//                return false;
+//            }
+//        });
     }
+
+//    private void animToolBar(int flag){
+//
+//        if(mAnimator != null && mAnimator.isRunning()){
+//            mAnimator.cancel();
+//        }
+//        if(flag == 0){//向上滑隐藏toolBar
+////            mAnimator = new ObjectAnimator().ofFloat(toolbar,"translationY",toolbar.getTranslationY(),
+////                    -toolbar.getHeight());
+//            toolbar.setVisibility(View.GONE);
+//        }else{//向下滑
+//            mAnimator = new ObjectAnimator().ofFloat(toolbar,"translationY",
+//                    toolbar.getTranslationY(),0);
+//        }
+//
+//        mAnimator.start();
+//    }
 
     private void resetTextView() {
         //改变字体颜色

@@ -26,6 +26,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.widget.Toast.LENGTH_SHORT;
+
 /**
  * Created by cw on 2016/11/21.
  */
@@ -101,8 +103,20 @@ public class FragmentTwo extends Fragment {
 //        // 设置适配器
 //        listView.setAdapter(new MyAdapter(this.getActivity(), dataList));
 
-        ItemListener();
         sendHttpURLConnectionGETuserInfo();
+
+        ItemListener();
+//        if(listView!=null){
+//            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                @Override
+//                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                    //Log.e("errss", String.valueOf(i));
+//
+//                    Toast.makeText(getActivity(),i+"test"+l,Toast.LENGTH_LONG).show();
+//
+//                }
+//            });
+//        }
 
 
     }
@@ -131,6 +145,17 @@ public class FragmentTwo extends Fragment {
                 }).start();
             }
         });
+
+
+
+//        listView.getOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                //int id = itemBeen.get(l).getId();
+//                Toast.makeText(getContext(),"test",Toast.LENGTH_LONG).show();
+//            }
+//        });
+
     }
 
     private void initview() {
@@ -145,7 +170,7 @@ public class FragmentTwo extends Fragment {
                 case 1:
                     //sendHttpURLConnectionGETuserInfo();
                     refreshtwo.setRefreshing(false);
-                    Toast.makeText(getContext(),"刷新完成",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(),"刷新完成", LENGTH_SHORT).show();
                     break;
                 default:
                     break;
@@ -196,12 +221,15 @@ public class FragmentTwo extends Fragment {
                             String created_at = OnePostJson.getString("created_at");
                             String userimgurl = OnePostJson.getString("avatar");
                             String username = OnePostJson.getString("name");
+                            int id = OnePostJson.getInt("id");
                             content = OnePostJson.getString("body");
                             String contentimgurl = haveImg(content);
 
                             if(contentimgurl!=null&&(!contentimgurl.equals(""))){
                                 //删文字
                                 int fir = content.indexOf("![\\");
+                                //Log.e("errssss", String.valueOf(fir));
+
                                 int last1 = content.indexOf(contentimgurl);
                                 int last2 = 0;
                                 if(contentimgurl.contains(".jpg")){
@@ -226,6 +254,7 @@ public class FragmentTwo extends Fragment {
 
 
                             itemBeen.add(new ItemBean(
+                                    id,
                                     username,
                                     content,
                                     plus+userimgurl,
@@ -285,7 +314,7 @@ public class FragmentTwo extends Fragment {
 
             return contentImg;
         }else {
-            return null;
+            return "";
         }
 
     }
@@ -302,3 +331,4 @@ public class FragmentTwo extends Fragment {
 //
 //    }
 }
+

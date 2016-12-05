@@ -5,6 +5,7 @@ package com.example.cw.slidemeuetest.MainActivityFragment;
  */
 
 public class ItemBean {
+    public int Id;
     public int ItemImageResid;
     public String ItemTitle;
 
@@ -17,12 +18,17 @@ public class ItemBean {
     public String ItemContentImg;
     public String UserImgUrl;
 
+    public int getId() {
+        return Id;
+    }
+
     public String getItemContentImg() {
         return ItemContentImg;
     }
 
-    public ItemBean(String itemName, String itemContent, String userImgUrl,
+    public ItemBean(int id,String itemName, String itemContent, String userImgUrl,
                     String itemTitle, String itemContentImg, String itemCreatTime) {
+        Id = id;
         ItemName = itemName;
         ItemContent = itemContent;
         UserImgUrl = userImgUrl;

@@ -1,12 +1,17 @@
 package com.example.cw.slidemeuetest.MainActivityFragment;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.cw.slidemeuetest.PostContent.PostActivity;
 import com.example.cw.slidemeuetest.R;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.generic.RoundingParams;
@@ -47,7 +52,7 @@ public class MyAdapter extends BaseAdapter {
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
 
-        ViewHolder viewHolder;
+        ViewHolder viewHolder = null;
         if(view == null){
 
             viewHolder = new ViewHolder();
@@ -59,23 +64,23 @@ public class MyAdapter extends BaseAdapter {
             viewHolder.title = (TextView)view.findViewById(R.id.id_TvDiscussTitle);
             viewHolder.contentimg = (SimpleDraweeView)view.findViewById(R.id.id_IMGcontent);
             viewHolder.times = (TextView)view.findViewById(R.id.id_TvDiscussTime);
-
+            viewHolder.linearLayout = (LinearLayout)view.findViewById(R.id.id_lltoonepost);
             view.setTag(viewHolder);
         }else {
             viewHolder = (ViewHolder)view.getTag();
         }
         Fresco.initialize(view.getContext());
 
-        ItemBean bean = mList.get(i);
+        final ItemBean bean = mList.get(i);
         viewHolder.name.setText(bean.ItemName);
         viewHolder.content.setText(bean.ItemContent);
         viewHolder.imageView.setImageURI(bean.getUserImgUrl());
         viewHolder.title.setText(bean.ItemTitle);
         viewHolder.times.setText(bean.ItemCreatTime);
-
-        if(bean.getItemContentImg()!=null&&(!bean.getItemContentImg().equals(""))){
+        viewHolder.contentimg.setImageURI(bean.getItemContentImg());
+        if(bean.getItemContentImg().contains("http://lsuplus.top/uploads/")){
+            //viewHolder.contentimg.setAspectRatio(1.62f);
             viewHolder.contentimg.setImageURI(bean.getItemContentImg());
-            viewHolder.contentimg.setAspectRatio(1.62f);
 
         }
 
@@ -83,6 +88,31 @@ public class MyAdapter extends BaseAdapter {
         roundingParams.setBorder(R.color.colorWhite, (float) 1.0);
         roundingParams.setRoundAsCircle(true);
         viewHolder.imageView.getHierarchy().setRoundingParams(roundingParams);
+
+        viewHolder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(view.getContext(),"head",Toast.LENGTH_LONG).show();
+
+            }
+        });
+
+        viewHolder.linearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SharedPreferences sharedPreferences = view.getContext().getSharedPreferences("postInfo",
+                        Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("maintitle",bean.ItemTitle);
+                editor.putString("postone",bean.ItemContent);
+                editor.putInt("postid",bean.getId());
+                editor.commit();
+
+                Intent intent = new Intent(view.getContext(), PostActivity.class);
+                view.getContext().startActivity(intent);
+            }
+        });
+
         return view;
     }
 
@@ -94,5 +124,6 @@ public class MyAdapter extends BaseAdapter {
         public SimpleDraweeView contentimg;
         public TextView times;
 
+        public LinearLayout linearLayout;
     }
 }
