@@ -44,10 +44,24 @@
             android:layout_toEndOf="@+id/id_back" />
     </RelativeLayout>
 
-    <ListView
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/id_lvPostContent"
-        android:layout_below="@+id/postTop"></ListView>
+        android:layout_height="30dp"
+        android:id="@+id/id_TvpostMaintitle"
+        android:layout_below="@+id/postTop"
+        android:textColor="@color/colorBlack2"
+        android:textSize="20sp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"/>
 
+    <!--<android.support.v4.widget.SwipeRefreshLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:id="@+id/id_SRFpostone">-->
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/id_lvPostContent"
+            android:layout_below="@+id/id_TvpostMaintitle"></ListView>
+    <!--</android.support.v4.widget.SwipeRefreshLayout>-->
 </RelativeLayout>

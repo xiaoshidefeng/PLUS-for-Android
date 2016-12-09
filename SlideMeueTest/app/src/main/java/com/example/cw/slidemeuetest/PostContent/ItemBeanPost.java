@@ -8,15 +8,18 @@ public class ItemBeanPost {
     public String ItemNamepost;
     public String ItemContentpost;
     public String ItemCreatTimepost;
-    public String ItemContentImgpost;
-    public String ItemTitlepost;
+
+    public String getItemUserImgpost() {
+        return ItemUserImgpost;
+    }
+
+    public String ItemUserImgpost;
 
     public ItemBeanPost(String itemNamepost, String itemContentpost,
-                        String itemCreatTimepost, String itemContentImgpost, String itemTitlepost) {
+                        String itemCreatTimepost, String itemUserImgpost) {
         ItemNamepost = itemNamepost;
         ItemContentpost = itemContentpost;
         ItemCreatTimepost = itemCreatTimepost;
-        ItemContentImgpost = itemContentImgpost;
-        ItemTitlepost = itemTitlepost;
+        ItemUserImgpost = itemUserImgpost;
     }
 }

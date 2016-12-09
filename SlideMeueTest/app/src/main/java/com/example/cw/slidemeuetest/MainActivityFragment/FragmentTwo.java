@@ -263,20 +263,20 @@ public class FragmentTwo extends Fragment {
                                     "创建于"+created_at
                             ));
 
-                            //开启ui线程来通知用户登录成功
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    listView = (ListView)getActivity().findViewById(R.id.id_Discusslistview);
 
-                                    listView.setAdapter(new MyAdapter(getContext(),itemBeen));
-
-
-                                }
-                            });
                         }
 
+                        //开启ui线程来通知用户登录成功
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                listView = (ListView)getActivity().findViewById(R.id.id_Discusslistview);
 
+                                listView.setAdapter(new MyAdapter(getContext(),itemBeen));
+
+
+                            }
+                        });
 
 
                     }else {

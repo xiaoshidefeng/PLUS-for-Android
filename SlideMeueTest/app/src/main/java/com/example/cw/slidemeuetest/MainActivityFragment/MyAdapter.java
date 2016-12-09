@@ -106,6 +106,9 @@ public class MyAdapter extends BaseAdapter {
                 editor.putString("maintitle",bean.ItemTitle);
                 editor.putString("postone",bean.ItemContent);
                 editor.putInt("postid",bean.getId());
+                editor.putString("userheadimg",bean.getUserImgUrl());
+                editor.putString("username",bean.ItemName);
+                editor.putString("creattime",bean.ItemCreatTime);
                 editor.commit();
 
                 Intent intent = new Intent(view.getContext(), PostActivity.class);
