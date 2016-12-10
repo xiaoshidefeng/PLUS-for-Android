@@ -11,6 +11,7 @@ import com.example.cw.slidemeuetest.R;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.generic.RoundingParams;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.mittsu.markedview.MarkedView;
 
 import java.util.List;
 
@@ -54,7 +55,7 @@ public class PostAdapter extends BaseAdapter {
             view = mInflater.inflate(R.layout.post_listview_item,null);
 
             viewHolder.name = (TextView)view.findViewById(R.id.id_TvPostName);
-            viewHolder.content = (TextView)view.findViewById(R.id.id_TvPostContent);
+            viewHolder.content = (MarkedView)view.findViewById(R.id.id_TvPostContent);
             viewHolder.imageView = (SimpleDraweeView)view.findViewById(R.id.id_IMGheadPost);
             viewHolder.times = (TextView)view.findViewById(R.id.id_TvPostTime);
             view.setTag(viewHolder);
@@ -65,7 +66,7 @@ public class PostAdapter extends BaseAdapter {
 
         final ItemBeanPost bean = mList.get(i);
         viewHolder.name.setText(bean.ItemNamepost);
-        viewHolder.content.setText(bean.ItemContentpost);
+        viewHolder.content.setMDText(bean.ItemContentpost);
         viewHolder.imageView.setImageURI(bean.getItemUserImgpost());
         viewHolder.times.setText(bean.ItemCreatTimepost);
 
@@ -81,7 +82,7 @@ public class PostAdapter extends BaseAdapter {
 
     class ViewHolder{
         public TextView name;
-        public TextView content;
+        public MarkedView content;
         public SimpleDraweeView imageView;
 //        public TextView title;
 //        public SimpleDraweeView contentimg;

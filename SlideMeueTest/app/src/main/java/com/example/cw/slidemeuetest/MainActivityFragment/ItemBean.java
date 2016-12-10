@@ -15,25 +15,24 @@ public class ItemBean {
     public String ItemName;
     public String ItemContent;
     public String ItemCreatTime;
-    public String ItemContentImg;
+   // public String ItemContentImg;
     public String UserImgUrl;
 
     public int getId() {
         return Id;
     }
 
-    public String getItemContentImg() {
-        return ItemContentImg;
-    }
+//    public String getItemContentImg() {
+//        return ItemContentImg;
+//    }
 
     public ItemBean(int id,String itemName, String itemContent, String userImgUrl,
-                    String itemTitle, String itemContentImg, String itemCreatTime) {
+                    String itemTitle, String itemCreatTime) {
         Id = id;
         ItemName = itemName;
         ItemContent = itemContent;
         UserImgUrl = userImgUrl;
         ItemTitle = itemTitle;
-        ItemContentImg = itemContentImg;
         ItemCreatTime = itemCreatTime;
     }
 

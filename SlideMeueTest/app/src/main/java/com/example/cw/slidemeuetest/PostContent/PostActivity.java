@@ -10,6 +10,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.cw.slidemeuetest.R;
+import com.melnykov.fab.FloatingActionButton;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -71,7 +72,7 @@ public class PostActivity extends AppCompatActivity {
         itembeanpost.add(new ItemBeanPost(
                 usern,
                 firstpost,
-                "创建于"+firsttime,
+                firsttime,
                 userimg
         ));
 
@@ -84,7 +85,10 @@ public class PostActivity extends AppCompatActivity {
         Tvback = (TextView)findViewById(R.id.id_registerBackText);
         maintitle = (TextView)findViewById(R.id.id_TvpostMaintitle);
         itembeanpost = new ArrayList<>();
+        listviewpostone = (ListView)findViewById(R.id.id_lvPostContent);
 
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.id_FABonepost);
+        fab.attachToListView(listviewpostone); // or attachToRecyclerView
     }
 
     //通过GET方法 获取单个贴子信息
@@ -178,8 +182,6 @@ public class PostActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                listviewpostone = (ListView)findViewById(R.id.id_lvPostContent);
-
                                 listviewpostone.setAdapter(new PostAdapter(getApplicationContext(),itembeanpost));
 
                             }

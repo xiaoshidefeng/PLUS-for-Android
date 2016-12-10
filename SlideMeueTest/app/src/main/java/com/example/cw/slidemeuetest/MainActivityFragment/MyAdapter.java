@@ -16,6 +16,7 @@ import com.example.cw.slidemeuetest.R;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.generic.RoundingParams;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.zzhoujay.richtext.RichText;
 
 import java.util.List;
 
@@ -59,30 +60,48 @@ public class MyAdapter extends BaseAdapter {
             view = mInflater.inflate(R.layout.discuss_listview_item,null);
 
             viewHolder.name = (TextView)view.findViewById(R.id.id_TvDiscussName);
+//            viewHolder.content = (MarkedView)view.findViewById(R.id.id_TvDiscussContent);
             viewHolder.content = (TextView)view.findViewById(R.id.id_TvDiscussContent);
             viewHolder.imageView = (SimpleDraweeView)view.findViewById(R.id.id_IMGhead);
             viewHolder.title = (TextView)view.findViewById(R.id.id_TvDiscussTitle);
-            viewHolder.contentimg = (SimpleDraweeView)view.findViewById(R.id.id_IMGcontent);
+            //viewHolder.contentimg = (SimpleDraweeView)view.findViewById(R.id.id_IMGcontent);
             viewHolder.times = (TextView)view.findViewById(R.id.id_TvDiscussTime);
             viewHolder.linearLayout = (LinearLayout)view.findViewById(R.id.id_lltoonepost);
             view.setTag(viewHolder);
         }else {
             viewHolder = (ViewHolder)view.getTag();
+//            if(viewHolder.content!=null&&!viewHolder.content.equals("")){
+//                viewHolder.content.setVisibility(View.GONE);
+//            }
         }
-        Fresco.initialize(view.getContext());
+
 
         final ItemBean bean = mList.get(i);
+//        viewHolder.content.setTag(bean.ItemContent);
         viewHolder.name.setText(bean.ItemName);
-        viewHolder.content.setText(bean.ItemContent);
+        //viewHolder.content.setMDText(bean.ItemContent);
+//        if(viewHolder.content.getTag().equals(bean.ItemContent)){
+//
+//            viewHolder.content.setMDText(bean.ItemContent);
+//        }
+        RichText.from(bean.ItemContent).into(viewHolder.content);
+        //viewHolder.content.setMDText("正在加载中...");
+
+//        if(viewHolder.content.getTag()!=null&&viewHolder.content.getTag().equals(bean.ItemContent)){
+//            viewHolder.content.setMDText(bean.ItemContent);
+//        }
+
+        Fresco.initialize(view.getContext());
+
         viewHolder.imageView.setImageURI(bean.getUserImgUrl());
         viewHolder.title.setText(bean.ItemTitle);
         viewHolder.times.setText(bean.ItemCreatTime);
-        viewHolder.contentimg.setImageURI(bean.getItemContentImg());
-        if(bean.getItemContentImg().contains("http://lsuplus.top/uploads/")){
-            //viewHolder.contentimg.setAspectRatio(1.62f);
-            viewHolder.contentimg.setImageURI(bean.getItemContentImg());
-
-        }
+        //viewHolder.contentimg.setImageURI(bean.getItemContentImg());
+//        if(bean.getItemContentImg().contains("http://lsuplus.top/uploads/")){
+//            //viewHolder.contentimg.setAspectRatio(1.62f);
+//            viewHolder.contentimg.setImageURI(bean.getItemContentImg());
+//
+//        }
 
         RoundingParams roundingParams = RoundingParams.fromCornersRadius(5f);
         roundingParams.setBorder(R.color.colorWhite, (float) 1.0);
@@ -121,10 +140,12 @@ public class MyAdapter extends BaseAdapter {
 
     class ViewHolder{
         public TextView name;
+//        public MarkedView content;
         public TextView content;
+
         public SimpleDraweeView imageView;
         public TextView title;
-        public SimpleDraweeView contentimg;
+        //public SimpleDraweeView contentimg;
         public TextView times;
 
         public LinearLayout linearLayout;
