@@ -16,9 +16,14 @@ import com.example.cw.slidemeuetest.R;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.generic.RoundingParams;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.zzhoujay.richtext.RichText;
+import com.yydcdut.rxmarkdown.RxMarkdown;
+import com.yydcdut.rxmarkdown.factory.TextFactory;
 
 import java.util.List;
+
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by cw on 2016/11/28.
@@ -27,6 +32,8 @@ import java.util.List;
 public class MyAdapter extends BaseAdapter {
 
     private List<ItemBean> mList;
+
+    private ViewHolder viewHolder = null;
 
     private LayoutInflater mInflater;
 
@@ -53,7 +60,7 @@ public class MyAdapter extends BaseAdapter {
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
 
-        ViewHolder viewHolder = null;
+        viewHolder = null;
         if(view == null){
 
             viewHolder = new ViewHolder();
@@ -84,12 +91,30 @@ public class MyAdapter extends BaseAdapter {
 //
 //            viewHolder.content.setMDText(bean.ItemContent);
 //        }
-        RichText.from(bean.ItemContent).into(viewHolder.content);
+        //RichText.from(bean.ItemContent).into(viewHolder.content);
         //viewHolder.content.setMDText("正在加载中...");
 
 //        if(viewHolder.content.getTag()!=null&&viewHolder.content.getTag().equals(bean.ItemContent)){
 //            viewHolder.content.setMDText(bean.ItemContent);
 //        }
+
+        RxMarkdown.with(bean.ItemContent,view.getContext())
+                .factory(TextFactory.create())
+                .intoObservable()
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<CharSequence>() {
+                    @Override
+                    public void onCompleted() {}
+
+                    @Override
+                    public void onError(Throwable e) {}
+
+                    @Override
+                    public void onNext(CharSequence charSequence) {
+                        viewHolder.content.setText(charSequence, TextView.BufferType.SPANNABLE);
+                    }
+                });
 
         Fresco.initialize(view.getContext());
 
@@ -123,7 +148,7 @@ public class MyAdapter extends BaseAdapter {
                         Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("maintitle",bean.ItemTitle);
-                editor.putString("postone",bean.ItemContent);
+                editor.putString("postone",bean.RawConten);
                 editor.putInt("postid",bean.getId());
                 editor.putString("userheadimg",bean.getUserImgUrl());
                 editor.putString("username",bean.ItemName);

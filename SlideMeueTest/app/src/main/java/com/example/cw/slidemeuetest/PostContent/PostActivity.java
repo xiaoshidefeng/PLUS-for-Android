@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -56,7 +57,8 @@ public class PostActivity extends AppCompatActivity {
                 finish();
             }
         });
-
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
     }
 
@@ -86,7 +88,7 @@ public class PostActivity extends AppCompatActivity {
         maintitle = (TextView)findViewById(R.id.id_TvpostMaintitle);
         itembeanpost = new ArrayList<>();
         listviewpostone = (ListView)findViewById(R.id.id_lvPostContent);
-
+        listviewpostone.setTranscriptMode(ListView.TRANSCRIPT_MODE_NORMAL);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.id_FABonepost);
         fab.attachToListView(listviewpostone); // or attachToRecyclerView
     }
@@ -145,7 +147,7 @@ public class PostActivity extends AppCompatActivity {
 
 //                            if(contentimgurl!=null&&(!contentimgurl.equals(""))){
 //                                //删文字
-//                                int fir = content.indexOf("![\\");
+//                                6int fir = content.indexOf("![\\");
 //                                //Log.e("errssss", String.valueOf(fir));
 //
 //                                int last1 = content.indexOf(contentimgurl);
@@ -182,6 +184,9 @@ public class PostActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                View footerView = getLayoutInflater().inflate(R.layout.foot_layout, null, false);
+                                //LinearLayout linearLayout = new LinearLayout(R.layout.foot_layout);
+                                listviewpostone.addFooterView(footerView);
                                 listviewpostone.setAdapter(new PostAdapter(getApplicationContext(),itembeanpost));
 
                             }

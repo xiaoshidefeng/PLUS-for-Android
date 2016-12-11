@@ -227,25 +227,27 @@ public class FragmentTwo extends Fragment {
                             String username = OnePostJson.getString("name");
                             int id = OnePostJson.getInt("id");
                             content = OnePostJson.getString("body");
-//                            String contentimgurl = haveImg(content);
+                            String allpostcontent = content;
+                            String contentimgurl = haveImg(content);
 
-//                            if(contentimgurl!=null&&(!contentimgurl.equals(""))){
-//                                //删文字
-//                                int fir = content.indexOf("![\\");
-//                                //Log.e("errssss", String.valueOf(fir));
-//
-//                                int last1 = content.indexOf(contentimgurl);
-//                                int last2 = 0;
-//                                if(contentimgurl.contains(".jpg")){
-//                                    last2 = contentimgurl.indexOf(".jpg");
-//                                }else if(contentimgurl.contains(".jpeg")){
-//                                    last2 = contentimgurl.indexOf(".jpeg");
-//                                }else if(contentimgurl.contains(".png")){
-//                                    last2 = contentimgurl.indexOf(".png");
-//                                }
-//                                content = content.substring(0,fir)+
-//                                        content.substring(last2+last1+4,content.length());
-//                            }
+                            if(contentimgurl!=null&&(!contentimgurl.equals(""))){
+                                //删文字
+                                int fir = content.indexOf("![\\");
+                                //Log.e("errssss", String.valueOf(fir));
+
+                                int last1 = content.indexOf(contentimgurl);
+                                int last2 = 0;
+                                if(contentimgurl.contains(".jpg")){
+                                    last2 = contentimgurl.indexOf(".jpg");
+                                }else if(contentimgurl.contains(".jpeg")){
+                                    last2 = contentimgurl.indexOf(".jpeg");
+                                }else if(contentimgurl.contains(".png")){
+                                    last2 = contentimgurl.indexOf(".png");
+                                }
+                                content = content.substring(0,fir)+"[[图片]]"+
+                                        content.substring(last2+last1+4,content.length());
+
+                            }
 
                             if(created_at.length()>10){
                                 //时间过久
@@ -261,6 +263,7 @@ public class FragmentTwo extends Fragment {
                                     id,
                                     username,
                                     content,
+                                    allpostcontent,
                                     plus+userimgurl,
                                     title,
 //                                    contentimgurl,

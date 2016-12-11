@@ -15,6 +15,7 @@ public class ItemBean {
     public String ItemName;
     public String ItemContent;
     public String ItemCreatTime;
+    public String RawConten;
    // public String ItemContentImg;
     public String UserImgUrl;
 
@@ -26,11 +27,12 @@ public class ItemBean {
 //        return ItemContentImg;
 //    }
 
-    public ItemBean(int id,String itemName, String itemContent, String userImgUrl,
+    public ItemBean(int id,String itemName, String itemContent,String rawConten, String userImgUrl,
                     String itemTitle, String itemCreatTime) {
         Id = id;
         ItemName = itemName;
         ItemContent = itemContent;
+        RawConten = rawConten;
         UserImgUrl = userImgUrl;
         ItemTitle = itemTitle;
         ItemCreatTime = itemCreatTime;
