@@ -11,7 +11,9 @@ import com.example.cw.slidemeuetest.R;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.generic.RoundingParams;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.mittsu.markedview.MarkedView;
+import com.zzhoujay.richtext.ImageHolder;
+import com.zzhoujay.richtext.RichText;
+import com.zzhoujay.richtext.callback.ImageFixCallback;
 
 import java.util.List;
 
@@ -46,7 +48,7 @@ public class PostAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
+    public View getView(final int i, View view, ViewGroup viewGroup) {
 
         ViewHolder viewHolder = null;
         if(view == null){
@@ -55,18 +57,22 @@ public class PostAdapter extends BaseAdapter {
             view = mInflater.inflate(R.layout.post_listview_item,null);
 
             viewHolder.name = (TextView)view.findViewById(R.id.id_TvPostName);
-            viewHolder.content = (MarkedView)view.findViewById(R.id.id_TvPostContent);
+            viewHolder.content = (TextView)view.findViewById(R.id.id_TvPostContent);
             viewHolder.imageView = (SimpleDraweeView)view.findViewById(R.id.id_IMGheadPost);
             viewHolder.times = (TextView)view.findViewById(R.id.id_TvPostTime);
             view.setTag(viewHolder);
+
         }else {
             viewHolder = (ViewHolder)view.getTag();
         }
         Fresco.initialize(view.getContext());
-
         final ItemBeanPost bean = mList.get(i);
+
         viewHolder.name.setText(bean.ItemNamepost);
-        viewHolder.content.setMDText(bean.ItemContentpost);
+        RichText.fromMarkdown(bean.ItemContentpost).into(viewHolder.content);
+
+        viewHolder.content.setTag(bean.ItemContentpost);
+//        viewHolder.content.setMDText(bean.ItemContentpost);
         viewHolder.imageView.setImageURI(bean.getItemUserImgpost());
         viewHolder.times.setText(bean.ItemCreatTimepost);
 
@@ -75,6 +81,24 @@ public class PostAdapter extends BaseAdapter {
         roundingParams.setRoundAsCircle(true);
         viewHolder.imageView.getHierarchy().setRoundingParams(roundingParams);
 
+        RichText.from(bean.ItemContentpost).autoFix(false).fix(new ImageFixCallback() {
+            @Override
+            public void onFix(ImageHolder holder) {
+                if (holder.getImageType() != ImageHolder.ImageType.GIF) {
+                    holder.setAutoFix(true);
+                } else {
+                    holder.setHeight(200 + i * 10);
+                    holder.setWidth(200 + i * 10);
+                }
+                if (i == 0) {
+                    holder.setAutoPlay(true);
+                } else {
+                    holder.setAutoPlay(false);
+                }
+            }
+
+
+        }).into(viewHolder.content);
 
         return view;
     }
@@ -82,7 +106,7 @@ public class PostAdapter extends BaseAdapter {
 
     class ViewHolder{
         public TextView name;
-        public MarkedView content;
+        public TextView content;
         public SimpleDraweeView imageView;
 //        public TextView title;
 //        public SimpleDraweeView contentimg;

@@ -4,14 +4,19 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.cw.slidemeuetest.R;
-import com.melnykov.fab.FloatingActionButton;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -35,21 +40,65 @@ public class PostActivity extends AppCompatActivity {
     //plus网址
     private String plus = "http://lsuplus.top";
 
+    //回复帖子地址
+    private String replyUrl = "http://lsuplus.top/api/comment/store?token=";
+
     //返回
     private TextView Tvback;
     //标题
     private TextView maintitle;
 
+    //FAB 按钮
+//    private FloatingActionButton floatingActionButton;
+
+    //显示状态
+    private Boolean showedit = false;
+
+    //编辑框与发送按钮
+    private LinearLayout llEdit;
+
+    //编辑框
+    private EditText etreply;
+
+    private ImageView imSend;
+
+    //回复内容
+    private String replystr;
+    private String postid;
+    private String token;
+    private String userid;
+
     private int Id;
     private String PostOne;
     private String PostMainTitle;
     private String content;
+
+    private PostAdapter postAdapter;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
         initview();
         getPostinfo();
+
+//        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if(showedit){
+//                    llEdit.setVisibility(View.GONE);
+//                    //点击fab按钮后 强制隐藏键盘
+//                    InputMethodManager immPw = (InputMethodManager)
+//                            getSystemService(Context.INPUT_METHOD_SERVICE);
+//                    immPw.hideSoftInputFromWindow(etreply.getWindowToken(), 0);
+//                    showedit = false;
+//                }else {
+//                    llEdit.setVisibility(View.VISIBLE);
+//                    showedit = true;
+//                }
+//            }
+//        });
 
         Tvback.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,9 +109,62 @@ public class PostActivity extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
+
+        etreply.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(i==0&&i1==0&&i2!=0){
+                    //imSend.setColorFilter(R.color.colorAccent);
+                    imSend.setImageResource(R.drawable.ic_send_button_changed);
+                }
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                int length = etreply.getText().length();
+                if(length==0){
+                    imSend.setImageResource(R.drawable.ic_send_button);
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        imSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int length = etreply.getText().length();
+                if(length==0){
+                    return;
+                }else {
+                    replystr = etreply.getText().toString();
+                    SharedPreferences sharedPreferences = getSharedPreferences("postInfo", Context.MODE_PRIVATE);
+                    postid = String.valueOf(sharedPreferences.getInt("postid",0));
+
+                    SharedPreferences sharedPreferences2 = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+                    token = sharedPreferences2.getString("token","");
+                    userid = String.valueOf(sharedPreferences2.getInt("id",0));
+
+
+                    sendHttpURLConnectionReplyPost();
+
+                    etreply.setText("");
+                    //点击send按钮后 强制隐藏键盘
+                    InputMethodManager immPw = (InputMethodManager)
+                            getSystemService(Context.INPUT_METHOD_SERVICE);
+                    immPw.hideSoftInputFromWindow(etreply.getWindowToken(), 0);
+                    etreply.findFocus();
+                }
+            }
+        });
+
+
     }
 
     private void getPostinfo() {
+        itembeanpost.clear();
         SharedPreferences sharedPreferences = getSharedPreferences("postInfo", Context.MODE_PRIVATE);
         PostOne = sharedPreferences.getString("postone","");
         PostMainTitle = sharedPreferences.getString("maintitle","");
@@ -86,11 +188,20 @@ public class PostActivity extends AppCompatActivity {
     private void initview() {
         Tvback = (TextView)findViewById(R.id.id_registerBackText);
         maintitle = (TextView)findViewById(R.id.id_TvpostMaintitle);
+        llEdit = (LinearLayout)findViewById(R.id.id_llEdit);
+        imSend = (ImageView)findViewById(R.id.id_IMSendpost);
+//        floatingActionButton = (FloatingActionButton)findViewById(R.id.id_FABonepost);
+        etreply = (EditText)findViewById(R.id.id_etReply);
         itembeanpost = new ArrayList<>();
         listviewpostone = (ListView)findViewById(R.id.id_lvPostContent);
         listviewpostone.setTranscriptMode(ListView.TRANSCRIPT_MODE_NORMAL);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.id_FABonepost);
-        fab.attachToListView(listviewpostone); // or attachToRecyclerView
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.id_FABonepost);
+//        fab.attachToListView(listviewpostone); // or attachToRecyclerView
+
+//        llEdit.setVisibility(View.GONE);
+
+        postAdapter = new PostAdapter(getApplicationContext(),
+                itembeanpost);
     }
 
     //通过GET方法 获取单个贴子信息
@@ -187,7 +298,8 @@ public class PostActivity extends AppCompatActivity {
                                 View footerView = getLayoutInflater().inflate(R.layout.foot_layout, null, false);
                                 //LinearLayout linearLayout = new LinearLayout(R.layout.foot_layout);
                                 listviewpostone.addFooterView(footerView);
-                                listviewpostone.setAdapter(new PostAdapter(getApplicationContext(),itembeanpost));
+
+                                listviewpostone.setAdapter(postAdapter);
 
                             }
                         });
@@ -203,4 +315,60 @@ public class PostActivity extends AppCompatActivity {
             }
         }).start();
     }
+
+
+    private void sendHttpURLConnectionReplyPost() {
+        //开启子线程访问网络 回复帖子模块
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                HttpURLConnection connection = null;
+                try {
+                    String replycontent =token+ "&body="+replystr+
+                            "&user_id="+userid+"&discussion_id="+postid;
+                    URL url = new URL(replyUrl+replycontent);
+                    Log.e("status",url.toString());
+
+                    connection = (HttpURLConnection)url.openConnection();
+                    connection.setRequestMethod("POST");
+                    connection.connect();
+
+                    //连接超时设置
+                    connection.setConnectTimeout(8000);
+                    connection.setReadTimeout(8000);
+                    //获取输入流
+                    InputStream in = connection.getInputStream();
+
+                    //对获取的流进行读取
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(in,"utf-8"));
+                    StringBuilder response = new StringBuilder();
+                    String line=null;
+                    while ((line=reader.readLine())!=null){
+                        response.append(line);
+                    }
+
+                    //创建JSON对象
+                    JSONObject jsonObject = new JSONObject(response.toString());
+
+                    if(jsonObject.has("status")){
+                        //如果登录成功
+                        String status = jsonObject.getString("status");
+                        Log.e("status",status);
+                        getPostinfo();
+
+                    }else{
+
+                        return;
+                    }
+
+
+                }   catch (Exception e) {
+
+                    Log.e("error", e.getMessage());
+                }
+            }
+        }).start();
+    }
+
 }
