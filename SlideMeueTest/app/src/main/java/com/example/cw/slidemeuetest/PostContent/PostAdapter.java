@@ -1,6 +1,7 @@
 package com.example.cw.slidemeuetest.PostContent;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,9 +70,9 @@ public class PostAdapter extends BaseAdapter {
         final ItemBeanPost bean = mList.get(i);
 
         viewHolder.name.setText(bean.ItemNamepost);
-        RichText.fromMarkdown(bean.ItemContentpost).into(viewHolder.content);
+//        RichText.fromMarkdown(bean.ItemContentpost).into(viewHolder.content);
 
-        viewHolder.content.setTag(bean.ItemContentpost);
+//        viewHolder.content.setTag(bean.ItemContentpost);
 //        viewHolder.content.setMDText(bean.ItemContentpost);
         viewHolder.imageView.setImageURI(bean.getItemUserImgpost());
         viewHolder.times.setText(bean.ItemCreatTimepost);
@@ -81,7 +82,10 @@ public class PostAdapter extends BaseAdapter {
         roundingParams.setRoundAsCircle(true);
         viewHolder.imageView.getHierarchy().setRoundingParams(roundingParams);
 
-        RichText.from(bean.ItemContentpost).autoFix(false).fix(new ImageFixCallback() {
+
+        Log.e("viewholder",bean.ItemContentpost);
+
+        RichText.fromMarkdown(bean.ItemContentpost).autoFix(false).fix(new ImageFixCallback() {
             @Override
             public void onFix(ImageHolder holder) {
                 if (holder.getImageType() != ImageHolder.ImageType.GIF) {
@@ -99,6 +103,9 @@ public class PostAdapter extends BaseAdapter {
 
 
         }).into(viewHolder.content);
+        //RichText.from(bean.ItemContentpost.toString()).type(RichText.TYPE_MARKDOWN).into(textView);
+//        RichText.fromMarkdown(bean.ItemContentpost).into(viewHolder.content);
+
 
         return view;
     }

@@ -75,7 +75,6 @@ public class PostActivity extends AppCompatActivity {
 
     private PostAdapter postAdapter;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,6 +107,7 @@ public class PostActivity extends AppCompatActivity {
         });
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        etreply.clearFocus();
 
 
         etreply.addTextChangedListener(new TextWatcher() {
@@ -155,11 +155,10 @@ public class PostActivity extends AppCompatActivity {
                     InputMethodManager immPw = (InputMethodManager)
                             getSystemService(Context.INPUT_METHOD_SERVICE);
                     immPw.hideSoftInputFromWindow(etreply.getWindowToken(), 0);
-                    etreply.findFocus();
+                    etreply.clearFocus();
                 }
             }
         });
-
 
     }
 

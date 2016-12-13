@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.cw.slidemeuetest.R;
+import com.melnykov.fab.FloatingActionButton;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -46,6 +47,9 @@ public class FragmentTwo extends Fragment {
 
     //图片检测
     private String imgfind = "http://lsuplus.top/uploads";
+
+    //FAB 按钮
+    private FloatingActionButton floatingActionButton;
 
     private String content;
 
@@ -165,6 +169,8 @@ public class FragmentTwo extends Fragment {
         refreshtwo = (SwipeRefreshLayout)getActivity().findViewById(R.id.id_refreshtwo);
         listView = (ListView)getActivity().findViewById(R.id.id_Discusslistview);
         //listView.setAdapter(myAdapter);
+                FloatingActionButton fab = (FloatingActionButton)getActivity().findViewById(R.id.id_FABonepost);
+        fab.attachToListView(listView); // or attachToRecyclerView
     }
 
     //停止刷新
@@ -228,26 +234,26 @@ public class FragmentTwo extends Fragment {
                             int id = OnePostJson.getInt("id");
                             content = OnePostJson.getString("body");
                             String allpostcontent = content;
-                            String contentimgurl = haveImg(content);
+//                            String contentimgurl = haveImg(content);
 
-                            if(contentimgurl!=null&&(!contentimgurl.equals(""))){
-                                //删文字
-                                int fir = content.indexOf("![\\");
-                                //Log.e("errssss", String.valueOf(fir));
-
-                                int last1 = content.indexOf(contentimgurl);
-                                int last2 = 0;
-                                if(contentimgurl.contains(".jpg")){
-                                    last2 = contentimgurl.indexOf(".jpg");
-                                }else if(contentimgurl.contains(".jpeg")){
-                                    last2 = contentimgurl.indexOf(".jpeg");
-                                }else if(contentimgurl.contains(".png")){
-                                    last2 = contentimgurl.indexOf(".png");
-                                }
-                                content = content.substring(0,fir)+"[[图片]]"+
-                                        content.substring(last2+last1+4,content.length());
-
-                            }
+//                            if(contentimgurl!=null&&(!contentimgurl.equals(""))){
+//                                //删文字
+//                                int fir = content.indexOf("![\\");
+//                                //Log.e("errssss", String.valueOf(fir));
+//
+//                                int last1 = content.indexOf(contentimgurl);
+//                                int last2 = 0;
+//                                if(contentimgurl.contains(".jpg")){
+//                                    last2 = contentimgurl.indexOf(".jpg");
+//                                }else if(contentimgurl.contains(".jpeg")){
+//                                    last2 = contentimgurl.indexOf(".jpeg");
+//                                }else if(contentimgurl.contains(".png")){
+//                                    last2 = contentimgurl.indexOf(".png");
+//                                }
+//                                content = content.substring(0,fir)+"[[图片]]"+
+//                                        content.substring(last2+last1+4,content.length());
+//
+//                            }
 
                             if(created_at.length()>10){
                                 //时间过久

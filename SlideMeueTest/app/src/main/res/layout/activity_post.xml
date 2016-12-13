@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/activity_main"
+    android:id="@+id/activity_main_post"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    android:background="@color/colorBlack4"
+    android:background="@color/colorWhite"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:clickable="true"
     >
     <LinearLayout
         android:layout_width="match_parent"
@@ -63,7 +66,8 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/id_TvpostMaintitle">
+            android:layout_below="@+id/id_TvpostMaintitle"
+            android:id="@+id/id_framelayout">
 
             <!--<com.melnykov.fab.FloatingActionButton-->
         <!--android:id="@+id/id_FABonepost"-->
@@ -101,8 +105,7 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
                 android:hint="添加回复"
-                android:id="@+id/id_etReply"
-                />
+                android:id="@+id/id_etReply" />
             <ImageView
                 android:layout_width="35dp"
                 android:layout_height="35dp"

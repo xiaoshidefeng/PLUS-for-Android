@@ -16,14 +16,11 @@ import com.example.cw.slidemeuetest.R;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.generic.RoundingParams;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.yydcdut.rxmarkdown.RxMarkdown;
-import com.yydcdut.rxmarkdown.factory.TextFactory;
+import com.zzhoujay.richtext.ImageHolder;
+import com.zzhoujay.richtext.RichText;
+import com.zzhoujay.richtext.callback.ImageFixCallback;
 
 import java.util.List;
-
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by cw on 2016/11/28.
@@ -58,7 +55,7 @@ public class MyAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
+    public View getView(final int i, View view, ViewGroup viewGroup) {
 
         viewHolder = null;
         if(view == null){
@@ -98,23 +95,42 @@ public class MyAdapter extends BaseAdapter {
 //            viewHolder.content.setMDText(bean.ItemContent);
 //        }
 
-        RxMarkdown.with(bean.ItemContent,view.getContext())
-                .factory(TextFactory.create())
-                .intoObservable()
-                .subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<CharSequence>() {
-                    @Override
-                    public void onCompleted() {}
+        RichText.fromMarkdown(bean.ItemContent).autoFix(false).fix(new ImageFixCallback() {
+            @Override
+            public void onFix(ImageHolder holder) {
+                if (holder.getImageType() != ImageHolder.ImageType.GIF) {
+                    holder.setAutoFix(true);
+                } else {
+                    holder.setHeight(200 + i * 10);
+                    holder.setWidth(200 + i * 10);
+                }
+                if (i == 0) {
+                    holder.setAutoPlay(true);
+                } else {
+                    holder.setAutoPlay(false);
+                }
+            }
 
-                    @Override
-                    public void onError(Throwable e) {}
 
-                    @Override
-                    public void onNext(CharSequence charSequence) {
-                        viewHolder.content.setText(charSequence, TextView.BufferType.SPANNABLE);
-                    }
-                });
+        }).into(viewHolder.content);
+
+//        RxMarkdown.with(bean.ItemContent,view.getContext())
+//                .factory(TextFactory.create())
+//                .intoObservable()
+//                .subscribeOn(Schedulers.computation())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Subscriber<CharSequence>() {
+//                    @Override
+//                    public void onCompleted() {}
+//
+//                    @Override
+//                    public void onError(Throwable e) {}
+//
+//                    @Override
+//                    public void onNext(CharSequence charSequence) {
+//                        viewHolder.content.setText(charSequence, TextView.BufferType.SPANNABLE);
+//                    }
+//                });
 
         Fresco.initialize(view.getContext());
 
@@ -140,6 +156,7 @@ public class MyAdapter extends BaseAdapter {
 
             }
         });
+
 
         viewHolder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
