@@ -1,5 +1,6 @@
-package com.example.cw.slidemeuetest.MainActivityFragment;
+package com.example.cw.slidemeuetest.MainActivityFragment.Fragmenttwo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -112,6 +113,14 @@ public class FragmentTwo extends Fragment {
         sendHttpURLConnectionGETuserInfo();
 
         ItemListener();
+
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(),NewPostActivity.class);
+                startActivity(intent);
+            }
+        });
 //        if(listView!=null){
 //            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //                @Override
@@ -168,9 +177,10 @@ public class FragmentTwo extends Fragment {
         //webView=(WebView)getView().findViewById(R.id.id_webViewTwo);
         refreshtwo = (SwipeRefreshLayout)getActivity().findViewById(R.id.id_refreshtwo);
         listView = (ListView)getActivity().findViewById(R.id.id_Discusslistview);
+
         //listView.setAdapter(myAdapter);
-                FloatingActionButton fab = (FloatingActionButton)getActivity().findViewById(R.id.id_FABonepost);
-        fab.attachToListView(listView); // or attachToRecyclerView
+                floatingActionButton = (FloatingActionButton)getActivity().findViewById(R.id.id_FABonepost);
+        floatingActionButton.attachToListView(listView); // or attachToRecyclerView
     }
 
     //停止刷新

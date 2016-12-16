@@ -1,4 +1,4 @@
-package com.example.cw.slidemeuetest.MainActivityFragment;
+package com.example.cw.slidemeuetest.MainActivityFragment.Fragmenttwo;
 
 import android.content.Context;
 import android.content.Intent;

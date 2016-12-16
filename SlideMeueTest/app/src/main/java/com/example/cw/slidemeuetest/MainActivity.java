@@ -42,7 +42,7 @@ import android.widget.Toast;
 
 import com.example.cw.slidemeuetest.MainActivityFragment.FragmentOne;
 import com.example.cw.slidemeuetest.MainActivityFragment.FragmentThree;
-import com.example.cw.slidemeuetest.MainActivityFragment.FragmentTwo;
+import com.example.cw.slidemeuetest.MainActivityFragment.Fragmenttwo.FragmentTwo;
 import com.example.cw.slidemeuetest.Setting.Setting;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.generic.RoundingParams;
@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity
     //扫码结果
     private String QrScanResult;
 
-//    private int mFirstY;
+    //    private int mFirstY;
 //    private int mCurrentY;
 //    private int mTouchSlop;//系统可以认为的最小滑动距离
 //    private int direction = -1; //0 为上,1为下
@@ -195,7 +195,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 if(slideOffset==0.1)
-                Log.d("slide", "onDrawerSlide: ");
+                    Log.d("slide", "onDrawerSlide: ");
                 SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
                 name = sharedPreferences.getString("name","");
                 email = sharedPreferences.getString("email","");
@@ -301,7 +301,7 @@ public class MainActivity extends AppCompatActivity
                 //如果从0到1
                 if(mCurrentIndex==0&&position==0){
                     layoutParams.leftMargin = (int) (positionOffset*mScreen1_3
-                                                +mCurrentIndex*mScreen1_3);
+                            +mCurrentIndex*mScreen1_3);
                 }else if(mCurrentIndex==1&&position==0){
                     //第一页到第0页
                     layoutParams.leftMargin = (int) (mCurrentIndex*mScreen1_3+(positionOffset-1)*mScreen1_3);
@@ -319,7 +319,7 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onPageSelected(int position) {
-                    //滑动结束
+                //滑动结束
                 resetTextView();
                 switch (position)
                 {
@@ -469,7 +469,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_camera) {
             // Handle the camera action
             //相机权限申请
-                requestPermission();
+            requestPermission();
 
             //二维码
             Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
@@ -561,12 +561,12 @@ public class MainActivity extends AppCompatActivity
 
         String userimgurl = sharedPreferences.getString("imgurl","");
 
-            userImg = (SimpleDraweeView)findViewById(R.id.UserHeadImg);
-            userImg.setImageURI(plus+userimgurl);
-            RoundingParams roundingParams = RoundingParams.fromCornersRadius(5f);
-            roundingParams.setBorder(R.color.colorWhite, (float) 1.0);
-            roundingParams.setRoundAsCircle(true);
-            userImg.getHierarchy().setRoundingParams(roundingParams);
+        userImg = (SimpleDraweeView)findViewById(R.id.UserHeadImg);
+        userImg.setImageURI(plus+userimgurl);
+        RoundingParams roundingParams = RoundingParams.fromCornersRadius(5f);
+        roundingParams.setBorder(R.color.colorWhite, (float) 1.0);
+        roundingParams.setRoundAsCircle(true);
+        userImg.getHierarchy().setRoundingParams(roundingParams);
 
     }
 
@@ -663,16 +663,16 @@ public class MainActivity extends AppCompatActivity
                             if(error == "token_invalid"){
                                 //登录时间到达两周 需要重新登录
 
-                                        Toast.makeText(MainActivity.this,"长时间未登录 请重新登录！",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MainActivity.this,"长时间未登录 请重新登录！",Toast.LENGTH_SHORT).show();
 
-                                        //跳转到登录界面
-                                        Intent intent = new Intent(MainActivity.this, Register_main.class);
-                                        startActivity(intent);
+                                //跳转到登录界面
+                                Intent intent = new Intent(MainActivity.this, Register_main.class);
+                                startActivity(intent);
 
 
                             }else {
 
-                                        Toast.makeText(MainActivity.this,"未知错误！",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MainActivity.this,"未知错误！",Toast.LENGTH_SHORT).show();
 
                             }
 
@@ -848,4 +848,3 @@ public class MainActivity extends AppCompatActivity
 
 
 }
-

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_main_post"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:clickable="true"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:orientation="vertical"
+        android:id="@+id/id_postTops">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/id_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:fitsSystemWindows="true" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/postTop"
+        style="@style/title_relayout"
+        android:layout_below="@id/id_postTops"
+        >
+        <ImageView
+            android:id="@+id/id_back"
+            style="@style/back_btn" />
+
+        <TextView
+            android:id="@+id/loginTitle"
+            style="@style/title_text"
+            android:text="发表帖子"
+            />
+
+        <TextView
+            android:id="@+id/id_BackText"
+            style="@style/back_text"
+            android:layout_alignBaseline="@+id/loginTitle"
+            android:layout_alignBottom="@+id/loginTitle"
+            android:layout_toRightOf="@+id/id_back"
+            android:layout_toEndOf="@+id/id_back" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@+id/postTop">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/newpost_title_backgroung_with_shadow"
+            android:orientation="horizontal">
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/id_posttitleout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="帖子标题"
+                android:id="@+id/id_etposttitle"
+                />
+            </android.support.design.widget.TextInputLayout>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_weight="4"
+                android:layout_gravity="bottom"
+                android:src="@drawable/ic_send_button"
+                android:id="@+id/id_IMNewpost"/>
+
+        </LinearLayout>
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/id_postcontentout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginTop="10dp">
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="帖子内容"
+                android:gravity="top"
+                android:id="@+id/id_etpostcontent"
+                android:background="@null"
+                />
+        </android.support.design.widget.TextInputLayout>
+    </LinearLayout>
+
+</RelativeLayout>

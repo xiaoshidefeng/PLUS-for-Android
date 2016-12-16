@@ -225,7 +225,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         // camera error
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.app_name));
-        builder.setMessage("Camera error");
+        builder.setMessage("请在系统设置中添加相机权限");
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 
             @Override

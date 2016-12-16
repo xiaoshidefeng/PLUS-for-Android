@@ -1,6 +1,7 @@
 package com.example.cw.slidemeuetest.PostContent;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -15,13 +16,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.cw.slidemeuetest.R;
+import com.example.cw.slidemeuetest.Register_main;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -42,6 +46,9 @@ public class PostActivity extends AppCompatActivity {
 
     //回复帖子地址
     private String replyUrl = "http://lsuplus.top/api/comment/store?token=";
+
+    //更新token api
+    private static String tokenValidTestUrl = "http://lsuplus.top/api/refresh/?token=";
 
     //返回
     private TextView Tvback;
@@ -148,7 +155,7 @@ public class PostActivity extends AppCompatActivity {
                     userid = String.valueOf(sharedPreferences2.getInt("id",0));
 
 
-                    sendHttpURLConnectionReplyPost();
+                    RefreshToken();
 
                     etreply.setText("");
                     //点击send按钮后 强制隐藏键盘
@@ -201,6 +208,83 @@ public class PostActivity extends AppCompatActivity {
 
         postAdapter = new PostAdapter(getApplicationContext(),
                 itembeanpost);
+    }
+
+    //更新token
+    private void RefreshToken(){
+
+        //测试token是否过期
+        //开启子线程访问网络 测试token模块
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                HttpURLConnection connection = null;
+                try {
+
+                    URL url = new URL(tokenValidTestUrl+token);
+
+                    connection = (HttpURLConnection)url.openConnection();
+                    connection.setRequestMethod("GET");
+                    connection.connect();
+
+                    //连接超时设置
+                    connection.setConnectTimeout(8000);
+                    connection.setReadTimeout(8000);
+
+                    //获取输入流
+                    InputStream in = connection.getInputStream();
+
+                    //对获取的流进行读取
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(in,"utf-8"));
+                    final StringBuilder response = new StringBuilder();
+                    String line=null;
+                    while ((line=reader.readLine())!=null){
+                        response.append(line);
+                    }
+
+                    token = connection.getHeaderField("Authorization");
+                    token = token.substring(7,token.length());
+                    savaToken();
+                    sendHttpURLConnectionReplyPost();
+
+                }   catch (Exception e) {
+                    try {
+                        int status_code = connection.getResponseCode();
+                        if (status_code==400){
+                            String error = connection.getResponseMessage();
+                            if(error == "token_invalid"){
+                                //登录时间到达两周 需要重新登录
+
+                                Toast.makeText(PostActivity.this,"长时间未登录 请重新登录！",Toast.LENGTH_SHORT).show();
+
+                                //跳转到登录界面
+                                Intent intent = new Intent(PostActivity.this, Register_main.class);
+                                startActivity(intent);
+
+
+                            }else {
+
+                                Toast.makeText(PostActivity.this,"未知错误！",Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                    Log.e("errss", e.getMessage());
+                }
+            }
+        }).start();
+
+    }
+
+    private void savaToken() {
+        //保存token
+        SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("token",token);
+        editor.commit();
     }
 
     //通过GET方法 获取单个贴子信息

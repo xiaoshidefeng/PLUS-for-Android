@@ -65,8 +65,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".PostContent.PostActivity"
-            android:windowSoftInputMode="adjustPan"></activity>
+        <activity
+            android:name=".PostContent.PostActivity"
+            android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".MainActivityFragment.Fragmenttwo.NewPostActivity"></activity>
     </application>
 
 </manifest>
