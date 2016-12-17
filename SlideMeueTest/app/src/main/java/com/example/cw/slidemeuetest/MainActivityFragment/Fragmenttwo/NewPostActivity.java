@@ -1,13 +1,30 @@
 package com.example.cw.slidemeuetest.MainActivityFragment.Fragmenttwo;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.cw.slidemeuetest.MainActivity;
 import com.example.cw.slidemeuetest.R;
+import com.example.cw.slidemeuetest.Register_main;
+
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class NewPostActivity extends AppCompatActivity {
 
@@ -17,10 +34,29 @@ public class NewPostActivity extends AppCompatActivity {
     //标题输入
     private EditText etTitle;
 
+    //进度条
+    private ProgressBar progressBar;
+
     //内容输入
     private EditText etContent;
 
     private ImageView imSend;
+
+    //更新token api
+    private static String tokenValidTestUrl = "http://lsuplus.top/api/refresh/?token=";
+
+    //发贴
+    private static String NewPostUrl = "http://lsuplus.top/api/discuss/store?token=";
+
+    //token
+    private String token;
+    //用户id
+    private String userid;
+
+    //标题
+    private String title;
+    //内容
+    private String content;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,12 +65,20 @@ public class NewPostActivity extends AppCompatActivity {
 
         initview();
 
-
+        //隐藏进度条
+        progressBar.setVisibility(View.GONE);
 
         Tvback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
+            }
+        });
+
+        imSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                attemptNewPost();
             }
         });
 
@@ -45,5 +89,215 @@ public class NewPostActivity extends AppCompatActivity {
         etTitle = (EditText)findViewById(R.id.id_etposttitle);
         etContent = (EditText)findViewById(R.id.id_etpostcontent);
         imSend = (ImageView)findViewById(R.id.id_IMNewpost);
+        progressBar = (ProgressBar)findViewById(R.id.id_Pbnewpost);
     }
+
+    //输入格式提示
+    /**
+     * Attempts to sign in or register the account specified by the login form.
+     * If there are form errors (invalid email, missing fields, etc.), the
+     * errors are presented and no actual login attempt is made.
+     */
+    private void attemptNewPost() {
+//        if (mAuthTask != null) {
+//            return;
+//        }
+
+        // Reset errors.
+        etTitle.setError(null);
+        etContent.setError(null);
+
+        boolean cancel = false;
+        View focusView = null;
+
+        title = etTitle.getText().toString();
+        content = etContent.getText().toString();
+
+        content.replace("\r","\n");
+
+        // 标题判断
+        if(title.equals("")||title==null){
+            etTitle.setError(getString(R.string.error_null_posttitle));
+            focusView = etTitle;
+            cancel = true;
+        }
+        // 内容判断
+        if(content.equals("")||content==null){
+            etContent.setError(getString(R.string.error_null_postcontent));
+            focusView = etContent;
+            cancel = true;
+        }
+
+
+        if (cancel) {
+            // There was an error; don't attempt login and focus the first
+            // form field with an error.
+            focusView.requestFocus();
+        } else {
+            // Show a progress spinner, and kick off a background task to
+            // perform the user login attempt.
+            // showProgress(true);
+            // mAuthTask = new UserLoginTask(email, password);
+            // mAuthTask.execute((Void) null);
+
+            //进度条开始转动
+            progressBar.setVisibility(View.VISIBLE);
+
+            //访问网络
+            getuserinfo();
+        }
+    }
+
+    private void getuserinfo() {
+        SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        token = sharedPreferences.getString("token","");
+        int i =  sharedPreferences.getInt("id",0);
+        userid = String.valueOf(i);
+
+        RefreshToken();
+    }
+
+    //更新token
+    private void RefreshToken(){
+
+        //测试token是否过期
+        //开启子线程访问网络 测试token模块
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                HttpURLConnection connection = null;
+                try {
+
+                    URL url = new URL(tokenValidTestUrl+token);
+
+                    connection = (HttpURLConnection)url.openConnection();
+                    connection.setRequestMethod("GET");
+                    connection.connect();
+
+                    //连接超时设置
+                    connection.setConnectTimeout(8000);
+                    connection.setReadTimeout(8000);
+
+                    //获取输入流
+                    InputStream in = connection.getInputStream();
+
+                    //对获取的流进行读取
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(in,"utf-8"));
+                    final StringBuilder response = new StringBuilder();
+                    String line=null;
+                    while ((line=reader.readLine())!=null){
+                        response.append(line);
+                    }
+
+                    token = connection.getHeaderField("Authorization");
+                    token = token.substring(7,token.length());
+                    savaToken();
+                    sendHttpURLConnectionNewPost();
+
+                }   catch (Exception e) {
+                    try {
+                        int status_code = connection.getResponseCode();
+                        if (status_code==400){
+                            String error = connection.getResponseMessage();
+                            if(error == "token_invalid"){
+                                //登录时间到达两周 需要重新登录
+
+                                Toast.makeText(NewPostActivity.this,"长时间未登录 请重新登录！",Toast.LENGTH_SHORT).show();
+
+                                //跳转到登录界面
+                                Intent intent = new Intent(NewPostActivity.this, Register_main.class);
+                                startActivity(intent);
+
+
+                            }else {
+
+                                Toast.makeText(NewPostActivity.this,"未知错误！",Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                    Log.e("errss", e.getMessage());
+                }
+            }
+        }).start();
+
+    }
+
+    private void savaToken() {
+        //保存token
+        SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("token",token);
+        editor.commit();
+    }
+
+    private void sendHttpURLConnectionNewPost() {
+        //开启子线程访问网络 回复帖子模块
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                HttpURLConnection connection = null;
+                try {
+                    String newpostcontent =token+ "&title=" + title+"&body="+content+
+                            "&user_id="+userid;
+                    URL url = new URL(NewPostUrl+newpostcontent);
+                    Log.e("status",url.toString());
+
+                    connection = (HttpURLConnection)url.openConnection();
+                    connection.setRequestMethod("POST");
+                    connection.connect();
+
+                    //连接超时设置
+                    connection.setConnectTimeout(8000);
+                    connection.setReadTimeout(8000);
+                    //获取输入流
+                    InputStream in = connection.getInputStream();
+
+                    //对获取的流进行读取
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(in,"utf-8"));
+                    StringBuilder response = new StringBuilder();
+                    String line=null;
+                    while ((line=reader.readLine())!=null){
+                        response.append(line);
+                    }
+
+                    //创建JSON对象
+                    JSONObject jsonObject = new JSONObject(response.toString());
+
+                    if(jsonObject.has("status")){
+                        //如果登录成功
+                        String status = jsonObject.getString("status");
+                        //Toast.makeText(NewPostActivity.this,"发帖成功",Toast.LENGTH_SHORT).show();
+                        Log.e("status",status);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                //隐藏进度条
+                                progressBar.setVisibility(View.GONE);
+                                Toast.makeText(NewPostActivity.this,"发帖成功",Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(NewPostActivity.this, MainActivity.class);
+                                startActivity(intent);
+                            }
+                        });
+
+                    }else{
+
+                        return;
+                    }
+
+
+                }   catch (Exception e) {
+
+                    Log.e("error", e.getMessage());
+
+                }
+            }
+        }).start();
+    }
+
+
 }

@@ -46,6 +46,8 @@
     <string name="error_incorrect_password">密码错误</string>
     <string name="error_null_password">密码为空</string>
     <string name="error_field_required">邮箱为空</string>
+    <string name="error_null_posttitle">写个标题吧^_^</string>
+    <string name="error_null_postcontent">不写点什么吗</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
@@ -58,6 +60,9 @@
     <string name="checkupdate">检查更新</string>
     <string name="exitlogin">退出账号</string>
     <!-- Strings related to Settings -->
+
+
+
 
     <!-- Example General settings -->
     <string name="pref_header_general">General</string>
