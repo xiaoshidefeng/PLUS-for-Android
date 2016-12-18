@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -68,7 +70,7 @@ public class PreferenceFragment extends android.preference.PreferenceFragment {
 
         
         getusername();
-        if(username==null||username.equals("")){
+        if(username==null||username.equals("")||!isNetworkAvailable(this.getActivity())){
             ((PreferenceGroup)findPreference(PREF_KEY_ABOUTHELP)).removePreference(findPreference(PREF_KEY_EXIT));
             getPreferenceScreen().removePreference(findPreference(PREF_KEY_USERSETTING));
 
@@ -272,6 +274,25 @@ public class PreferenceFragment extends android.preference.PreferenceFragment {
         });
         AlertDialog b=builder.create();
         b.show();  //必须show一下才能看到对话框，跟Toast一样的道理
+    }
+
+    //判断当前网络是否可用
+    public static boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivity = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivity != null) {
+            NetworkInfo info = connectivity.getActiveNetworkInfo();
+            if (info != null && info.isConnected())
+            {
+                // 当前网络是连接的
+                if (info.getState() == NetworkInfo.State.CONNECTED)
+                {
+                    // 当前所连接的网络可用
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }

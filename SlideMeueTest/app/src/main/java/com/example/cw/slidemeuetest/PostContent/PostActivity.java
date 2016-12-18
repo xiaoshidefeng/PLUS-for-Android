@@ -1,5 +1,6 @@
 package com.example.cw.slidemeuetest.PostContent;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,6 +52,10 @@ public class PostActivity extends AppCompatActivity {
     //更新token api
     private static String tokenValidTestUrl = "http://lsuplus.top/api/refresh/?token=";
 
+    private ProgressDialog progressDialog;
+
+    private TextView tvnull;
+
     //返回
     private TextView Tvback;
     //标题
@@ -60,6 +66,8 @@ public class PostActivity extends AppCompatActivity {
 
     //显示状态
     private Boolean showedit = false;
+
+    private ProgressBar progressBar;
 
     //编辑框与发送按钮
     private LinearLayout llEdit;
@@ -87,7 +95,11 @@ public class PostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
         initview();
+        //进度条开始转动
+        progressBar.setVisibility(View.VISIBLE);
         getPostinfo();
+
+
 
 //        floatingActionButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -147,6 +159,11 @@ public class PostActivity extends AppCompatActivity {
                     return;
                 }else {
                     replystr = etreply.getText().toString();
+
+
+                    replystr = replystr + "";
+                    Log.e("status",replystr);
+
                     SharedPreferences sharedPreferences = getSharedPreferences("postInfo", Context.MODE_PRIVATE);
                     postid = String.valueOf(sharedPreferences.getInt("postid",0));
 
@@ -163,6 +180,13 @@ public class PostActivity extends AppCompatActivity {
                             getSystemService(Context.INPUT_METHOD_SERVICE);
                     immPw.hideSoftInputFromWindow(etreply.getWindowToken(), 0);
                     etreply.clearFocus();
+                    progressDialog = new ProgressDialog (PostActivity.this);
+                    progressDialog.setMessage("请稍后...");
+                    //进度条周围不可点击
+                    progressDialog.setCancelable(false);
+                    progressDialog.show();
+                    //进度条开始转动
+                    //progressBar.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -194,10 +218,12 @@ public class PostActivity extends AppCompatActivity {
     private void initview() {
         Tvback = (TextView)findViewById(R.id.id_registerBackText);
         maintitle = (TextView)findViewById(R.id.id_TvpostMaintitle);
+        progressBar = (ProgressBar)findViewById(R.id.id_Pbnewreply);
         llEdit = (LinearLayout)findViewById(R.id.id_llEdit);
         imSend = (ImageView)findViewById(R.id.id_IMSendpost);
 //        floatingActionButton = (FloatingActionButton)findViewById(R.id.id_FABonepost);
         etreply = (EditText)findViewById(R.id.id_etReply);
+        tvnull = (TextView)findViewById(R.id.id_tvpostonenull) ;
         itembeanpost = new ArrayList<>();
         listviewpostone = (ListView)findViewById(R.id.id_lvPostContent);
         listviewpostone.setTranscriptMode(ListView.TRANSCRIPT_MODE_NORMAL);
@@ -208,6 +234,13 @@ public class PostActivity extends AppCompatActivity {
 
         postAdapter = new PostAdapter(getApplicationContext(),
                 itembeanpost);
+
+
+
+        View footerView = getLayoutInflater().inflate(R.layout.foot_layout, null, false);
+
+        listviewpostone.addFooterView(footerView);
+        listviewpostone.setEmptyView(tvnull);
     }
 
     //更新token
@@ -254,18 +287,32 @@ public class PostActivity extends AppCompatActivity {
                         if (status_code==400){
                             String error = connection.getResponseMessage();
                             if(error == "token_invalid"){
-                                //登录时间到达两周 需要重新登录
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        //登录时间到达两周 需要重新登录
+                                        //隐藏进度条
+                                        progressBar.setVisibility(View.GONE);
+                                        Toast.makeText(PostActivity.this,"长时间未登录 请重新登录！",Toast.LENGTH_SHORT).show();
 
-                                Toast.makeText(PostActivity.this,"长时间未登录 请重新登录！",Toast.LENGTH_SHORT).show();
+                                        //跳转到登录界面
+                                        Intent intent = new Intent(PostActivity.this, Register_main.class);
+                                        startActivity(intent);
+                                    }
+                                });
 
-                                //跳转到登录界面
-                                Intent intent = new Intent(PostActivity.this, Register_main.class);
-                                startActivity(intent);
 
 
                             }else {
 
-                                Toast.makeText(PostActivity.this,"未知错误！",Toast.LENGTH_SHORT).show();
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        //隐藏进度条
+                                        progressBar.setVisibility(View.GONE);
+                                        Toast.makeText(PostActivity.this,"未知错误！",Toast.LENGTH_SHORT).show();
+                                    }
+                                });
                             }
 
                         }
@@ -374,16 +421,16 @@ public class PostActivity extends AppCompatActivity {
                             ));
 
                         }
-                        //开启ui线程来通知用户登录成功
+                        //开启ui线程
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                View footerView = getLayoutInflater().inflate(R.layout.foot_layout, null, false);
-                                //LinearLayout linearLayout = new LinearLayout(R.layout.foot_layout);
-                                listviewpostone.addFooterView(footerView);
+
 
                                 listviewpostone.setAdapter(postAdapter);
 
+                                //隐藏进度条
+                                progressBar.setVisibility(View.GONE);
                             }
                         });
 
@@ -393,6 +440,14 @@ public class PostActivity extends AppCompatActivity {
                     }
 
                 }   catch (Exception e) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //隐藏进度条
+                            progressBar.setVisibility(View.GONE);
+                            Toast.makeText(PostActivity.this,"获取贴子信息失败",Toast.LENGTH_SHORT).show();
+                        }
+                    });
                     Log.e("errss catch", e.getMessage());
                 }
             }
@@ -435,13 +490,28 @@ public class PostActivity extends AppCompatActivity {
                     JSONObject jsonObject = new JSONObject(response.toString());
 
                     if(jsonObject.has("status")){
-                        //如果登录成功
+                        //如果回复成功
                         String status = jsonObject.getString("status");
                         Log.e("status",status);
-                        getPostinfo();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                getPostinfo();
+                                progressDialog.dismiss();
+
+                            }
+                        });
 
                     }else{
 
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                progressDialog.dismiss();
+
+                                Toast.makeText(PostActivity.this,"回帖失败",Toast.LENGTH_SHORT).show();
+                            }
+                        });
                         return;
                     }
 

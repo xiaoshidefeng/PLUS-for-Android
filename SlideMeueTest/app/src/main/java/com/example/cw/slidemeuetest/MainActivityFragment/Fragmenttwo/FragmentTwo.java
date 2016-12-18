@@ -1,6 +1,9 @@
 package com.example.cw.slidemeuetest.MainActivityFragment.Fragmenttwo;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -12,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.cw.slidemeuetest.R;
@@ -48,6 +52,8 @@ public class FragmentTwo extends Fragment {
 
     //图片检测
     private String imgfind = "http://lsuplus.top/uploads";
+
+    private TextView tvnull;
 
     //FAB 按钮
     private FloatingActionButton floatingActionButton;
@@ -117,8 +123,11 @@ public class FragmentTwo extends Fragment {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(),NewPostActivity.class);
-                startActivity(intent);
+                if(isNetworkAvailable(getContext())){
+                    Intent intent = new Intent(getActivity(),NewPostActivity.class);
+                    startActivity(intent);
+                }
+
             }
         });
 //        if(listView!=null){
@@ -181,6 +190,10 @@ public class FragmentTwo extends Fragment {
         //listView.setAdapter(myAdapter);
                 floatingActionButton = (FloatingActionButton)getActivity().findViewById(R.id.id_FABonepost);
         floatingActionButton.attachToListView(listView); // or attachToRecyclerView
+
+        tvnull = (TextView)getActivity().findViewById(R.id.id_Tvpostnull);
+        listView.setEmptyView(tvnull);
+
     }
 
     //停止刷新
@@ -289,7 +302,7 @@ public class FragmentTwo extends Fragment {
 
                         }
 
-                        //开启ui线程来通知用户登录成功
+                        //开启ui线程
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -302,12 +315,27 @@ public class FragmentTwo extends Fragment {
 
 
                     }else {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                itemBeen.clear();
+                                listView.setAdapter(null);
+                                //myAdapter.notifyDataSetChanged();
 
+                            }
+                        });
                         return;
                     }
 
                 }   catch (Exception e) {
                     Log.e("errss catch", e.getMessage());
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            listView.setAdapter(null);
+
+                        }
+                    });
                 }
             }
         }).start();
@@ -341,6 +369,24 @@ public class FragmentTwo extends Fragment {
 
     }
 
+    //判断当前网络是否可用
+    public static boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivity = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivity != null) {
+            NetworkInfo info = connectivity.getActiveNetworkInfo();
+            if (info != null && info.isConnected())
+            {
+                // 当前网络是连接的
+                if (info.getState() == NetworkInfo.State.CONNECTED)
+                {
+                    // 当前所连接的网络可用
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     //go back
 //    public static boolean goback() {

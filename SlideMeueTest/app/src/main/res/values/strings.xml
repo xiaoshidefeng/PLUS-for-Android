@@ -35,6 +35,7 @@
 
     <string name="settingTitle">设置</string>
 
+    <string name="somethingwrong">似乎出了点问题...</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>

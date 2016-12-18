@@ -91,6 +91,19 @@
                 android:overScrollMode="never"
                 android:scrollbars="none"
                 android:layout_weight="1"></ListView>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/somethingwrong"
+                android:id="@+id/id_tvpostonenull"
+                android:layout_gravity="center"
+                android:gravity="center"/>
+            <ProgressBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:id="@+id/id_Pbnewreply"/>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -106,7 +119,8 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
                 android:hint="添加回复"
-                android:id="@+id/id_etReply" />
+                android:id="@+id/id_etReply"
+                android:inputType="textMultiLine"/>
             <ImageView
                 android:layout_width="35dp"
                 android:layout_height="35dp"

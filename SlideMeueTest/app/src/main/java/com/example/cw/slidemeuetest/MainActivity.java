@@ -9,6 +9,8 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -291,6 +293,8 @@ public class MainActivity extends AppCompatActivity
         //设置适配器
         mViewPager.setAdapter(mAdapter);
 
+
+
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -346,7 +350,8 @@ public class MainActivity extends AppCompatActivity
         L1.setOnClickListener(new MyOnClickListener(0));
         L2.setOnClickListener(new MyOnClickListener(1));
         L3.setOnClickListener(new MyOnClickListener(2));
-
+        //默认第二页显示
+        mViewPager.setCurrentItem(1);
 //        mViewPager.setOnTouchListener(new View.OnTouchListener() {
 //            @Override
 //            public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -468,17 +473,22 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_camera) {
             // Handle the camera action
-            //相机权限申请
-            requestPermission();
+            if(isNetworkAvailable(this)){
+                //相机权限申请
+                requestPermission();
 
-            //二维码
-            Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
-            startActivityForResult(intent,0);
+                //二维码
+                Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
+                startActivityForResult(intent,0);
+            }else {
+                Toast.makeText(MainActivity.this,"请连接网络",Toast.LENGTH_SHORT).show();
+            }
+
 
         } else if (id == R.id.nav_gallery) {
-            Intent intent = new Intent("com.example.cw.slidemeuetest.ACTION_START");
-            intent.addCategory("android.intent.category.DEFAULT");
-            startActivity(intent);
+//            Intent intent = new Intent("com.example.cw.slidemeuetest.ACTION_START");
+//            intent.addCategory("android.intent.category.DEFAULT");
+//            startActivity(intent);
 
         } else if (id == R.id.nav_slideshow) {
 
@@ -503,11 +513,13 @@ public class MainActivity extends AppCompatActivity
     {
         userName =(TextView)findViewById(R.id.id_userNameText);
         String loginStatus = (String) userName.getText();
-        if(loginStatus.equals("立即登录")){
+        if(!isNetworkAvailable(this)){
+        Toast.makeText(MainActivity.this,"请连接网络",Toast.LENGTH_SHORT).show();
+        }else if(loginStatus.equals("立即登录")){
             //还未登录
             Intent intent = new Intent(MainActivity.this, Register_main.class);
             startActivity(intent);
-        }else{
+        } else{
 
             return;
         }
@@ -847,4 +859,22 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    //判断当前网络是否可用
+    public static boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivity = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivity != null) {
+            NetworkInfo info = connectivity.getActiveNetworkInfo();
+            if (info != null && info.isConnected())
+            {
+                // 当前网络是连接的
+                if (info.getState() == NetworkInfo.State.CONNECTED)
+                {
+                    // 当前所连接的网络可用
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
