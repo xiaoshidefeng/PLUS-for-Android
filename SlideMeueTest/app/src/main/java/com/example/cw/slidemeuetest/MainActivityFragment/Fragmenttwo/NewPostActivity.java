@@ -157,6 +157,13 @@ public class NewPostActivity extends AppCompatActivity {
         int i =  sharedPreferences.getInt("id",0);
         userid = String.valueOf(i);
 
+        if(token.equals("")){
+            Toast.makeText(NewPostActivity.this,"请先登录",Toast.LENGTH_SHORT).show();
+            progressBar.setVisibility(View.GONE);
+
+            return;
+        }
+
         RefreshToken();
     }
 

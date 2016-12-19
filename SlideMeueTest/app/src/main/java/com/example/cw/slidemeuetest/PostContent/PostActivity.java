@@ -27,11 +27,14 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -171,6 +174,10 @@ public class PostActivity extends AppCompatActivity {
                     token = sharedPreferences2.getString("token","");
                     userid = String.valueOf(sharedPreferences2.getInt("id",0));
 
+                    if(token.equals("")){
+                        Toast.makeText(PostActivity.this,"请先登录",Toast.LENGTH_SHORT).show();
+                        return;
+                    }
 
                     RefreshToken();
 
@@ -245,6 +252,7 @@ public class PostActivity extends AppCompatActivity {
 
     //更新token
     private void RefreshToken(){
+
 
         //测试token是否过期
         //开启子线程访问网络 测试token模块
@@ -463,36 +471,49 @@ public class PostActivity extends AppCompatActivity {
 
                 HttpURLConnection connection = null;
                 try {
-                    String replycontent =token+ "&body="+replystr+
-                            "&user_id="+userid+"&discussion_id="+postid;
-                    URL url = new URL(replyUrl+replycontent);
+
+                    URL url = new URL(replyUrl+token);
                     Log.e("status",url.toString());
 
                     connection = (HttpURLConnection)url.openConnection();
                     connection.setRequestMethod("POST");
-                    connection.connect();
-
+                    //                    connection.connect();
                     //连接超时设置
                     connection.setConnectTimeout(8000);
                     connection.setReadTimeout(8000);
-                    //获取输入流
-                    InputStream in = connection.getInputStream();
+                    //设置运行输入,输出:
+                    connection.setDoOutput(true);
+                    connection.setDoInput(true);
+                    //Post方式不能缓存,需手动设置为false
+                    connection.setUseCaches(false);
+                    //2设置http请求数据的类型为表单类型
 
-                    //对获取的流进行读取
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(in,"utf-8"));
-                    StringBuilder response = new StringBuilder();
-                    String line=null;
-                    while ((line=reader.readLine())!=null){
-                        response.append(line);
-                    }
+//                    connection.setRequestProperty("Content-type","application/x-www-form-urlencoded");
 
-                    //创建JSON对象
-                    JSONObject jsonObject = new JSONObject(response.toString());
+                    String data = "body=" + URLEncoder.encode(replystr,"utf-8") + "&user_id=" +
+                            URLEncoder.encode(userid,"utf-8")+"&discussion_id=" +
+                            URLEncoder.encode(postid,"utf-8");
+                    OutputStream out = connection.getOutputStream();
+                    out.write(data.getBytes());
+                    out.flush();
 
-                    if(jsonObject.has("status")){
-                        //如果回复成功
-                        String status = jsonObject.getString("status");
-                        Log.e("status",status);
+                    if (connection.getResponseCode() == 200) {
+                        // 获取响应的输入流对象
+                        InputStream is = connection.getInputStream();
+                        // 创建字节输出流对象
+                        ByteArrayOutputStream message = new ByteArrayOutputStream();
+                        // 定义读取的长度
+                        int len = 0;
+                        // 定义缓冲区
+                        byte buffer[] = new byte[1024];
+                        // 按照缓冲区的大小，循环读取
+                        while ((len = is.read(buffer)) != -1) {
+                            // 根据读取的长度写入到os对象中
+                            message.write(buffer, 0, len);
+                        }
+                        // 释放资源
+                        is.close();
+
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -502,7 +523,33 @@ public class PostActivity extends AppCompatActivity {
                             }
                         });
 
-                    }else{
+                    }
+//                    connection.connect();
+//
+//                    //连接超时设置
+//                    connection.setConnectTimeout(8000);
+//                    connection.setReadTimeout(8000);
+//                    //获取输入流
+//                    InputStream in = connection.getInputStream();
+//
+//                    //对获取的流进行读取
+//                    BufferedReader reader = new BufferedReader(new InputStreamReader(in,"utf-8"));
+//                    StringBuilder response = new StringBuilder();
+//                    String line=null;
+//                    while ((line=reader.readLine())!=null){
+//                        response.append(line);
+//                    }
+//
+//                    //创建JSON对象
+//                    JSONObject jsonObject = new JSONObject(response.toString());
+
+//                    if(jsonObject.has("status")){
+//                        //如果回复成功
+//                        String status = jsonObject.getString("status");
+//                        Log.e("status",status);
+
+
+                    else{
 
                         runOnUiThread(new Runnable() {
                             @Override

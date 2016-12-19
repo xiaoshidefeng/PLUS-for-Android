@@ -817,24 +817,24 @@ public class MainActivity extends AppCompatActivity
                 moveTaskToBack(false);
 
             }
-//        }else if(mCurrentIndex == 1){
+        }else if(mCurrentIndex == 1){
 //            if(FragmentTwo.goback()){
 //                //如果网页能返回 则返回true 直接跳出
 //                return true;
 //            }
 //            //如果网页不能返回 则判断按两次退出app
-//            if (!isQuit) {
-//                isQuit = true;
-//                Toast.makeText(getApplicationContext(), "再按一次退出程序",
-//                        Toast.LENGTH_SHORT).show();
-//                // 利用handler延迟发送更改状态信息
-//                mHandler.sendEmptyMessageDelayed(0, 2000);
-//            } else {
-//                //留在后台
-//                moveTaskToBack(false);
-////                finish();
-////                System.exit(0);
-//            }
+            if (!isQuit) {
+                isQuit = true;
+                Toast.makeText(getApplicationContext(), "再按一次退出程序",
+                        Toast.LENGTH_SHORT).show();
+                // 利用handler延迟发送更改状态信息
+                mHandler.sendEmptyMessageDelayed(0, 2000);
+            } else {
+                //留在后台
+                moveTaskToBack(false);
+//                finish();
+//                System.exit(0);
+            }
 //        }
         }else if(mCurrentIndex == 2){
             if(FragmentThree.goback()){
