@@ -1,4 +1,4 @@
-package com.example.cw.slidemeuetest;
+package com.example.cw.slidemeuetest.LoginRegist;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +14,9 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.cw.slidemeuetest.MainActivity;
+import com.example.cw.slidemeuetest.R;
 
 import org.json.JSONObject;
 
@@ -108,6 +111,14 @@ public class Regist extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 finish();
+            }
+        });
+
+        BtnAboutLsuPlus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Regist.this,AboutActivity.class);
+                startActivity(intent);
             }
         });
 

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_main_post"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:background="@color/colorWhite"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:clickable="true"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:orientation="vertical"
+        android:id="@+id/id_postTops">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/id_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:fitsSystemWindows="true" />
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/postTop"
+        style="@style/title_relayout"
+        android:layout_below="@id/id_postTops"
+        >
+        <ImageView
+            android:id="@+id/id_back"
+            style="@style/back_btn" />
+
+        <TextView
+            android:id="@+id/loginTitle"
+            style="@style/title_text"
+            android:text="@string/aboutplus"
+            />
+
+        <TextView
+            android:id="@+id/id_registerBackText"
+            style="@style/back_text"
+            android:layout_alignBaseline="@+id/loginTitle"
+            android:layout_alignBottom="@+id/loginTitle"
+            android:layout_toRightOf="@+id/id_back"
+            android:layout_toEndOf="@+id/id_back" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:overScrollMode="never"
+        android:scrollbars="none"
+        android:layout_below="@+id/postTop">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/loginUser"
+                android:layout_width="130dip"
+                android:layout_height="130dip"
+                android:layout_marginTop="5dp"
+                android:layout_gravity="center"
+                android:src="@drawable/pluss" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textSize="22sp"
+                android:gravity="center"
+                android:textColor="@color/colorBlack"
+                android:text="@string/kouhao"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="14dp"
+                android:layout_marginTop="40dp"
+                android:textSize="22sp"
+                android:textColor="@color/colorBlack"
+                android:text="Plus俱乐部"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="15dp"
+                android:textSize="14sp"
+                android:textColor="@color/colorBlack"
+                android:layout_marginLeft="30dp"
+                android:text="@string/shuoming"
+                />
+
+
+
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginLeft="14dp"-->
+                <!--android:layout_marginTop="40dp"-->
+                <!--android:textSize="22sp"-->
+                <!--android:textColor="@color/colorBlack"-->
+                <!--android:text="RichText"/>-->
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="15dp"-->
+                <!--android:layout_marginRight="15dp"-->
+                <!--android:textSize="14sp"-->
+                <!--android:textColor="@color/colorBlack"-->
+                <!--android:layout_marginLeft="30dp"-->
+                <!--android:text="@string/richtextlicense"-->
+                <!--/>-->
+
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginLeft="14dp"-->
+                <!--android:layout_marginTop="40dp"-->
+                <!--android:textSize="22sp"-->
+                <!--android:textColor="@color/colorBlack"-->
+                <!--android:text="FloatingActionButton"/>-->
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="15dp"-->
+                <!--android:layout_marginRight="15dp"-->
+                <!--android:textSize="14sp"-->
+                <!--android:textColor="@color/colorBlack"-->
+                <!--android:layout_marginLeft="30dp"-->
+                <!--android:text="@string/fablicense"-->
+                <!--/>-->
+
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginLeft="15dp"-->
+                <!--android:layout_marginTop="20dp"-->
+                <!--android:textSize="22sp"-->
+                <!--android:textColor="@color/colorBlack"-->
+                <!--android:text="zxing"/>-->
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="15dp"-->
+                <!--android:layout_marginRight="15dp"-->
+                <!--android:textSize="14sp"-->
+                <!--android:textColor="@color/colorBlack"-->
+                <!--android:layout_marginLeft="25dp"-->
+                <!--android:text="@string/license_zxing"-->
+                <!--/>-->
+
+        </LinearLayout>
+
+
+    </ScrollView>
+
+</RelativeLayout>

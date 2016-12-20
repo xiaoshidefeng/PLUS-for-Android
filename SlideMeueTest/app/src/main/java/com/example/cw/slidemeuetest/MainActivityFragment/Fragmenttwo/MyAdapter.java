@@ -152,7 +152,7 @@ public class MyAdapter extends BaseAdapter {
         viewHolder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(view.getContext(),"head",Toast.LENGTH_LONG).show();
+                Toast.makeText(view.getContext(),"不给你看Ta的信息o(￣ヘ￣o＃)",Toast.LENGTH_SHORT).show();
 
             }
         });

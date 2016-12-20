@@ -21,7 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.cw.slidemeuetest.R;
-import com.example.cw.slidemeuetest.Register_main;
+import com.example.cw.slidemeuetest.LoginRegist.Register_main;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -90,6 +90,7 @@ public class PostActivity extends AppCompatActivity {
     private String PostOne;
     private String PostMainTitle;
     private String content;
+    private String smalltail;
 
     private PostAdapter postAdapter;
 
@@ -161,11 +162,7 @@ public class PostActivity extends AppCompatActivity {
                 if(length==0){
                     return;
                 }else {
-                    replystr = etreply.getText().toString();
 
-
-                    replystr = replystr + "";
-                    Log.e("status",replystr);
 
                     SharedPreferences sharedPreferences = getSharedPreferences("postInfo", Context.MODE_PRIVATE);
                     postid = String.valueOf(sharedPreferences.getInt("postid",0));
@@ -173,11 +170,24 @@ public class PostActivity extends AppCompatActivity {
                     SharedPreferences sharedPreferences2 = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
                     token = sharedPreferences2.getString("token","");
                     userid = String.valueOf(sharedPreferences2.getInt("id",0));
+                    smalltail = sharedPreferences2.getString("smalltail","");
 
                     if(token.equals("")){
                         Toast.makeText(PostActivity.this,"请先登录",Toast.LENGTH_SHORT).show();
                         return;
                     }
+
+                    replystr = etreply.getText().toString();
+                    if(smalltail.equals("来自Plus客户端")){
+                        //彩蛋 特殊小尾巴
+//                        replystr = replystr +"\n\n"+"      *"+ smalltail+"*" +
+//                                "\n        一切伟大的行动和思想\n       都有一个微不足道的开始";
+                        replystr = replystr +"\n\n"+"*"+ "——————————"+smalltail+"*"+"\n"+
+                                "\n\n一切伟大的行动和思想\n\n都有一个微不足道的开始";
+                    }else if(!smalltail.equals("")){
+                        replystr = replystr +"\n\n"+"*"+ "——————————"+smalltail+"*";
+                    }
+
 
                     RefreshToken();
 

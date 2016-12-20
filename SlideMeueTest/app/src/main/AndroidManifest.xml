@@ -39,13 +39,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Register_main"
+            android:name=".LoginRegist.Register_main"
             android:launchMode="singleTask" />
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"
             android:launchMode="singleTask" />
-        <activity android:name=".Regist" />
+        <activity android:name=".LoginRegist.Regist" />
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" />
@@ -69,7 +69,10 @@
         <activity
             android:name=".PostContent.PostActivity"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".MainActivityFragment.Fragmenttwo.NewPostActivity"></activity>
+        <activity android:name=".MainActivityFragment.Fragmenttwo.NewPostActivity" />
+        <activity android:name=".Setting.LincenseActivity" />
+        <activity android:name=".LoginRegist.HelpActivity" />
+        <activity android:name=".LoginRegist.AboutActivity"></activity>
     </application>
 
 </manifest>

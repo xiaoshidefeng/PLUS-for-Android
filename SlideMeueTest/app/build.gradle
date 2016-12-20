@@ -44,21 +44,6 @@ dependencies {
 }
 
 dependencies {
-    compile 'com.mittsu:markedview:1.0.4@aar'
-}
-
-
-
-
-
-dependencies {
-    compile 'com.yydcdut:rxmarkdown:0.0.7'
-
-    compile 'io.reactivex:rxandroid:1.2.0'
-    compile 'io.reactivex:rxjava:1.1.5'
-}
-
-dependencies {
     compile 'com.zzhoujay.richtext:richtext:2.3.6'
 
 }

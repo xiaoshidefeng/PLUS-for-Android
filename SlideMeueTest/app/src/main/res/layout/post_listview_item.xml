@@ -57,6 +57,7 @@
             <!--android:id="@+id/id_IMGcontent"-->
             <!--/>-->
 
+
         <TextView
             android:id="@+id/id_TvPostTime"
             android:layout_width="match_parent"

@@ -42,6 +42,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.cw.slidemeuetest.LoginRegist.Register_main;
 import com.example.cw.slidemeuetest.MainActivityFragment.FragmentOne;
 import com.example.cw.slidemeuetest.MainActivityFragment.FragmentThree;
 import com.example.cw.slidemeuetest.MainActivityFragment.Fragmenttwo.FragmentTwo;

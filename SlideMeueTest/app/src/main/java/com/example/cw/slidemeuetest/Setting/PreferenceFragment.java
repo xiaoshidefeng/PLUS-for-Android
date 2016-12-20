@@ -13,6 +13,7 @@ import android.preference.Preference;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.cw.slidemeuetest.R;
@@ -32,6 +33,10 @@ public class PreferenceFragment extends android.preference.PreferenceFragment {
     //关于与帮助key设置
     private static final String PREF_KEY_ABOUTHELP = "key_about_help";
 
+    //开源许可key
+    private static final String PREF_KEY_LICENSE = "key_license";
+
+
     //特别感谢
     private static final String PREF_KEY_SPECIALTHANKS = "key_specialthanks";
 
@@ -40,6 +45,9 @@ public class PreferenceFragment extends android.preference.PreferenceFragment {
 
     //账号设置 key设置
     private static final String PREF_KEY_USERSETTING = "key_usersetting";
+
+    //小尾巴
+    private static final String PREF_KEY_SMALLTAIL = "key_smalltail";
 
     //退出账号 key设置
     private static final String PREF_KEY_EXIT = "key_exit";
@@ -59,8 +67,14 @@ public class PreferenceFragment extends android.preference.PreferenceFragment {
     //特别感谢
     private Preference thanks;
 
+    //开源许可
+    private Preference license;
+
     //关于项目
     private Preference aboutproject;
+
+    //小尾巴
+    private Preference smalltail;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -123,6 +137,15 @@ public class PreferenceFragment extends android.preference.PreferenceFragment {
 
     //点击监听
     private void ClickEvent() {
+
+        smalltail.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Smalltailset();
+                return false;
+            }
+        });
+
         thanks.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
@@ -131,6 +154,15 @@ public class PreferenceFragment extends android.preference.PreferenceFragment {
             }
 
 
+        });
+
+        license.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent intent = new Intent(getActivity(),LincenseActivity.class);
+                startActivity(intent);
+                return false;
+            }
         });
 
         aboutproject.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -142,6 +174,45 @@ public class PreferenceFragment extends android.preference.PreferenceFragment {
         });
     }
 
+    //小尾巴
+    private void Smalltailset(){
+
+        final EditText tailedit = new EditText(getActivity());
+
+        tailedit.setText(smalltail.getSummary());
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(R.string.smalltail);//设置对话框的标题
+        builder.setView(tailedit);
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                String tail = tailedit.getText().toString();
+                if(!tail.equals("来自Android客户端")){
+                    //保存小尾巴信息
+                    SharedPreferences sharedPreferences = getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("smalltail",tail);
+                    editor.putString("tailchange","changed");
+                    editor.commit();
+                    smalltail.setSummary(tail);
+                }else {
+                    SharedPreferences sharedPreferences = getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("smalltail",tail);
+                    editor.putString("tailchange","nochange");
+                    editor.commit();
+                    smalltail.setSummary(tail);
+                }
+            }
+        });
+        builder.setNegativeButton("取消",null);
+
+
+        builder.show();
+
+    }
 
 
     //关于项目
@@ -205,6 +276,15 @@ public class PreferenceFragment extends android.preference.PreferenceFragment {
         nightModeSwitch = (SwitchPreference)findPreference(PREF_KEY_NIGHTMODE);
         thanks = (Preference)findPreference(PREF_KEY_SPECIALTHANKS);
         aboutproject = (Preference)findPreference(PREF_KEY_ABOUTPROJECT);
+        license = (Preference)findPreference(PREF_KEY_LICENSE);
+        smalltail = (Preference)findPreference(PREF_KEY_SMALLTAIL);
+
+        SharedPreferences sharedPreferences2 = getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        String s = sharedPreferences2.getString("smalltail","");
+        String change = sharedPreferences2.getString("tailchange","");
+        if(change.equals("changed")){
+            smalltail.setSummary(s);
+        }
 
     }
 
@@ -222,6 +302,17 @@ public class PreferenceFragment extends android.preference.PreferenceFragment {
         exit = (Preference)findPreference(PREF_KEY_EXIT);
         thanks = (Preference)findPreference(PREF_KEY_SPECIALTHANKS);
         aboutproject = (Preference)findPreference(PREF_KEY_ABOUTPROJECT);
+        license = (Preference)findPreference(PREF_KEY_LICENSE);
+        smalltail = (Preference)findPreference(PREF_KEY_SMALLTAIL);
+
+
+        SharedPreferences sharedPreferences2 = getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        String s = sharedPreferences2.getString("smalltail","");
+        String change = sharedPreferences2.getString("tailchange","");
+        if(change.equals("changed")){
+            smalltail.setSummary(s);
+        }
+
     }
 
     //退出登录

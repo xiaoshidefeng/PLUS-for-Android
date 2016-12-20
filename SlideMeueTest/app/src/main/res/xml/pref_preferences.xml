@@ -6,23 +6,30 @@
         android:layout="@layout/preference_category_widget"
         android:title="基本设置">
 
-        <CheckBoxPreference
-            android:layout="@layout/preference_item"
-            android:title="省流量模式"
-            android:key="notify_priority"
-            android:summaryOn="仅在Wi-Fi环境下自动加载图片"
-            android:summaryOff="当前为一般模式(默认)"
-            android:defaultValue="false"/>
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="night_switch"
-            android:summary="@string/darkModesummary"
-            android:title="@string/darkMode" />
+        <!--<CheckBoxPreference-->
+            <!--android:layout="@layout/preference_item"-->
+            <!--android:title="省流量模式"-->
+            <!--android:key="notify_priority"-->
+            <!--android:summaryOn="仅在Wi-Fi环境下自动加载图片"-->
+            <!--android:summaryOff="当前为一般模式(默认)"-->
+            <!--android:defaultValue="false"/>-->
+        <!--<SwitchPreference-->
+            <!--android:defaultValue="false"-->
+            <!--android:key="night_switch"-->
+            <!--android:summary="@string/darkModesummary"-->
+            <!--android:title="@string/darkMode" />-->
         <!--<Preference-->
             <!--android:layout="@layout/preference_item"-->
             <!--android:title="在通知栏显示音标"-->
             <!--android:summary="当前为不显示"-->
             <!--android:defaultValue="false"/>-->
+
+        <Preference
+            android:layout="@layout/preference_item"
+            android:title="@string/smalltail"
+            android:key="key_smalltail"
+            android:summary="@string/nowtail"/>
+
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -53,6 +60,11 @@
             android:layout="@layout/preference_item"
             android:title="@string/suggestion"
             android:key="key_suggestion"/>
+
+        <Preference
+            android:layout="@layout/preference_item"
+            android:title="@string/license"
+            android:key="key_license"/>
 
         <Preference
             android:layout="@layout/preference_item"

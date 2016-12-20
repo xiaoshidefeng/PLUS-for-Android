@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 import com.example.cw.slidemeuetest.MainActivity;
 import com.example.cw.slidemeuetest.R;
-import com.example.cw.slidemeuetest.Register_main;
+import com.example.cw.slidemeuetest.LoginRegist.Register_main;
 
 import org.json.JSONObject;
 

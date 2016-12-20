@@ -1,4 +1,4 @@
-package com.example.cw.slidemeuetest;
+package com.example.cw.slidemeuetest.LoginRegist;
 
 import android.app.Activity;
 import android.content.Context;
@@ -21,6 +21,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.cw.slidemeuetest.R;
 import com.example.cw.slidemeuetest.jbcrypt.BCrypt;
 
 import org.json.JSONObject;
