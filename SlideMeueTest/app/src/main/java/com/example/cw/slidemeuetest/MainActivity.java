@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -42,10 +43,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.cw.slidemeuetest.LoginRegist.HelpActivity;
 import com.example.cw.slidemeuetest.LoginRegist.Register_main;
 import com.example.cw.slidemeuetest.MainActivityFragment.FragmentOne;
 import com.example.cw.slidemeuetest.MainActivityFragment.FragmentThree;
 import com.example.cw.slidemeuetest.MainActivityFragment.Fragmenttwo.FragmentTwo;
+import com.example.cw.slidemeuetest.MainActivityFragment.Fragmenttwo.NewPostActivity;
 import com.example.cw.slidemeuetest.Setting.Setting;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.generic.RoundingParams;
@@ -460,6 +463,9 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection Simplifiab0leIfStatement
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(MainActivity.this,HelpActivity.class);
+            startActivity(intent);
+
             return true;
         }
 
@@ -487,20 +493,30 @@ public class MainActivity extends AppCompatActivity
 
 
         } else if (id == R.id.nav_gallery) {
+            //头像修改
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://lsuplus.top/user/avatar"));
+            startActivity(intent);
 //            Intent intent = new Intent("com.example.cw.slidemeuetest.ACTION_START");
 //            intent.addCategory("android.intent.category.DEFAULT");
 //            startActivity(intent);
 
-        } else if (id == R.id.nav_slideshow) {
 
-        } else if (id == R.id.nav_manage) {
+        }
+//        else if (id == R.id.nav_slideshow) {
+//
+//        }
+        else if (id == R.id.nav_manage) {
             //设置
             Intent intent = new Intent(MainActivity.this,Setting.class);
             startActivity(intent);
 
         } else if (id == R.id.nav_share) {
 
+            Toast.makeText(MainActivity.this,"敬请期待",Toast.LENGTH_SHORT).show();
+
         } else if (id == R.id.nav_send) {
+            Intent intent = new Intent(MainActivity.this, NewPostActivity.class);
+            startActivity(intent);
 
         }
 

@@ -161,6 +161,13 @@ public class Register_main extends AppCompatActivity {
             }
         });
 
+        BtnHelp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Register_main.this,HelpActivity.class);
+                startActivity(intent);
+            }
+        });
 
         //返回
         Btnback.setOnClickListener(new View.OnClickListener() {

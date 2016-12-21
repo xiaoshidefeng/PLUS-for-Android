@@ -86,28 +86,29 @@ public class PostAdapter extends BaseAdapter {
         Log.e("viewholder",bean.ItemContentpost);
 
         //防止为空时报错
-        if(bean.ItemContentpost.equals("")){
-            bean.ItemContentpost = " ";
+        if(!bean.ItemContentpost.equals("")){
+            //bean.ItemContentpost = " ";
+            RichText.fromMarkdown(bean.ItemContentpost).autoFix(false).fix(new ImageFixCallback() {
+                @Override
+                public void onFix(ImageHolder holder) {
+                    if (holder.getImageType() != ImageHolder.ImageType.GIF) {
+                        holder.setAutoFix(true);
+                    } else {
+                        holder.setHeight(200 + i * 10);
+                        holder.setWidth(200 + i * 10);
+                    }
+                    if (i == 0) {
+                        holder.setAutoPlay(true);
+                    } else {
+                        holder.setAutoPlay(false);
+                    }
+                }
+
+
+            }).into(viewHolder.content);
         }
 
-        RichText.fromMarkdown(bean.ItemContentpost).autoFix(false).fix(new ImageFixCallback() {
-            @Override
-            public void onFix(ImageHolder holder) {
-                if (holder.getImageType() != ImageHolder.ImageType.GIF) {
-                    holder.setAutoFix(true);
-                } else {
-                    holder.setHeight(200 + i * 10);
-                    holder.setWidth(200 + i * 10);
-                }
-                if (i == 0) {
-                    holder.setAutoPlay(true);
-                } else {
-                    holder.setAutoPlay(false);
-                }
-            }
 
-
-        }).into(viewHolder.content);
         //RichText.from(bean.ItemContentpost.toString()).type(RichText.TYPE_MARKDOWN).into(textView);
 //        RichText.fromMarkdown(bean.ItemContentpost).into(viewHolder.content);
 

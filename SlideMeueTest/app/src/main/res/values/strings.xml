@@ -156,6 +156,43 @@
                  去给他点个赞吧</string>
 
 
+    <string name="aboutdicuss">关于论坛</string>
+    <string name="aboutdicussmsg">论坛回复支持Markdown格式\n
+        以下是一些常用的markdown格式\n\n
+        # 字符可以添加标题\n
+        - 字符可以添加列表(要保留一个空格)\n
+        [显示文本](链接地址) 可以插入链接\n
+        *文本* 文本会显示为斜体\n
+        **文本** 文本会显示为粗体\n
+        更多格式 自行查找资料\n\n
+
+
+        注意：\n
+        Markdown格式输入两次回车才会显示一次回车
+    </string>
+
+    <string name="aboutuse">关于使用</string>
+    <string name="aboutusermsg">此APP是出于个人兴趣制作\n
+        使用时请遵守相关法律法规\n\n
+        限于个人能力有限，以及时间上的限制，软件本身存在一些bug，请大家见谅。\n\n
+        此APP的扫码登录功能请搭配lsuplus的官网使用\n
+        官网地址：http://lsuplus.top/\n\n
+
+    </string>
+
+    <string name="aboutproj">关于项目</string>
+    <string name="aboutprojmsg">
+        Android端项目地址：https://github.com/xiaoshidefeng/PLUS-for-Android\n
+        作者：小时的风\n\n
+
+
+        web端项目地址:https://github.com/Robinson28years/lsuplusclub\n
+        作者：Robinson\n\n
+
+    </string>
+
+
+
     <string name="license_zxing">Apache License\n
                         Version 2.0, January 2004\n
                         http://www.apache.org/licenses/\n
