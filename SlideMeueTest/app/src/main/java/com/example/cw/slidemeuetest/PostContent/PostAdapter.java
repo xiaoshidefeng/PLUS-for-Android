@@ -85,6 +85,11 @@ public class PostAdapter extends BaseAdapter {
 
         Log.e("viewholder",bean.ItemContentpost);
 
+        //防止为空时报错
+        if(bean.ItemContentpost.equals("")){
+            bean.ItemContentpost = " ";
+        }
+
         RichText.fromMarkdown(bean.ItemContentpost).autoFix(false).fix(new ImageFixCallback() {
             @Override
             public void onFix(ImageHolder holder) {

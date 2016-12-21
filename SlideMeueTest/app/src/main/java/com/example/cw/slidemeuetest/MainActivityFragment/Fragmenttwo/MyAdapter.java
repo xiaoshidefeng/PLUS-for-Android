@@ -95,6 +95,11 @@ public class MyAdapter extends BaseAdapter {
 //            viewHolder.content.setMDText(bean.ItemContent);
 //        }
 
+        //防止为空时报错
+        if(bean.ItemContent.equals("")){
+            bean.ItemContent = " ";
+        }
+
         RichText.fromMarkdown(bean.ItemContent).autoFix(false).fix(new ImageFixCallback() {
             @Override
             public void onFix(ImageHolder holder) {

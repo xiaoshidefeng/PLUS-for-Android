@@ -72,7 +72,9 @@
         <activity android:name=".MainActivityFragment.Fragmenttwo.NewPostActivity" />
         <activity android:name=".Setting.LincenseActivity" />
         <activity android:name=".LoginRegist.HelpActivity" />
-        <activity android:name=".LoginRegist.AboutActivity"></activity>
+        <activity android:name=".LoginRegist.AboutActivity" />
+        <activity android:name=".Setting.FeedBackActivity"
+            android:launchMode="singleTask"></activity>
     </application>
 
 </manifest>

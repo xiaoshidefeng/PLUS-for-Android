@@ -36,6 +36,8 @@ public class PreferenceFragment extends android.preference.PreferenceFragment {
     //开源许可key
     private static final String PREF_KEY_LICENSE = "key_license";
 
+    //意见反馈
+    private static final String PREF_KEY_SUGGESTION = "key_suggestion";
 
     //特别感谢
     private static final String PREF_KEY_SPECIALTHANKS = "key_specialthanks";
@@ -75,6 +77,9 @@ public class PreferenceFragment extends android.preference.PreferenceFragment {
 
     //小尾巴
     private Preference smalltail;
+
+    //意见建议
+    private Preference suggestion;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -137,6 +142,15 @@ public class PreferenceFragment extends android.preference.PreferenceFragment {
 
     //点击监听
     private void ClickEvent() {
+
+        suggestion.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent intent = new Intent(getActivity(),FeedBackActivity.class);
+                startActivity(intent);
+                return false;
+            }
+        });
 
         smalltail.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -278,6 +292,7 @@ public class PreferenceFragment extends android.preference.PreferenceFragment {
         aboutproject = (Preference)findPreference(PREF_KEY_ABOUTPROJECT);
         license = (Preference)findPreference(PREF_KEY_LICENSE);
         smalltail = (Preference)findPreference(PREF_KEY_SMALLTAIL);
+        suggestion = (Preference)findPreference(PREF_KEY_SUGGESTION);
 
         SharedPreferences sharedPreferences2 = getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         String s = sharedPreferences2.getString("smalltail","");
@@ -304,7 +319,7 @@ public class PreferenceFragment extends android.preference.PreferenceFragment {
         aboutproject = (Preference)findPreference(PREF_KEY_ABOUTPROJECT);
         license = (Preference)findPreference(PREF_KEY_LICENSE);
         smalltail = (Preference)findPreference(PREF_KEY_SMALLTAIL);
-
+        suggestion = (Preference)findPreference(PREF_KEY_SUGGESTION);
 
         SharedPreferences sharedPreferences2 = getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         String s = sharedPreferences2.getString("smalltail","");
