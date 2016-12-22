@@ -22,9 +22,14 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="com.xiaomi.market.sdk.UPDATE" />
+
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/pluslaunch"
+        android:icon="@mipmap/pluss"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
@@ -75,6 +80,14 @@
         <activity android:name=".LoginRegist.AboutActivity" />
         <activity android:name=".Setting.FeedBackActivity"
             android:launchMode="singleTask"></activity>
+
+        <receiver android:name="com.xiaomi.market.sdk.DownloadCompleteReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
+            </intent-filter>
+        </receiver>
     </application>
+
+
 
 </manifest>

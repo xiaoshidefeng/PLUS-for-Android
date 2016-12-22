@@ -1,85 +1,85 @@
 <resources>
-    <string name="app_name">Plus</string>
+    <string name="app_name" translatable="false">Plus</string>
 
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
 
-    <string name="lsuplus">"@LSUPLUS俱乐部"</string>
+    <string name="lsuplus" translatable="false">"@LSUPLUS俱乐部"</string>
 
-    <string name="action_settings">Settings</string>
+    <string name="action_settings" translatable="false">Settings</string>
 
-    <string name="id">请输入邮箱</string>
-    <string name="login">登录</string>
-    <string name="password">请输入密码</string>
-    <string name="misspassword">无法登录？</string>
-    <string name="newuser">姓名</string>
-    <string name="back">返回</string>
-    <string name="register">注册</string>
-    <string name="auth_code">验证码</string>
-    <string name="check">换一张</string>
-    <string name="isture">确认</string>
-    <string name="findpassword">找回密码</string>
-    <string name="truepassword">确认您的密码</string>
-    <string name="id_true">格式错误</string>
-    <string name="pstrue">密码不一致</string>
-    <string name="autetrue">验证码错误</string>
-    <string name="changepw">忘记密码</string>
-    <string name="true_change">确认修改</string>
-    <string name="newpassword">请输入新密码</string>
-    <string name="oldpassword">请输入旧密码</string>
-    <string name="confirmpassword">请确认新密码</string>
-    <string name="idh">用户不存在</string>
-    <string name="wrongpw">密码输入错误</string>
-    <string name="title_activity_login">Sign in</string>
-    <string name="changepassword">修改密码</string>
+    <string name="id" translatable="false">请输入邮箱</string>
+    <string name="login" translatable="false">登录</string>
+    <string name="password" translatable="false">请输入密码</string>
+    <string name="misspassword" translatable="false">无法登录？</string>
+    <string name="newuser" translatable="false">姓名</string>
+    <string name="back" translatable="false">返回</string>
+    <string name="register" translatable="false">注册</string>
+    <string name="auth_code" translatable="false">验证码</string>
+    <string name="check" translatable="false">换一张</string>
+    <string name="isture" translatable="false">确认</string>
+    <string name="findpassword" translatable="false">找回密码</string>
+    <string name="truepassword" translatable="false">确认您的密码</string>
+    <string name="id_true" translatable="false">格式错误</string>
+    <string name="pstrue" translatable="false">密码不一致</string>
+    <string name="autetrue" translatable="false">验证码错误</string>
+    <string name="changepw" translatable="false">忘记密码</string>
+    <string name="true_change" translatable="false">确认修改</string>
+    <string name="newpassword" translatable="false">请输入新密码</string>
+    <string name="oldpassword" translatable="false">请输入旧密码</string>
+    <string name="confirmpassword" translatable="false">请确认新密码</string>
+    <string name="idh" translatable="false">用户不存在</string>
+    <string name="wrongpw" translatable="false">密码输入错误</string>
+    <string name="title_activity_login" translatable="false">Sign in</string>
+    <string name="changepassword" translatable="false">修改密码</string>
 
-    <string name="settingTitle">设置</string>
+    <string name="settingTitle" translatable="false">设置</string>
 
 
-    <string name="somethingwrong">似乎出了点问题...</string>
+    <string name="somethingwrong" translatable="false">似乎出了点问题...</string>
     <!-- Strings related to login -->
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password (optional)</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">邮箱格式错误</string>
-    <string name="error_invalid_password">密码过短</string>
-    <string name="error_uneqully_password">两次输入密码不同</string>
-    <string name="error_incorrect_password">密码错误</string>
-    <string name="error_null_password">密码为空</string>
-    <string name="error_field_required">邮箱为空</string>
-    <string name="error_null_posttitle">写个标题吧^_^</string>
-    <string name="error_null_postcontent">不写点什么吗</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
+    <string name="prompt_email" translatable="false">Email</string>
+    <string name="prompt_password" translatable="false">Password (optional)</string>
+    <string name="action_sign_in" translatable="false">Sign in or register</string>
+    <string name="action_sign_in_short" translatable="false">Sign in</string>
+    <string name="error_invalid_email" translatable="false">邮箱格式错误</string>
+    <string name="error_invalid_password" translatable="false">密码过短</string>
+    <string name="error_uneqully_password" translatable="false">两次输入密码不同</string>
+    <string name="error_incorrect_password" translatable="false">密码错误</string>
+    <string name="error_null_password" translatable="false">密码为空</string>
+    <string name="error_field_required" translatable="false">邮箱为空</string>
+    <string name="error_null_posttitle" translatable="false">写个标题吧^_^</string>
+    <string name="error_null_postcontent" translatable="false">不写点什么吗</string>
+    <string name="permission_rationale" translatable="false">"Contacts permissions are needed for providing email
         completions."
     </string>
-    <string name="title_activity_settings">Settings</string>
+    <string name="title_activity_settings" translatable="false">Settings</string>
 
-    <string name="darkMode">夜间模式</string>
-    <string name="darkModesummary">光线较暗的环境下用夜间模式更护眼哦</string>
+    <string name="darkMode" translatable="false">夜间模式</string>
+    <string name="darkModesummary" translatable="false">光线较暗的环境下用夜间模式更护眼哦</string>
 
-    <string name="smalltail">论坛小尾巴</string>
-    <string name="nowtail">来自Android客户端</string>
+    <string name="smalltail" translatable="false">论坛小尾巴</string>
+    <string name="nowtail" translatable="false">来自Android客户端</string>
 
-    <string name="suggestion">意见反馈</string>
-    <string name="license">开源许可</string>
-    <string name="checkupdate">检查更新</string>
-    <string name="exitlogin">退出账号</string>
+    <string name="suggestion" translatable="false">意见反馈</string>
+    <string name="license" translatable="false">开源许可</string>
+    <string name="checkupdate" translatable="false">检查更新</string>
+    <string name="exitlogin" translatable="false">退出账号</string>
     <!-- Strings related to Settings -->
 
 
     <!-- Example General settings -->
-    <string name="pref_header_general">General</string>
+    <string name="pref_header_general" translatable="false">General</string>
 
-    <string name="pref_title_social_recommendations">Enable social recommendations</string>
-    <string name="pref_description_social_recommendations">Recommendations for people to contact
+    <string name="pref_title_social_recommendations" translatable="false">Enable social recommendations</string>
+    <string name="pref_description_social_recommendations" translatable="false">Recommendations for people to contact
         based on your message history
     </string>
 
-    <string name="pref_title_display_name">Display name</string>
-    <string name="pref_default_display_name">John Smith</string>
+    <string name="pref_title_display_name" translatable="false">Display name</string>
+    <string name="pref_default_display_name" translatable="false">John Smith</string>
 
-    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
+    <string name="pref_title_add_friends_to_messages" translatable="false">Add friends to messages</string>
     <string-array name="pref_example_list_titles">
         <item>Always</item>
         <item>When possible</item>
@@ -92,9 +92,9 @@
     </string-array>
 
     <!-- Example settings for Data & Sync -->
-    <string name="pref_header_data_sync">Data &amp; sync</string>
+    <string name="pref_header_data_sync" translatable="false">Data &amp; sync</string>
 
-    <string name="pref_title_sync_frequency">Sync frequency</string>
+    <string name="pref_title_sync_frequency" translatable="false">Sync frequency</string>
     <string-array name="pref_sync_frequency_titles">
         <item>15 minutes</item>
         <item>30 minutes</item>
@@ -126,38 +126,38 @@
 
     <string-array name="multi_select_list_preference_default_value" />
 
-    <string name="pref_title_system_sync_settings">System sync settings</string>
+    <string name="pref_title_system_sync_settings" translatable="false">System sync settings</string>
 
     <!-- Example settings for Notifications -->
-    <string name="pref_header_notifications">Notifications</string>
+    <string name="pref_header_notifications" translatable="false">Notifications</string>
 
-    <string name="pref_title_new_message_notifications">New message notifications</string>
+    <string name="pref_title_new_message_notifications" translatable="false">New message notifications</string>
 
-    <string name="pref_title_ringtone">Ringtone</string>
-    <string name="pref_ringtone_silent">Silent</string>
+    <string name="pref_title_ringtone" translatable="false">Ringtone</string>
+    <string name="pref_ringtone_silent" translatable="false">Silent</string>
 
-    <string name="pref_title_vibrate">Vibrate</string>
+    <string name="pref_title_vibrate" translatable="false">Vibrate</string>
 
-    <string name="aboutplus">关于Plus俱乐部</string>
-    <string name="kouhao">一切伟大的行动和思想\n都有一个微不足道的开始</string>
-    <string name="shuoming">本俱乐部旨在形成一个良好的计算机学习氛围，并依托于互联网+基地，开展项目实践。</string>
+    <string name="aboutplus" translatable="false">关于Plus俱乐部</string>
+    <string name="kouhao" translatable="false">一切伟大的行动和思想\n都有一个微不足道的开始</string>
+    <string name="shuoming" translatable="false">本俱乐部旨在形成一个良好的计算机学习氛围，并依托于互联网+基地，开展项目实践。</string>
 
 
-    <string name="specialthanks">特别感谢</string>
-    <string name="specialthanksmsg">Robinson 提供的后台接口
+    <string name="specialthanks" translatable="false">特别感谢</string>
+    <string name="specialthanksmsg" translatable="false">Robinson 提供的后台接口
                 他的项目地址：https://github.com/Robinson28years/lsuplusclub
                 去给他点个赞吧 </string>
 
-    <string name="gotogithub">好嘞(｡･_･)ﾉﾞ</string>
+    <string name="gotogithub" translatable="false">好嘞(｡･_･)ﾉﾞ</string>
 
-    <string name="aboutproject">关于项目</string>
-    <string name="aboutprojectmsg">去项目地址给作者一个点个Star,鼓励下作者吧^_^
+    <string name="aboutproject" translatable="false">关于项目</string>
+    <string name="aboutprojectmsg" translatable="false">去项目地址给作者一个点个Star,鼓励下作者吧^_^
                  项目地址：https://github.com/xiaoshidefeng/PLUS-for-Android
                  去给他点个赞吧</string>
 
 
-    <string name="aboutdicuss">关于论坛</string>
-    <string name="aboutdicussmsg">论坛回复支持Markdown格式\n
+    <string name="aboutdicuss" translatable="false">关于论坛</string>
+    <string name="aboutdicussmsg" translatable="false">论坛回复支持Markdown格式\n
         以下是一些常用的markdown格式\n\n
         # 字符可以添加标题\n
         - 字符可以添加列表(要保留一个空格)\n
@@ -171,8 +171,8 @@
         Markdown格式输入两次回车才会显示一次回车
     </string>
 
-    <string name="aboutuse">关于使用</string>
-    <string name="aboutusermsg">此APP是出于个人兴趣制作\n
+    <string name="aboutuse" translatable="false">关于使用</string>
+    <string name="aboutusermsg" translatable="false">此APP是出于个人兴趣制作\n
         使用时请遵守相关法律法规\n\n
         限于个人能力有限，以及时间上的限制，软件本身存在一些bug，请大家见谅。\n\n
         此APP的扫码登录功能请搭配lsuplus的官网使用\n
@@ -180,8 +180,8 @@
 
     </string>
 
-    <string name="aboutproj">关于项目</string>
-    <string name="aboutprojmsg">
+    <string name="aboutproj" translatable="false">关于项目</string>
+    <string name="aboutprojmsg" translatable="false">
         Android端项目地址：https://github.com/xiaoshidefeng/PLUS-for-Android\n
         作者：小时的风\n\n
 
@@ -193,7 +193,7 @@
 
 
 
-    <string name="license_zxing">Apache License\n
+    <string name="license_zxing" translatable="false">Apache License\n
                         Version 2.0, January 2004\n
                         http://www.apache.org/licenses/\n
         TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION\n\n
@@ -440,7 +440,7 @@ nuclear facility. \n\n
 
     </string>
 
-    <string name="Fresecolicense">
+    <string name="Fresecolicense" translatable="false">
 
 BSD License\n\n
 
@@ -476,7 +476,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. \n\n
     </string>
 
 
-<string name="richtextlicense">
+<string name="richtextlicense" translatable="false">
 
 The MIT License (MIT)\n\n
 
@@ -503,7 +503,7 @@ SOFTWARE. \n\n
 
 </string>
 
-    <string name="fablicense">
+    <string name="fablicense" translatable="false">
         The MIT License (MIT)\n\n
 
 Copyright (c) 2014 Oleksandr Melnykov\n\n

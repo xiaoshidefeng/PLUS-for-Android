@@ -53,6 +53,7 @@ import com.example.cw.slidemeuetest.Setting.Setting;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.generic.RoundingParams;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.xiaomi.market.sdk.XiaomiUpdateAgent;
 import com.xys.libzxing.zxing.activity.CaptureActivity;
 
 import java.io.BufferedReader;
@@ -158,7 +159,7 @@ public class MainActivity extends AppCompatActivity
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
 
         }
-
+        XiaomiUpdateAgent.update(this,true);//第二个参数为true时使用沙盒环境，否则使用线上环境
 
 //        webView=(WebView)findViewById(R.id.id_webView);
 //        webView.getSettings().setJavaScriptEnabled(true);
