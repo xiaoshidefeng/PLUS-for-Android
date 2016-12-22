@@ -5,8 +5,8 @@
     <item android:gravity="bottom">
 
         <shape>
-            <size android:height="5dp"/>
-            <padding android:bottom="5dp"/>
+            <size android:height="1dp"/>
+            <padding android:bottom="1dp"/>
             <gradient
                 android:angle="-90"
                 android:endColor="@android:color/transparent"

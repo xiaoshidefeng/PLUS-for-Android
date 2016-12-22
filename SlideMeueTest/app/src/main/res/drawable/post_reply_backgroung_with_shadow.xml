@@ -5,12 +5,12 @@
     <item android:gravity="top">
 
         <shape>
-            <size android:height="3dp"/>
-            <padding android:top="3dp"/>
+            <size android:height="1dp"/>
+            <padding android:top="1dp"/>
             <gradient
                 android:angle="90"
                 android:endColor="@android:color/transparent"
-                android:startColor="#ff000000"/>
+                android:startColor="#7A7A7A"/>
         </shape>
     </item>
 
