@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -17,6 +19,14 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.cw.slidemeuetest.R;
+
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 /**
  * Created by cw on 2016/11/15.
@@ -35,6 +45,9 @@ public class PreferenceFragment extends android.preference.PreferenceFragment {
 
     //开源许可key
     private static final String PREF_KEY_LICENSE = "key_license";
+
+    //检查更新
+    private static final String PREF_KEY_UPDATA = "key_checkupdate";
 
     //意见反馈
     private static final String PREF_KEY_SUGGESTION = "key_suggestion";
@@ -72,6 +85,9 @@ public class PreferenceFragment extends android.preference.PreferenceFragment {
     //开源许可
     private Preference license;
 
+    //检查更新
+    private Preference updata;
+
     //关于项目
     private Preference aboutproject;
 
@@ -80,6 +96,12 @@ public class PreferenceFragment extends android.preference.PreferenceFragment {
 
     //意见建议
     private Preference suggestion;
+
+    //更新
+    private String updataUrl = "http://lsuplus.top/version";
+    private String downloadapkUrl = "http://lsuplus.top/plus.apk";
+    private String newversion;
+    private String oldversion;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -160,6 +182,14 @@ public class PreferenceFragment extends android.preference.PreferenceFragment {
             }
         });
 
+        updata.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                getVersion();
+                return false;
+            }
+        });
+
         thanks.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
@@ -187,6 +217,95 @@ public class PreferenceFragment extends android.preference.PreferenceFragment {
             }
         });
     }
+
+    public void getVersion() {
+        try {
+            PackageManager packagemanager = getActivity().getPackageManager();
+            PackageInfo info = packagemanager.getPackageInfo(getActivity().getPackageName(),0);
+
+            oldversion = info.versionName.toString();
+            getNewVersionmsg();
+
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            Toast.makeText(getActivity(),"版本获取失败",Toast.LENGTH_SHORT).show();
+
+        }
+
+
+    }
+
+
+    private void getNewVersionmsg() {
+
+        //开启子线程访问网络 更新检测模块
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                HttpURLConnection connection = null;
+                try {
+
+                    URL url = new URL(updataUrl);
+
+                    connection = (HttpURLConnection)url.openConnection();
+                    connection.setRequestMethod("GET");
+                    connection.connect();
+
+                    //连接超时设置
+                    connection.setConnectTimeout(8000);
+                    connection.setReadTimeout(8000);
+
+                    //获取输入流
+                    InputStream in = connection.getInputStream();
+
+                    //对获取的流进行读取
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(in,"utf-8"));
+                    StringBuilder responses = new StringBuilder();
+                    String line=null;
+                    while ((line=reader.readLine())!=null){
+                        responses.append(line);
+                    }
+
+                    JSONObject Jupdata = new JSONObject(responses.toString());
+                    if(Jupdata.has("version")){
+                        newversion = Jupdata.getString("version");
+
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                if(!newversion.equals(oldversion)){
+                                    //不是最新版本 需要更新
+                                    AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
+                                    builder.setTitle(R.string.needupdata);
+                                    builder.setMessage("检测到您当前的版本("+oldversion+")不是最新版本"+
+                                            "("+newversion + ")是否立即下载更新");
+                                    builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(downloadapkUrl));
+                                            startActivity(intent);
+                                        }
+                                    });
+                                    builder.setNegativeButton("取消",null);
+                                    builder.show();
+                                }else if(newversion.equals(oldversion)){
+                                    Toast.makeText(getActivity(),"已是最新版本^_^",Toast.LENGTH_SHORT).show();
+                                }
+
+                            }
+                        });
+                    }
+
+
+                }   catch (Exception e) {
+
+                }
+            }
+        }).start();
+    }
+
 
     //小尾巴
     private void Smalltailset(){
@@ -293,6 +412,8 @@ public class PreferenceFragment extends android.preference.PreferenceFragment {
         license = (Preference)findPreference(PREF_KEY_LICENSE);
         smalltail = (Preference)findPreference(PREF_KEY_SMALLTAIL);
         suggestion = (Preference)findPreference(PREF_KEY_SUGGESTION);
+        updata = (Preference)findPreference(PREF_KEY_UPDATA);
+
 
         SharedPreferences sharedPreferences2 = getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         String s = sharedPreferences2.getString("smalltail","");
@@ -320,6 +441,7 @@ public class PreferenceFragment extends android.preference.PreferenceFragment {
         license = (Preference)findPreference(PREF_KEY_LICENSE);
         smalltail = (Preference)findPreference(PREF_KEY_SMALLTAIL);
         suggestion = (Preference)findPreference(PREF_KEY_SUGGESTION);
+        updata = (Preference)findPreference(PREF_KEY_UPDATA);
 
         SharedPreferences sharedPreferences2 = getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         String s = sharedPreferences2.getString("smalltail","");
