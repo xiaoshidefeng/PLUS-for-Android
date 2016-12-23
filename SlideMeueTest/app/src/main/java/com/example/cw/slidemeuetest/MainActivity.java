@@ -2,11 +2,14 @@ package com.example.cw.slidemeuetest;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
@@ -53,8 +56,9 @@ import com.example.cw.slidemeuetest.Setting.Setting;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.generic.RoundingParams;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.xiaomi.market.sdk.XiaomiUpdateAgent;
 import com.xys.libzxing.zxing.activity.CaptureActivity;
+
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -130,11 +134,18 @@ public class MainActivity extends AppCompatActivity
     //扫码登录接口
     public  String QRloninUrl="http://lsuplus.top/QRLogin/";
 
+    //更新
+    private String updataUrl = "http://lsuplus.top/version";
+    private String downloadapkUrl = "http://lsuplus.top/plus.apk";
+
     //plus网址
     private String plus = "http://lsuplus.top";
 
     //扫码结果
     private String QrScanResult;
+
+    private String newversion;
+    private String oldversion;
 
     //    private int mFirstY;
 //    private int mCurrentY;
@@ -159,7 +170,7 @@ public class MainActivity extends AppCompatActivity
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
 
         }
-        XiaomiUpdateAgent.update(this,true);//第二个参数为true时使用沙盒环境，否则使用线上环境
+//        XiaomiUpdateAgent.update(this,true);//第二个参数为true时使用沙盒环境，否则使用线上环境
 
 //        webView=(WebView)findViewById(R.id.id_webView);
 //        webView.getSettings().setJavaScriptEnabled(true);
@@ -178,6 +189,8 @@ public class MainActivity extends AppCompatActivity
         initViewPager();
 
 
+        //获取版本
+        getVersion();
 
         //检测网络状态
         intentFilter = new IntentFilter();
@@ -545,9 +558,7 @@ public class MainActivity extends AppCompatActivity
 
             return;
         }
-//        //暂时开启 测试ui
-//            Intent intent = new Intent(MainActivity.this, Register_main.class);
-//            startActivity(intent);
+
 
     }
 
@@ -556,6 +567,93 @@ public class MainActivity extends AppCompatActivity
         IntentFilter filter = new IntentFilter("com.example.broadcasttest.USERUI_BROADCAST");
         registerReceiver(receiver, filter);
     }
+
+    public void getVersion() {
+        try {
+            PackageManager packagemanager = this.getPackageManager();
+            PackageInfo info = packagemanager.getPackageInfo(this.getPackageName(),0);
+
+            oldversion = info.versionName.toString();
+            getNewVersionmsg();
+
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            Toast.makeText(MainActivity.this,"版本获取失败",Toast.LENGTH_SHORT).show();
+
+        }
+
+
+    }
+
+    private void getNewVersionmsg() {
+
+        //开启子线程访问网络 更新检测模块
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                HttpURLConnection connection = null;
+                try {
+
+                    URL url = new URL(updataUrl);
+
+                    connection = (HttpURLConnection)url.openConnection();
+                    connection.setRequestMethod("GET");
+                    connection.connect();
+
+                    //连接超时设置
+                    connection.setConnectTimeout(8000);
+                    connection.setReadTimeout(8000);
+
+                    //获取输入流
+                    InputStream in = connection.getInputStream();
+
+                    //对获取的流进行读取
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(in,"utf-8"));
+                    StringBuilder responses = new StringBuilder();
+                    String line=null;
+                    while ((line=reader.readLine())!=null){
+                        responses.append(line);
+                    }
+
+                    JSONObject Jupdata = new JSONObject(responses.toString());
+                    if(Jupdata.has("version")){
+                        newversion = Jupdata.getString("version");
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                if(!newversion.equals(oldversion)){
+                                    //不是最新版本 需要更新
+                                    AlertDialog.Builder builder=new AlertDialog.Builder(MainActivity.this);
+                                    builder.setTitle(R.string.needupdata);
+                                    builder.setMessage("检测到您当前的版本("+oldversion+")不是最新版本"+
+                                            "("+newversion + ")是否立即下载更新");
+                                    builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(downloadapkUrl));
+                                            startActivity(intent);
+                                        }
+                                    });
+                                    builder.setNegativeButton("取消",null);
+                                    builder.show();
+                                }
+
+
+                            }
+                        });
+                    }
+
+
+                }   catch (Exception e) {
+
+                }
+            }
+        }).start();
+    }
+
 
     public class UserBroadcastReceiver extends BroadcastReceiver {
         @Override

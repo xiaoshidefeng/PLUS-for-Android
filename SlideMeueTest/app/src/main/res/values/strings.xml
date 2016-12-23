@@ -65,7 +65,14 @@
     <string name="license" translatable="false">开源许可</string>
     <string name="checkupdate" translatable="false">检查更新</string>
     <string name="exitlogin" translatable="false">退出账号</string>
+
     <!-- Strings related to Settings -->
+
+
+    <string name="needupdata">版本更新</string>
+    <string name="needupdatamsgone">检测到您当前的版本</string>
+    <string name="needupdatamsgtwo">不是最新版本\n</string>
+    <string name="needupdatamsgthree">是否立即下载更新</string>
 
 
     <!-- Example General settings -->

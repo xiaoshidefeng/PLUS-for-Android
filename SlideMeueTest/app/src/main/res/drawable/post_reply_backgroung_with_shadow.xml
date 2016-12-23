@@ -5,21 +5,20 @@
     <item android:gravity="top">
 
         <shape>
-            <size android:height="1dp"/>
-            <padding android:top="1dp"/>
+            <size android:height="3dp"/>
+            <padding android:top="3dp"/>
             <gradient
                 android:angle="90"
                 android:endColor="@android:color/transparent"
-                android:startColor="#7A7A7A"/>
+                android:startColor="#a9a09d"/>
         </shape>
     </item>
 
     <!-- content -->
     <item android:gravity="top">
         <shape android:shape="rectangle" >
-            <padding android:top="1dp"/>
-            <size android:height="1dp"/>
-            <solid android:color="#ffffff" />
+            <padding android:top="3dp"/>
+            <solid android:color="#fff" />
         </shape>
     </item>
 
