@@ -178,13 +178,14 @@ public class PostActivity extends AppCompatActivity {
                     }
 
                     replystr = etreply.getText().toString();
+
                     if(smalltail.equals("来自Plus客户端")){
                         //彩蛋 特殊小尾巴
 //                        replystr = replystr +"\n\n"+"      *"+ smalltail+"*" +
 //                                "\n        一切伟大的行动和思想\n       都有一个微不足道的开始";
                         replystr = replystr +"\n\n"+"*"+ "——————————"+smalltail+"*"+"\n"+
                                 "\n\n一切伟大的行动和思想\n\n都有一个微不足道的开始";
-                    }else if(!smalltail.equals("")){
+                    }else if(!smalltail.equals("")||smalltail==null){
                         replystr = replystr +"\n\n"+"*"+ "——————————"+smalltail+"*";
                     }
 

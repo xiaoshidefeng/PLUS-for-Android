@@ -99,6 +99,7 @@ public class MyAdapter extends BaseAdapter {
         if(bean.ItemContent.equals("")){
             bean.ItemContent = " ";
         }
+        bean.ItemContent = bean.ItemContent+" ";
 
         RichText.fromMarkdown(bean.ItemContent).autoFix(false).fix(new ImageFixCallback() {
             @Override

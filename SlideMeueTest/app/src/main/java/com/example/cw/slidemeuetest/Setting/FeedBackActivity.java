@@ -22,24 +22,6 @@ import java.net.URLEncoder;
 
 public class FeedBackActivity extends AppCompatActivity {
 
-    /*
-    下面开始测试
-    好吧 忘了弄其他地方了。。
-
-    下面开始测试了
-    在调试录制窗口
-
-    有点问题
-    发送反馈后 在设置界面按返回又重新回到反馈界面
-
-    所以下面要设置一下他的启动模式
-
-    下面修改界面
-
-    模拟器调试太卡 下面用真机调试
-
-    太卡 先休息会儿
-     */
 
     //返回
     private TextView tvback;

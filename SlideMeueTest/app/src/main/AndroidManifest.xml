@@ -74,7 +74,8 @@
         <activity
             android:name=".PostContent.PostActivity"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".MainActivityFragment.Fragmenttwo.NewPostActivity" />
+        <activity android:name=".MainActivityFragment.Fragmenttwo.NewPostActivity"
+            android:launchMode="singleTask"/>
         <activity android:name=".Setting.LincenseActivity" />
         <activity android:name=".LoginRegist.HelpActivity" />
         <activity android:name=".LoginRegist.AboutActivity" />
