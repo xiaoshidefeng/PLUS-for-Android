@@ -32,6 +32,7 @@ dependencies {
     compile 'com.android.support:support-vector-drawable:24.2.0'
     testCompile 'junit:junit:4.12'
     compile files('src/libs/xiaomi_sdk.jar')
+    testCompile 'com.squareup.okhttp3:mockwebserver:3.9.1'
 }
 
 dependencies {

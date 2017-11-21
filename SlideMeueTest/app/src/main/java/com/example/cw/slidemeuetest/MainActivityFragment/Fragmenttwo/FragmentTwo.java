@@ -19,18 +19,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.cw.slidemeuetest.R;
+import com.example.cw.slidemeuetest.util.DisscussConst;
 import com.melnykov.fab.FloatingActionButton;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
@@ -39,16 +44,9 @@ import static android.widget.Toast.LENGTH_SHORT;
  */
 
 public class FragmentTwo extends Fragment {
-    //讨论
-    //private static WebView webView;
 
     //刷新
     private SwipeRefreshLayout refreshtwo = null;
-
-    private String GetAllPostUrl = "http://lsuplus.top/api/discuss";
-
-    //plus网址
-    private String plus = "http://lsuplus.top";
 
     //图片检测
     private String imgfind = "http://lsuplus.top/uploads";
@@ -58,20 +56,17 @@ public class FragmentTwo extends Fragment {
     //FAB 按钮
     private FloatingActionButton floatingActionButton;
 
-    private String content;
-
-    //private MyAdapter myAdapter;
-
     private List<ItemBean> itemBeen = new ArrayList<>();
 
     private ListView listView;
 
+    private Handler myHandler;
+
+    private OkHttpClient client = new OkHttpClient();
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //sendHttpURLConnectionGETuserInfo();
-
-
     }
 
     @Nullable
@@ -84,39 +79,14 @@ public class FragmentTwo extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initview();
-
+        myHandler = new MyHandler(this);
 
         //进度条颜色
         refreshtwo.setColorSchemeResources(R.color.colorAccent);
 
         itemBeen = new ArrayList<>();
 
-
-//        webView.getSettings().setJavaScriptEnabled(true);
-//        webView.loadUrl("http://lsuplus.top/discuss");
-//        webView.setWebViewClient(new WebViewClient(){
-//            //重写加载方法 不跳转浏览器
-//
-//            @Override
-//            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-//                view.loadUrl(url);
-//                return super.shouldOverrideUrlLoading(view, url);
-//            }
-//
-//        });
-//        ListView listView = (ListView) getActivity().findViewById(R.id.id_Discusslistview);
-//        List<ItemBean> dataList = new ArrayList<>();
-//        // 创建假数据
-//        for (int i = 0; i < 20; i++) {
-//            dataList.add(new ItemBean(
-//                    R.mipmap.ic_launcher,
-//                    "我是标题" + i,
-//                    "我是内容" + i));
-//        }
-//        // 设置适配器
-//        listView.setAdapter(new MyAdapter(this.getActivity(), dataList));
-
-        sendHttpURLConnectionGETuserInfo();
+        getAllPost();
 
         ItemListener();
 
@@ -127,21 +97,8 @@ public class FragmentTwo extends Fragment {
                     Intent intent = new Intent(getActivity(),NewPostActivity.class);
                     startActivity(intent);
                 }
-
             }
         });
-//        if(listView!=null){
-//            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//                @Override
-//                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                    //Log.e("errss", String.valueOf(i));
-//
-//                    Toast.makeText(getActivity(),i+"test"+l,Toast.LENGTH_LONG).show();
-//
-//                }
-//            });
-//        }
-
 
     }
 
@@ -150,45 +107,16 @@ public class FragmentTwo extends Fragment {
         refreshtwo.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                //webView.loadUrl(webView.getUrl());
-                new Thread(new Runnable() {//下拉触发的函数，这里是谁1s然后加入一个数据，然后更新界面
-                    @Override
-                    public void run() {
-                        try {
-                            Thread.sleep(1000);
-                            Message message = new Message();
-                            message.what=1;
-                            myhandler.sendMessage(message);
-                            itemBeen.clear();
-                            sendHttpURLConnectionGETuserInfo();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                }).start();
+                reFreshPost();
             }
         });
-
-
-
-//        listView.getOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                //int id = itemBeen.get(l).getId();
-//                Toast.makeText(getContext(),"test",Toast.LENGTH_LONG).show();
-//            }
-//        });
-
     }
 
     private void initview() {
-        //webView=(WebView)getView().findViewById(R.id.id_webViewTwo);
         refreshtwo = (SwipeRefreshLayout)getActivity().findViewById(R.id.id_refreshtwo);
         listView = (ListView)getActivity().findViewById(R.id.id_Discusslistview);
 
-        //listView.setAdapter(myAdapter);
-                floatingActionButton = (FloatingActionButton)getActivity().findViewById(R.id.id_FABonepost);
+        floatingActionButton = (FloatingActionButton)getActivity().findViewById(R.id.id_FABonepost);
         floatingActionButton.attachToListView(listView); // or attachToRecyclerView
 
         tvnull = (TextView)getActivity().findViewById(R.id.id_Tvpostnull);
@@ -196,156 +124,108 @@ public class FragmentTwo extends Fragment {
 
     }
 
-    //停止刷新
-    Handler myhandler = new Handler(){
-        public  void handleMessage(Message message){
-            switch (message.what) {
+    static class MyHandler extends Handler {
+        WeakReference<FragmentTwo> mActivityReference;
+
+        MyHandler(FragmentTwo activity) {
+            mActivityReference= new WeakReference<FragmentTwo>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            FragmentTwo activity = mActivityReference.get();
+            activity.itemBeen.clear();
+            switch (msg.what) {
                 case 1:
-                    //sendHttpURLConnectionGETuserInfo();
-                    refreshtwo.setRefreshing(false);
-                    Toast.makeText(getContext(),"刷新完成", LENGTH_SHORT).show();
+                    try {
+                        formatPostList(activity, new JSONObject(msg.obj.toString()));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case 2:
+                    try {
+                        formatPostList(activity, new JSONObject(msg.obj.toString()));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } finally {
+                        activity.refreshtwo.setRefreshing(false);
+                        Toast.makeText(activity.getContext(),"刷新完成", LENGTH_SHORT).show();
+                    }
                     break;
                 default:
                     break;
             }
         }
-    };
+        private void formatPostList(FragmentTwo activity, JSONObject jsonObject) throws JSONException {
+            JSONObject dataObj = (JSONObject) jsonObject.getJSONObject("data");
+            JSONArray dataArray = (JSONArray) dataObj.getJSONArray("data");
+            for (int i = 0,count = 0; i < dataArray.length(); i++, count++) {
+                JSONObject post = (JSONObject) dataArray.getJSONObject(i);
+                JSONObject OnePostJson = dataArray.getJSONObject(i);
+                int id = post.getInt("id");
+                String title = post.getString("title");
+                String created_at = post.getString("created_at");
+                String body = post.getString("body");
 
-    //通过GET方法 获取所有贴子信息
-    private void sendHttpURLConnectionGETuserInfo() {
-        //开启子线程访问网络 获取所有贴子信息模块
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+                JSONObject user = (JSONObject) post.getJSONObject("user");
+                String username = user.getString("name");
+                String avatar = user.getString("avatar");
 
-                HttpURLConnection connection = null;
-                try {
-
-                    URL url = new URL(GetAllPostUrl);
-
-                    connection = (HttpURLConnection)url.openConnection();
-                    connection.setRequestMethod("GET");
-                    connection.connect();
-
-                    //连接超时设置
-                    connection.setConnectTimeout(8000);
-                    connection.setReadTimeout(8000);
-                    //获取输入流
-                    InputStream in = connection.getInputStream();
-
-                    //对获取的流进行读取
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(in,"utf-8"));
-                    StringBuilder response = new StringBuilder();
-                    String line=null;
-                    while ((line=reader.readLine())!=null){
-                        response.append(line);
-                    }
-
-
-                    //创建JSON对象
-                    JSONObject AllPostJson = new JSONObject(response.toString());
-                    Log.e("errss", response.toString());
-                    if(AllPostJson.has("data")){
-                        //创建JSON数组
-                        JSONArray dataArray = AllPostJson.getJSONArray("data");
-                        for(int i = 0;i<dataArray.length();i++){
-                            JSONObject OnePostJson = dataArray.getJSONObject(i);
-                            String title = OnePostJson.getString("title");
-                            String created_at = OnePostJson.getString("created_at");
-                            String userimgurl = OnePostJson.getString("avatar");
-                            String username = OnePostJson.getString("name");
-                            int id = OnePostJson.getInt("id");
-                            content = OnePostJson.getString("body");
-                            String allpostcontent = content;
-//                            String contentimgurl = haveImg(content);
-
-//                            if(contentimgurl!=null&&(!contentimgurl.equals(""))){
-//                                //删文字
-//                                int fir = content.indexOf("![\\");
-//                                //Log.e("errssss", String.valueOf(fir));
-//
-//                                int last1 = content.indexOf(contentimgurl);
-//                                int last2 = 0;
-//                                if(contentimgurl.contains(".jpg")){
-//                                    last2 = contentimgurl.indexOf(".jpg");
-//                                }else if(contentimgurl.contains(".jpeg")){
-//                                    last2 = contentimgurl.indexOf(".jpeg");
-//                                }else if(contentimgurl.contains(".png")){
-//                                    last2 = contentimgurl.indexOf(".png");
-//                                }
-//                                content = content.substring(0,fir)+"[[图片]]"+
-//                                        content.substring(last2+last1+4,content.length());
-//
-//                            }
-
-                            if(created_at.length()>10){
-                                //时间过久
-                                JSONObject creatat = new JSONObject(created_at.toString());
-                                    created_at = creatat.getString("date");
-                                    created_at = created_at.substring(0,19);
-                            }
-
-                            //Log.e("errss", created_at.toString());
-
-
-                            itemBeen.add(new ItemBean(
-                                    id,
-                                    username,
-                                    content,
-                                    allpostcontent,
-                                    plus+userimgurl,
-                                    title,
-//                                    contentimgurl,
-                                    "创建于"+created_at
-                            ));
-
-
-                        }
-
-                        //开启ui线程
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                 MyAdapter myAdapter = new MyAdapter(getContext(),itemBeen);
-                                listView.setAdapter(myAdapter);
-                                //myAdapter.notifyDataSetChanged();
-
-                            }
-                        });
-
-
-                    }else {
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                itemBeen.clear();
-                                listView.setAdapter(null);
-                                //myAdapter.notifyDataSetChanged();
-
-                            }
-                        });
-                        return;
-                    }
-
-                }   catch (Exception e) {
-                    Log.e("errss catch", e.getMessage());
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            listView.setAdapter(null);
-
-                        }
-                    });
-                }
+                activity.itemBeen.add(new ItemBean(
+                        id,
+                        username,
+                        body,
+                        body,
+                        avatar,
+                        title,
+                        "创建于"+created_at
+                ));
+                MyAdapter myAdapter = new MyAdapter(activity.getContext(), activity.itemBeen);
+                activity.listView.setAdapter(myAdapter);
             }
-        }).start();
+
+        }
+    }
+
+    private void getAllPost() {
+        Request request = new Request.Builder().url(DisscussConst.GET_ALL_POST).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Message msg = new Message();
+                msg.what=1;
+                msg.obj = response.body().string();
+                myHandler.sendMessage(msg);
+            }
+        });
+    }
+
+    private void reFreshPost() {
+        Request request = new Request.Builder().url(DisscussConst.GET_ALL_POST).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Message msg = new Message();
+                msg.what=2;
+                msg.obj = response.body().string();
+                myHandler.sendMessage(msg);
+            }
+        });
     }
 
     private String haveImg(String content) {
         String contentImg = null;
         if(content.contains(imgfind)){
             Log.e("errssimg", content);
-
 
             int first = content.indexOf(imgfind);
             contentImg = content.substring(first,content.length());
@@ -359,9 +239,7 @@ public class FragmentTwo extends Fragment {
             }else if(contentImg.contains(".png")){
                 first=0;
                 contentImg = contentImg.substring(first,contentImg.indexOf(".png")+4);
-
             }
-
             return contentImg;
         }else {
             return "";
@@ -388,15 +266,5 @@ public class FragmentTwo extends Fragment {
         return false;
     }
 
-    //go back
-//    public static boolean goback() {
-//        if (webView.canGoBack()) {
-//            //网页能返回则优先返回网页
-//            webView.goBack();
-//            return true;
-//        }
-//        return false;
-//
-//    }
 }
 
