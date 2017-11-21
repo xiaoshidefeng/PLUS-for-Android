@@ -1,5 +1,7 @@
 package com.example.cw.slidemeuetest;
 
+import com.example.cw.slidemeuetest.util.UserConst;
+
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -13,5 +15,10 @@ public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() throws Exception {
         assertEquals(4, 2 + 2);
+    }
+
+    @Test
+    public void constTest() {
+        System.out.println(UserConst.GET_ALL_POST);
     }
 }

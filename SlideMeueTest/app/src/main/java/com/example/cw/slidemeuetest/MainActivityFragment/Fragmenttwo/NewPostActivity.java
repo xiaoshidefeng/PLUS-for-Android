@@ -133,16 +133,8 @@ public class NewPostActivity extends AppCompatActivity {
 
 
         if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
             focusView.requestFocus();
         } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-            // showProgress(true);
-            // mAuthTask = new UserLoginTask(email, password);
-            // mAuthTask.execute((Void) null);
-
             //进度条开始转动
             progressBar.setVisibility(View.VISIBLE);
 
@@ -297,29 +289,6 @@ public class NewPostActivity extends AppCompatActivity {
                         is.close();
 
                     }
-
-//                    //获取输入流
-//                    InputStream in = connection.getInputStream();
-//
-//                    //对获取的流进行读取
-//                    BufferedReader reader = new BufferedReader(new InputStreamReader(in,"utf-8"));
-//                    StringBuilder response = new StringBuilder();
-//                    String line=null;
-//                    while ((line=reader.readLine())!=null){
-//                        response.append(line);
-//                    }
-//
-//
-//
-//
-//                    //创建JSON对象
-//                    JSONObject jsonObject = new JSONObject(response.toString());
-//
-//                    if(jsonObject.has("status")){
-                        //如果登录成功
-//                        String status = jsonObject.getString("status");
-                        //Toast.makeText(NewPostActivity.this,"发帖成功",Toast.LENGTH_SHORT).show();
-//                        Log.e("status",status);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -330,11 +299,6 @@ public class NewPostActivity extends AppCompatActivity {
                                 startActivity(intent);
                             }
                         });
-
-//                    }else{
-//
-//                        return;
-//                    }
 
 
                 }   catch (Exception e) {

@@ -74,9 +74,7 @@ public class MyAdapter extends BaseAdapter {
             view.setTag(viewHolder);
         }else {
             viewHolder = (ViewHolder)view.getTag();
-//            if(viewHolder.content!=null&&!viewHolder.content.equals("")){
-//                viewHolder.content.setVisibility(View.GONE);
-//            }
+
         }
 
 
@@ -120,35 +118,11 @@ public class MyAdapter extends BaseAdapter {
 
         }).into(viewHolder.content);
 
-//        RxMarkdown.with(bean.ItemContent,view.getContext())
-//                .factory(TextFactory.create())
-//                .intoObservable()
-//                .subscribeOn(Schedulers.computation())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Subscriber<CharSequence>() {
-//                    @Override
-//                    public void onCompleted() {}
-//
-//                    @Override
-//                    public void onError(Throwable e) {}
-//
-//                    @Override
-//                    public void onNext(CharSequence charSequence) {
-//                        viewHolder.content.setText(charSequence, TextView.BufferType.SPANNABLE);
-//                    }
-//                });
-
         Fresco.initialize(view.getContext());
 
         viewHolder.imageView.setImageURI(bean.getUserImgUrl());
         viewHolder.title.setText(bean.ItemTitle);
         viewHolder.times.setText(bean.ItemCreatTime);
-        //viewHolder.contentimg.setImageURI(bean.getItemContentImg());
-//        if(bean.getItemContentImg().contains("http://lsuplus.top/uploads/")){
-//            //viewHolder.contentimg.setAspectRatio(1.62f);
-//            viewHolder.contentimg.setImageURI(bean.getItemContentImg());
-//
-//        }
 
         RoundingParams roundingParams = RoundingParams.fromCornersRadius(5f);
         roundingParams.setBorder(R.color.colorWhite, (float) 1.0);
