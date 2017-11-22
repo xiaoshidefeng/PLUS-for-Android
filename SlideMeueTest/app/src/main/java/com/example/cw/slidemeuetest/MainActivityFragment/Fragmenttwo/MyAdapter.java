@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.example.cw.slidemeuetest.PostContent.PostActivity;
 import com.example.cw.slidemeuetest.R;
+import com.example.cw.slidemeuetest.util.IsNull;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.generic.RoundingParams;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -64,11 +65,9 @@ public class MyAdapter extends BaseAdapter {
             view = mInflater.inflate(R.layout.discuss_listview_item,null);
 
             viewHolder.name = (TextView)view.findViewById(R.id.id_TvDiscussName);
-//            viewHolder.content = (MarkedView)view.findViewById(R.id.id_TvDiscussContent);
             viewHolder.content = (TextView)view.findViewById(R.id.id_TvDiscussContent);
             viewHolder.imageView = (SimpleDraweeView)view.findViewById(R.id.id_IMGhead);
             viewHolder.title = (TextView)view.findViewById(R.id.id_TvDiscussTitle);
-            //viewHolder.contentimg = (SimpleDraweeView)view.findViewById(R.id.id_IMGcontent);
             viewHolder.times = (TextView)view.findViewById(R.id.id_TvDiscussTime);
             viewHolder.linearLayout = (LinearLayout)view.findViewById(R.id.id_lltoonepost);
             view.setTag(viewHolder);
@@ -79,22 +78,10 @@ public class MyAdapter extends BaseAdapter {
 
 
         final ItemBean bean = mList.get(i);
-//        viewHolder.content.setTag(bean.ItemContent);
         viewHolder.name.setText(bean.ItemName);
-        //viewHolder.content.setMDText(bean.ItemContent);
-//        if(viewHolder.content.getTag().equals(bean.ItemContent)){
-//
-//            viewHolder.content.setMDText(bean.ItemContent);
-//        }
-        //RichText.from(bean.ItemContent).into(viewHolder.content);
-        //viewHolder.content.setMDText("正在加载中...");
-
-//        if(viewHolder.content.getTag()!=null&&viewHolder.content.getTag().equals(bean.ItemContent)){
-//            viewHolder.content.setMDText(bean.ItemContent);
-//        }
 
         //防止为空时报错
-        if(bean.ItemContent.equals("")){
+        if(IsNull.isNullField(bean.ItemContent)){
             bean.ItemContent = " ";
         }
         bean.ItemContent = bean.ItemContent+" ";
@@ -162,12 +149,10 @@ public class MyAdapter extends BaseAdapter {
 
     class ViewHolder{
         public TextView name;
-//        public MarkedView content;
         public TextView content;
 
         public SimpleDraweeView imageView;
         public TextView title;
-        //public SimpleDraweeView contentimg;
         public TextView times;
 
         public LinearLayout linearLayout;

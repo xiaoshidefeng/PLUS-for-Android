@@ -101,10 +101,6 @@ public class NewPostActivity extends AppCompatActivity {
      * errors are presented and no actual login attempt is made.
      */
     private void attemptNewPost() {
-//        if (mAuthTask != null) {
-//            return;
-//        }
-
         // Reset errors.
         etTitle.setError(null);
         etContent.setError(null);

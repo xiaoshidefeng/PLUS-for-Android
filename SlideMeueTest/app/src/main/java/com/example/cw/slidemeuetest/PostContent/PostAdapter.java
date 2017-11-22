@@ -79,12 +79,10 @@ public class PostAdapter extends BaseAdapter {
         roundingParams.setRoundAsCircle(true);
         viewHolder.imageView.getHierarchy().setRoundingParams(roundingParams);
 
-
         Log.e("viewholder",bean.ItemContentpost);
 
         //防止为空时报错
         if(!bean.ItemContentpost.equals("")){
-            //bean.ItemContentpost = " ";
             RichText.fromMarkdown(bean.ItemContentpost).autoFix(false).fix(new ImageFixCallback() {
                 @Override
                 public void onFix(ImageHolder holder) {
@@ -105,8 +103,6 @@ public class PostAdapter extends BaseAdapter {
             }).into(viewHolder.content);
         }
 
-
-
         return view;
     }
 
@@ -115,10 +111,7 @@ public class PostAdapter extends BaseAdapter {
         public TextView name;
         public TextView content;
         public SimpleDraweeView imageView;
-//        public TextView title;
-//        public SimpleDraweeView contentimg;
         public TextView times;
 
-//        public LinearLayout linearLayout;
     }
 }

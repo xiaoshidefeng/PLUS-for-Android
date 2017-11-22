@@ -116,10 +116,6 @@ public class ChangePwActivity extends AppCompatActivity {
      * errors are presented and no actual login attempt is made.
      */
     private void attemptChangePw() {
-//        if (mAuthTask != null) {
-//            return;
-//        }
-
         // Reset errors.
         etOldPw.setError(null);
         etNewPw.setError(null);
@@ -179,12 +175,6 @@ public class ChangePwActivity extends AppCompatActivity {
             // form field with an error.
             focusView.requestFocus();
         } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-            // showProgress(true);
-            // mAuthTask = new UserLoginTask(email, password);
-            // mAuthTask.execute((Void) null);
-
             //进度条开始转动
             progressBar.setVisibility(View.VISIBLE);
 

@@ -53,6 +53,7 @@ import com.example.cw.slidemeuetest.MainActivityFragment.FragmentThree;
 import com.example.cw.slidemeuetest.MainActivityFragment.Fragmenttwo.FragmentTwo;
 import com.example.cw.slidemeuetest.MainActivityFragment.Fragmenttwo.NewPostActivity;
 import com.example.cw.slidemeuetest.Setting.Setting;
+import com.example.cw.slidemeuetest.util.TokenUtil;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.generic.RoundingParams;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -749,8 +750,7 @@ public class MainActivity extends AppCompatActivity
     private void RefreshToken(){
 
         //取出token
-        SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-        token = sharedPreferences.getString("token","");
+        token = TokenUtil.getToken(this);
 
         //测试token是否过期
         //开启子线程访问网络 测试token模块

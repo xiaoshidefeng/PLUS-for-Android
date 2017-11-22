@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.cw.slidemeuetest.R;
+import com.example.cw.slidemeuetest.util.IsNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -81,10 +82,6 @@ public class FeedBackActivity extends AppCompatActivity {
      * errors are presented and no actual login attempt is made.
      */
     private void attemptSendFeedback() {
-//        if (mAuthTask != null) {
-//            return;
-//        }
-
         // Reset errors.
         etfeedback.setError(null);
 
@@ -94,17 +91,8 @@ public class FeedBackActivity extends AppCompatActivity {
         strcontact = etcontact.getText().toString();
         strfeedback = etfeedback.getText().toString();
 
-//        content.replace("\n","\n\n");
-//        Log.e("status",content);
-
-        // 标题判断
-//        if(title.equals("")||title==null){
-//            etTitle.setError(getString(R.string.error_null_posttitle));
-//            focusView = etTitle;
-//            cancel = true;
-//        }
         // 内容判断
-        if(strfeedback.equals("")||strfeedback==null){
+        if(IsNull.isNullField(strfeedback)){
             etfeedback.setError(getString(R.string.error_null_postcontent));
             focusView = etfeedback;
             cancel = true;
@@ -116,12 +104,6 @@ public class FeedBackActivity extends AppCompatActivity {
             // form field with an error.
             focusView.requestFocus();
         } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-            // showProgress(true);
-            // mAuthTask = new UserLoginTask(email, password);
-            // mAuthTask.execute((Void) null);
-
             //进度条开始转动
             progressBar.setVisibility(View.VISIBLE);
 
@@ -138,11 +120,7 @@ public class FeedBackActivity extends AppCompatActivity {
 
                 HttpURLConnection connection = null;
                 try {
-//                    String newpostcontent =token+ "&title=" + title+"&body="+content+
-//                            "&user_id="+userid;
                     URL url = new URL(feedbackUrl);
-                    //Log.e("status",url.toString());
-
                     connection = (HttpURLConnection)url.openConnection();
                     connection.setRequestMethod("POST");
 //                    connection.connect();
@@ -155,8 +133,6 @@ public class FeedBackActivity extends AppCompatActivity {
                     //Post方式不能缓存,需手动设置为false
                     connection.setUseCaches(false);
                     //2设置http请求数据的类型为表单类型
-
-//                    connection.setRequestProperty("Content-type","application/x-www-form-urlencoded");
 
                     String data = "contact=" + URLEncoder.encode(strcontact,"utf-8") + "&body=" +
                             URLEncoder.encode(strfeedback,"utf-8");
@@ -183,29 +159,6 @@ public class FeedBackActivity extends AppCompatActivity {
                         is.close();
 
                     }
-
-//                    //获取输入流
-//                    InputStream in = connection.getInputStream();
-//
-//                    //对获取的流进行读取
-//                    BufferedReader reader = new BufferedReader(new InputStreamReader(in,"utf-8"));
-//                    StringBuilder response = new StringBuilder();
-//                    String line=null;
-//                    while ((line=reader.readLine())!=null){
-//                        response.append(line);
-//                    }
-//
-//
-//
-//
-//                    //创建JSON对象
-//                    JSONObject jsonObject = new JSONObject(response.toString());
-//
-//                    if(jsonObject.has("status")){
-                    //如果登录成功
-//                        String status = jsonObject.getString("status");
-                    //Toast.makeText(NewPostActivity.this,"发帖成功",Toast.LENGTH_SHORT).show();
-//                        Log.e("status",status);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -218,7 +171,6 @@ public class FeedBackActivity extends AppCompatActivity {
                     });
 
                 }   catch (Exception e) {
-
                     Log.e("error", e.getMessage());
 
                 }

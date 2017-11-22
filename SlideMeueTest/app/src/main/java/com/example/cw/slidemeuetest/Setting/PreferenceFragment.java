@@ -149,17 +149,6 @@ public class PreferenceFragment extends android.preference.PreferenceFragment {
 
         }
 
-
-
-//        nightModeSwitch.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-//            @Override
-//            public boolean onPreferenceChange(Preference preference, Object o) {
-//
-//            }
-//        });
-
-
-
     }
 
     //点击监听

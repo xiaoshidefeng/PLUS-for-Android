@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.cw.slidemeuetest.R;
+import com.example.cw.slidemeuetest.util.MainConst;
 
 /**
  * Created by cw on 2016/11/21.
@@ -45,7 +46,7 @@ public class FragmentThree extends Fragment {
         refreshthree.setColorSchemeResources(R.color.colorAccent);
 
         webView.getSettings().setJavaScriptEnabled(true);
-        webView.loadUrl("http://lsuplus.top/library/index");
+        webView.loadUrl("http://" + MainConst.HOST);
 
         webView.setWebViewClient(new WebViewClient(){
             //重写加载方法 不跳转浏览器

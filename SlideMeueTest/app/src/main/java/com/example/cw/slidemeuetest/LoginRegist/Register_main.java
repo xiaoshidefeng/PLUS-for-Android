@@ -49,33 +49,12 @@ public class Register_main extends AppCompatActivity {
 
     //密码输入
     private EditText etPassword;
-    //
 
     //登录按钮
     private Button Btnlonin;
 
-    //扫码登录按钮
-//    private Button btnScan;
-
     //扫码结果显示
     private TextView tvResult;
-
-    //plus网址
-    private String plus = "http://lsuplus.top";
-
-
-    //登录接口 新的token验证 获取token值
-    private  String loninUrl="http://lsuplus.top/api/user/login/";
-
-    //登录接口 用token获取用户信息
-    private String getUserInfoUrl = "http://lsuplus.top/api/user/me/?token=";
-
-    //修改密码接口
-    private String forgetUrl = "http://lsuplus.top/password/email/?email=";
-
-
-    //头像Url
-    private String ImgUrl;
 
     //获取的账号
     private String account=null;
@@ -88,21 +67,6 @@ public class Register_main extends AppCompatActivity {
 
     //bcrypt加密后的密码
     private String BCpassword;
-
-    //用户信息
-    private String userinfo=null;
-
-    //用户id
-    private int id;
-
-    //管理员
-    private String admin = "";
-
-    //load字样
-    private TextView loadText;
-
-    //进度显示
-    private TextView loadNumText;
 
     //进度条
     public ProgressBar progressBar;
@@ -167,12 +131,8 @@ public class Register_main extends AppCompatActivity {
                     //获取文本框
                     account=etAccount.getText().toString();
                     password=etPassword.getText().toString();
-
-
                     //尝试登录
                     attemptLogin();
-
-
                 }
 
             }
@@ -292,7 +252,6 @@ public class Register_main extends AppCompatActivity {
                 editor.putString("admin", admin);
                 editor.putString("imgurl", ImgUrl);
                 editor.commit();
-
                 //发送广播 通知MainActivity更新用户ui
                 Intent intent = new Intent();
                 intent.setAction("com.example.broadcasttest.USERUI_BROADCAST");
@@ -320,7 +279,10 @@ public class Register_main extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-
+                Message msg = new Message();
+                msg.what = 2;
+                msg.obj = "获取Token失败";
+                myHandler.sendMessage(msg);
             }
             @Override
             public void onResponse(Call call, Response response) throws IOException {
@@ -358,7 +320,10 @@ public class Register_main extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-
+                Message msg = new Message();
+                msg.what=2;
+                msg.obj = "获取用户信息失败";
+                myHandler.sendMessage(msg);
             }
             @Override
             public void onResponse(Call call, Response response) throws IOException {
@@ -411,7 +376,6 @@ public class Register_main extends AppCompatActivity {
             @Override
             public void run() {
                 HttpURLConnection connection = null;
-
                 try {
                     URL url = new URL(UserConst.GET_CONFIRM_CODE + "&email=" + forgetEmail);
                     connection = (HttpURLConnection)url.openConnection();

@@ -131,7 +131,7 @@ public class PostActivity extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         etreply.clearFocus();
 
-
+        //监控输入框状态 输入后变蓝
         etreply.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
