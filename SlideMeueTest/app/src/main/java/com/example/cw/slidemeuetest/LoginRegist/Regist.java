@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -24,8 +26,15 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class Regist extends AppCompatActivity {
 
@@ -78,6 +87,12 @@ public class Regist extends AppCompatActivity {
 
     //获取的token
     private String token = null;
+
+
+    private Handler myHandler;
+
+    private OkHttpClient client = new OkHttpClient();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,7 +150,6 @@ public class Regist extends AppCompatActivity {
         BtnRegist = (Button)findViewById(R.id.id_Btnregist);
         BtnAboutLsuPlus = (Button)findViewById(R.id.id_btnAbout);
 
-
     }
 
     /**
@@ -144,10 +158,6 @@ public class Regist extends AppCompatActivity {
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-//        if (mAuthTask != null) {
-//            return;
-//        }
-
         // Reset errors.
         EtEmail.setError(null);
         EtPasswordOne.setError(null);
@@ -201,19 +211,10 @@ public class Regist extends AppCompatActivity {
 
 
         if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
             focusView.requestFocus();
         } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-//            showProgress(true);
-//            mAuthTask = new UserLoginTask(email, password);
-//            mAuthTask.execute((Void) null);
-
             //开启子线程访问网络 POST
             sendRegistHttpURLConnection();
-
             //进度条开始转动
             progressBar.setVisibility(View.VISIBLE);
 
@@ -228,6 +229,41 @@ public class Regist extends AppCompatActivity {
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
         return password.length() > 5;
+    }
+
+
+    static class MyHandler extends Handler {
+        WeakReference<Regist> mActivityReference;
+
+        MyHandler(Regist activity) {
+            mActivityReference = new WeakReference<Regist>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            Regist activity = mActivityReference.get();
+            if (msg.what == 1) {
+
+            }
+        }
+    }
+
+    private void doRegister() {
+        //TODO 注册账号API未开放
+        Request request = new Request.Builder().url("1321311").build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Message msg = new Message();
+                msg.what=1;
+                msg.obj = response.body().string();
+                myHandler.sendMessage(msg);
+            }
+        });
     }
 
     //注册账号 发送post请求至服务器

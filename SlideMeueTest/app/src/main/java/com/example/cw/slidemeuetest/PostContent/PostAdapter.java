@@ -70,10 +70,7 @@ public class PostAdapter extends BaseAdapter {
         final ItemBeanPost bean = mList.get(i);
 
         viewHolder.name.setText(bean.ItemNamepost);
-//        RichText.fromMarkdown(bean.ItemContentpost).into(viewHolder.content);
 
-//        viewHolder.content.setTag(bean.ItemContentpost);
-//        viewHolder.content.setMDText(bean.ItemContentpost);
         viewHolder.imageView.setImageURI(bean.getItemUserImgpost());
         viewHolder.times.setText(bean.ItemCreatTimepost);
 
@@ -108,9 +105,6 @@ public class PostAdapter extends BaseAdapter {
             }).into(viewHolder.content);
         }
 
-
-        //RichText.from(bean.ItemContentpost.toString()).type(RichText.TYPE_MARKDOWN).into(textView);
-//        RichText.fromMarkdown(bean.ItemContentpost).into(viewHolder.content);
 
 
         return view;

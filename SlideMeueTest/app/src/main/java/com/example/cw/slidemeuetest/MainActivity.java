@@ -694,7 +694,7 @@ public class MainActivity extends AppCompatActivity
         String userimgurl = sharedPreferences.getString("imgurl","");
 
         userImg = (SimpleDraweeView)findViewById(R.id.UserHeadImg);
-        userImg.setImageURI(plus+userimgurl);
+        userImg.setImageURI(userimgurl);
         RoundingParams roundingParams = RoundingParams.fromCornersRadius(5f);
         roundingParams.setBorder(R.color.colorWhite, (float) 1.0);
         roundingParams.setRoundAsCircle(true);

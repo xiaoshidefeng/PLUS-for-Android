@@ -14,6 +14,9 @@ import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 import com.example.cw.slidemeuetest.R;
+import com.example.cw.slidemeuetest.util.MainConst;
+
+import java.lang.ref.WeakReference;
 
 /**
  * Created by cw on 2016/11/21.
@@ -26,6 +29,8 @@ public class FragmentOne extends Fragment {
 
     //刷新
     private SwipeRefreshLayout refreshone = null;
+
+    private Handler myHandler;
 
 
     @Nullable
@@ -44,7 +49,7 @@ public class FragmentOne extends Fragment {
         refreshone.setColorSchemeResources(R.color.colorAccent);
 
         webView.getSettings().setJavaScriptEnabled(true);
-        webView.loadUrl("http://lsuplus.top/");
+        webView.loadUrl("http://" + MainConst.HOST);
         webView.setWebViewClient(new WebViewClient(){
             //重写加载方法 不跳转浏览器
             @Override
@@ -54,13 +59,6 @@ public class FragmentOne extends Fragment {
             }
 
         });
-//        webView.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View view, MotionEvent motionEvent) {
-//                ((WebView)view).requestDisallowInterceptTouchEvent(true);
-//                return false;
-//            }
-//        });
 
         //监听
         ItemListener();
@@ -75,14 +73,15 @@ public class FragmentOne extends Fragment {
             @Override
             public void onRefresh() {
                 webView.loadUrl(webView.getUrl());
-                new Thread(new Runnable() {//下拉触发的函数，这里是谁1s然后加入一个数据，然后更新界面
+
+                new Thread(new Runnable() {
                     @Override
                     public void run() {
                         try {
                             Thread.sleep(1000);
                             Message message = new Message();
                             message.what=0;
-                            myhandler.sendMessage(message);
+                            myHandler.sendMessage(message);
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -102,20 +101,22 @@ public class FragmentOne extends Fragment {
         refreshone = (SwipeRefreshLayout)getActivity().findViewById(R.id.id_refreshone);
     }
 
-    //停止刷新
-    Handler myhandler = new Handler(){
-        public  void handleMessage(Message message){
-            switch (message.what) {
-                case 0:
-                    refreshone.setRefreshing(false);
-                    Toast.makeText(getContext(),"刷新完成",Toast.LENGTH_SHORT).show();
-                    break;
-                default:
-                    break;
+    static class MyHandler extends Handler {
+        WeakReference<FragmentOne> mActivityReference;
+
+        MyHandler(FragmentOne activity) {
+            mActivityReference = new WeakReference<FragmentOne>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            FragmentOne activity = mActivityReference.get();
+            if (msg.what == 1) {
+                activity.refreshone.setRefreshing(false);
+                Toast.makeText(activity.getContext(),"刷新完成",Toast.LENGTH_SHORT).show();
             }
         }
-    };
-
+    }
 
     //go back
     public static boolean goback() {

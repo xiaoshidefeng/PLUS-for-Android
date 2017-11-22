@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,8 +22,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.cw.slidemeuetest.R;
 import com.example.cw.slidemeuetest.LoginRegist.Register_main;
+import com.example.cw.slidemeuetest.R;
+import com.example.cw.slidemeuetest.util.DisscussConst;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -32,11 +35,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class PostActivity extends AppCompatActivity {
 
@@ -94,6 +106,11 @@ public class PostActivity extends AppCompatActivity {
 
     private PostAdapter postAdapter;
 
+
+    private Handler myHandler;
+
+    private OkHttpClient client = new OkHttpClient();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,24 +120,6 @@ public class PostActivity extends AppCompatActivity {
         progressBar.setVisibility(View.VISIBLE);
         getPostinfo();
 
-
-
-//        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if(showedit){
-//                    llEdit.setVisibility(View.GONE);
-//                    //点击fab按钮后 强制隐藏键盘
-//                    InputMethodManager immPw = (InputMethodManager)
-//                            getSystemService(Context.INPUT_METHOD_SERVICE);
-//                    immPw.hideSoftInputFromWindow(etreply.getWindowToken(), 0);
-//                    showedit = false;
-//                }else {
-//                    llEdit.setVisibility(View.VISIBLE);
-//                    showedit = true;
-//                }
-//            }
-//        });
 
         Tvback.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,7 +136,6 @@ public class PostActivity extends AppCompatActivity {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if(i==0&&i1==0&&i2!=0){
-                    //imSend.setColorFilter(R.color.colorAccent);
                     imSend.setImageResource(R.drawable.ic_send_button_changed);
                 }
             }
@@ -189,7 +187,6 @@ public class PostActivity extends AppCompatActivity {
                         replystr = replystr +"\n\n"+"*"+ "——————————"+smalltail+"*";
                     }
 
-
                     RefreshToken();
 
                     etreply.setText("");
@@ -210,6 +207,44 @@ public class PostActivity extends AppCompatActivity {
         });
 
     }
+
+    static class MyHandler extends Handler {
+        WeakReference<PostActivity> mActivityReference;
+
+        MyHandler(PostActivity activity) {
+            mActivityReference = new WeakReference<PostActivity>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            PostActivity activity = mActivityReference.get();
+
+        }
+    }
+
+    private void getAllPost() {
+        //TODO　获取用户登录信息 并传出
+        RequestBody body = new FormBody.Builder()
+                .add("body", "abc")//添加键值对
+                .add("discussion_id", "321")
+                .build();
+        Request request = new Request.Builder().url(DisscussConst.SEND_COMMENTS).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Message msg = new Message();
+                msg.what=1;
+                msg.obj = response.body().string();
+                myHandler.sendMessage(msg);
+            }
+        });
+    }
+
+
 
     private void getPostinfo() {
         itembeanpost.clear();

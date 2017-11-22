@@ -8,6 +8,8 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -23,15 +25,23 @@ import android.widget.Toast;
 
 import com.example.cw.slidemeuetest.R;
 import com.example.cw.slidemeuetest.jbcrypt.BCrypt;
+import com.example.cw.slidemeuetest.util.UserConst;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class Register_main extends AppCompatActivity {
     //账号输入
@@ -95,7 +105,7 @@ public class Register_main extends AppCompatActivity {
     private TextView loadNumText;
 
     //进度条
-    private ProgressBar progressBar;
+    public ProgressBar progressBar;
 
     //返回
     private TextView Btnback;
@@ -111,6 +121,11 @@ public class Register_main extends AppCompatActivity {
 
     //帮助按钮
     private Button BtnHelp;
+
+    private Handler myHandler;
+
+    private OkHttpClient client = new OkHttpClient();
+
 
 
 
@@ -130,6 +145,8 @@ public class Register_main extends AppCompatActivity {
 
         //初始化控件
         initView();
+
+        myHandler = new MyHandler(this);
 
         //隐藏进度条
         progressBar.setVisibility(View.GONE);
@@ -184,8 +201,7 @@ public class Register_main extends AppCompatActivity {
                 final EditText inputEmail = new EditText(Register_main.this);
                 new AlertDialog.Builder(Register_main.this).setTitle("请输入要修改的邮箱")
                        // setMessage("请输入要修改的邮箱：").
-                        .setView(
-inputEmail).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        .setView(inputEmail).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         //点击确定按钮时 用post方法发送
@@ -218,186 +234,141 @@ inputEmail).setPositiveButton("确定", new DialogInterface.OnClickListener() {
 
     }
 
+    static class MyHandler extends Handler {
+        WeakReference<Register_main> mActivityReference;
 
+        MyHandler(Register_main activity) {
+            mActivityReference = new WeakReference<Register_main>(activity);
+        }
 
-    private void sendHttpURLConnection() {
-        //开启子线程访问网络 获取token模块
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                HttpURLConnection connection = null;
+        @Override
+        public void handleMessage(Message msg) {
+            Register_main activity = mActivityReference.get();
+            if (msg.what == 1) {
                 try {
-                    String userpassword = "?email="+account+"&password="+password;
-                    URL url = new URL(loninUrl+userpassword);
-
-                    connection = (HttpURLConnection)url.openConnection();
-                    connection.setRequestMethod("POST");
-                    connection.connect();
-
-                    //连接超时设置
-                    connection.setConnectTimeout(8000);
-                    connection.setReadTimeout(8000);
-                    //获取输入流
-                    InputStream in = connection.getInputStream();
-
-                    //对获取的流进行读取
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(in,"utf-8"));
-                    StringBuilder response = new StringBuilder();
-                    String line=null;
-                    while ((line=reader.readLine())!=null){
-                        response.append(line);
-                    }
-
-                    //创建JSON对象
-                    JSONObject userJSON = new JSONObject(response.toString());
-
-                    if(userJSON.has("token")){
-                        //如果登录成功
-                        token = userJSON.getString("token");
-                        Log.e("token1",token);
-
-                        //GET获取用户信息
-                        sendHttpURLConnectionGETuserInfo();
-
-                    }else{
-
-                        return;
-                    }
-
-
-                }   catch (Exception e) {
-
-                    try {
-                        int status_code = connection.getResponseCode();
-                        if (status_code==401){
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    //隐藏进度条
-                                    progressBar.setVisibility(View.GONE);
-
-                                    Toast.makeText(Register_main.this,"账号或密码错误！",Toast.LENGTH_SHORT).show();
-
-                                }
-                            });
-                        }
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
-
-                    Log.e("error", e.getMessage());
+                    Log.e("1111", msg.obj.toString());
+                    formatUser(activity, new JSONObject(msg.obj.toString()));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }finally {
+                    //隐藏进度条
+                    activity.progressBar.setVisibility(View.GONE);
                 }
+            } else if (msg.what == 2) {
+                Toast.makeText(activity, msg.obj.toString(), Toast.LENGTH_SHORT).show();
+                activity.progressBar.setVisibility(View.GONE);
             }
-        }).start();
+        }
+
+        public void formatUser(Register_main activity, JSONObject jsonObject) throws JSONException {
+            if(jsonObject.has("result")) {
+                JSONObject userJ = (JSONObject) jsonObject.getJSONObject("result");
+                //token成功
+                int id = userJ.getInt("id");
+                String name = userJ.getString("name");
+                String email = userJ.getString("email");
+                String created_at = userJ.getString("created_at");
+                String updated_at = userJ.getString("updated_at");
+
+                String admin = "";
+                String ImgUrl = "";
+                if (userJ.has("role")) {
+                    //是否为管理员
+                    admin = userJ.getString("role");
+                }
+                if (userJ.has("avatar")) {
+                    ImgUrl = userJ.getString("avatar");
+                }
+
+                //保存用户信息
+                SharedPreferences sharedPreferences = activity.getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("token", activity.token);
+                editor.putInt("id", id);
+                editor.putString("name", name);
+                editor.putString("email", email);
+                editor.putString("created_at", created_at);
+                editor.putString("updated_at", updated_at);
+                editor.putString("admin", admin);
+                editor.putString("imgurl", ImgUrl);
+                editor.commit();
+
+                //发送广播 通知MainActivity更新用户ui
+                Intent intent = new Intent();
+                intent.setAction("com.example.broadcasttest.USERUI_BROADCAST");
+                activity.sendBroadcast(intent);
+                Toast.makeText(activity, "登录成功", Toast.LENGTH_SHORT).show();
+                //返回MainActivity
+                activity.finish();
+
+            } else {
+                Toast.makeText(activity, "登录失败", Toast.LENGTH_SHORT).show();
+            }
+
+        }
     }
 
-    //通过GET方法 用token获取用户信息
-    private void sendHttpURLConnectionGETuserInfo() {
-        //开启子线程访问网络 获取用户信息模块
-        new Thread(new Runnable() {
+    private void doLogin() {
+        RequestBody body = new FormBody.Builder()
+                .add("email", account)//添加键值对
+                .add("password", password)
+                .build();
+        Request request = new Request.Builder()
+                .url(UserConst.LOGIN)
+                .post(body)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
             @Override
-            public void run() {
+            public void onFailure(Call call, IOException e) {
 
-                HttpURLConnection connection = null;
-                try {
-
-                    URL url = new URL(getUserInfoUrl+token);
-
-                    connection = (HttpURLConnection)url.openConnection();
-                    connection.setRequestMethod("GET");
-                    connection.connect();
-
-                    //连接超时设置
-                    connection.setConnectTimeout(8000);
-                    connection.setReadTimeout(8000);
-                    //获取输入流
-                    InputStream in = connection.getInputStream();
-
-                    //对获取的流进行读取
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(in,"utf-8"));
-                    StringBuilder response = new StringBuilder();
-                    String line=null;
-                    while ((line=reader.readLine())!=null){
-                        response.append(line);
-                    }
-
-
-
-                    //创建JSON对象
-                    JSONObject userJSON = new JSONObject(response.toString());
-
-                    if(userJSON.has("user")){
-                        //token成功
-                        JSONObject userJ = userJSON.getJSONObject("user");
-                        id = userJ.getInt("id");
-                        String name = userJ.getString("name");
-                        String email = userJ.getString("email");
-                        String created_at = userJ.getString("created_at");
-                        String updated_at = userJ.getString("updated_at");
-                        if(userJ.has("admin")){
-                            //是否为管理员
-                            admin = userJ.getString("admin");
-                        }
-                        if(userJ.has("avatar")){
-                            ImgUrl = userJ.getString("avatar");
-                        }
-
-
-                        Log.e("token2",token+String.valueOf(id));
-                        //Log.e("user", );
-
-                        //保存用户信息
-                        SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putString("token",token);
-                        editor.putInt("id",id);
-                        editor.putString("name",name);
-                        editor.putString("email",email);
-                        editor.putString("created_at",created_at);
-                        editor.putString("updated_at",updated_at);
-                        editor.putString("admin",admin);
-                        editor.putString("imgurl",ImgUrl);
-                        editor.commit();
-
-
-                        //发送广播 通知MainActivity更新用户ui
-                        Intent intent = new Intent();
-                        intent.setAction("com.example.broadcasttest.USERUI_BROADCAST");
-                        sendBroadcast(intent);
-
-                        //开启ui线程来通知用户登录成功
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(Register_main.this,"登录成功",Toast.LENGTH_SHORT).show();
-                                //隐藏进度条
-                                progressBar.setVisibility(View.GONE);
-                                Log.e("token3",token);
-                                //返回MainActivity
-                                finish();
-                            }
-                        });
-
-                    }else {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                //隐藏进度条
-                                progressBar.setVisibility(View.GONE);
-                                Toast.makeText(Register_main.this,"未知错误！",Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                        return;
-                    }
-
-                }   catch (Exception e) {
-                    Log.e("errss", e.getMessage());
-                }
             }
-        }).start();
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try {
+                    JSONObject jsonObject = new JSONObject(response.body().string());
+                    if (jsonObject.has("result")) {
+                        token = jsonObject.getString("result");
+                        getUserInfo();
+                    } else if (jsonObject.has("error")){
+                        String error = jsonObject.getString("error");
+                        Message msg = new Message();
+                        msg.what = 2;
+                        msg.obj = error;
+                        myHandler.sendMessage(msg);
+                    } else {
+                        Message msg = new Message();
+                        msg.what = 2;
+                        msg.obj = "未知错误";
+                        myHandler.sendMessage(msg);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
     }
 
+
+    private void getUserInfo() {
+        Request request = new Request.Builder()
+                .url(UserConst.GET_USER_DETAILS + "?token=" + token)
+                .addHeader("Authorization", "Bearer " + token)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Message msg = new Message();
+                msg.what=1;
+                msg.obj = response.body().string();
+                myHandler.sendMessage(msg);
+            }
+        });
+    }
 
 
     private void initView() {
@@ -442,15 +413,13 @@ inputEmail).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                 HttpURLConnection connection = null;
 
                 try {
-                    URL url = new URL(forgetUrl+forgetEmail);
+                    URL url = new URL(UserConst.GET_CONFIRM_CODE + "&email=" + forgetEmail);
                     connection = (HttpURLConnection)url.openConnection();
                     connection.setRequestMethod("POST");
                     connection.connect();
-
                     //连接超时
                     connection.setConnectTimeout(8000);
                     connection.setReadTimeout(8000);
-
 
                 }   catch (Exception e) {
                     Log.e("errss", e.getMessage());
@@ -467,10 +436,6 @@ inputEmail).setPositiveButton("确定", new DialogInterface.OnClickListener() {
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-//        if (mAuthTask != null) {
-//            return;
-//        }
-
         // Reset errors.
         etAccount.setError(null);
         etPassword.setError(null);
@@ -499,23 +464,14 @@ inputEmail).setPositiveButton("确定", new DialogInterface.OnClickListener() {
             focusView = etAccount;
             cancel = true;
         }
-
         if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
             focusView.requestFocus();
         } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-            // showProgress(true);
-            // mAuthTask = new UserLoginTask(email, password);
-            // mAuthTask.execute((Void) null);
-
             //进度条开始转动
             progressBar.setVisibility(View.VISIBLE);
 
-            //访问网络
-            sendHttpURLConnection();
+            //访问网络 登录
+            doLogin();
         }
     }
 
