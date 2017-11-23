@@ -148,12 +148,6 @@ public class MainActivity extends AppCompatActivity
     private String newversion;
     private String oldversion;
 
-    //    private int mFirstY;
-//    private int mCurrentY;
-//    private int mTouchSlop;//系统可以认为的最小滑动距离
-//    private int direction = -1; //0 为上,1为下
-//    private ObjectAnimator mAnimator;
-//    private boolean mShow = true; //默认显示toolBar
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,7 +157,6 @@ public class MainActivity extends AppCompatActivity
 
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.id_toolbar);
-//        mTouchSlop = ViewConfiguration.get(this).getScaledTouchSlop();
 
         if(Build.VERSION.SDK_INT > 21){
             //透明状态栏实现
@@ -171,15 +164,7 @@ public class MainActivity extends AppCompatActivity
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
 
         }
-//        XiaomiUpdateAgent.update(this,true);//第二个参数为true时使用沙盒环境，否则使用线上环境
 
-//        webView=(WebView)findViewById(R.id.id_webView);
-//        webView.getSettings().setJavaScriptEnabled(true);
-//        webView.loadUrl("http://lsuplus.top/");
-
-//        AppCompatActivity mAppCompatActivity = new AppCompatActivity();
-//        Toolbar toolbar = (Toolbar) mAppCompatActivity.findViewById(R.id.toolbar);
-//        mAppCompatActivity.setSupportActionBar(toolbar);
         setSupportActionBar(toolbar);
 
         //初始化tabline
@@ -199,14 +184,6 @@ public class MainActivity extends AppCompatActivity
         networkChangeReciver = new NetworkChangeReciver();
         registerReceiver(networkChangeReciver,intentFilter);
 
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
 
         registerBroadcastReceiver();
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -375,60 +352,7 @@ public class MainActivity extends AppCompatActivity
         L3.setOnClickListener(new MyOnClickListener(2));
         //默认第二页显示
         mViewPager.setCurrentItem(1);
-//        mViewPager.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View view, MotionEvent motionEvent) {
-//                switch (motionEvent.getAction()) {
-//                    case MotionEvent.ACTION_DOWN:
-//                        mFirstY = (int) motionEvent.getY();
-//                        break;
-//                    case MotionEvent.ACTION_MOVE:
-//                        mCurrentY = (int) motionEvent.getY();
-//
-//                        if(mCurrentY > mFirstY){//向下
-//                            if(( mCurrentY - mFirstY) > mTouchSlop){
-//                                direction = 1;//下
-//                                if(!mShow){
-//                                    animToolBar(direction);//显示toolBar
-//                                    mShow = !mShow;
-//                                }
-//                            }
-//                        }else{
-//                            if ((mFirstY-mCurrentY  )> mTouchSlop){
-//                                direction = 0;//上
-//                                if(mShow){
-//                                    animToolBar(direction);//隐藏toolBar
-//                                    mShow = !mShow;
-//                                }
-//                            }
-//                        }
-//
-//                        break;
-//                    case MotionEvent.ACTION_UP:
-//                        Log.d("xinwa", "Action_up");
-//                        break;
-//                }
-//                return false;
-//            }
-//        });
     }
-
-//    private void animToolBar(int flag){
-//
-//        if(mAnimator != null && mAnimator.isRunning()){
-//            mAnimator.cancel();
-//        }
-//        if(flag == 0){//向上滑隐藏toolBar
-////            mAnimator = new ObjectAnimator().ofFloat(toolbar,"translationY",toolbar.getTranslationY(),
-////                    -toolbar.getHeight());
-//            toolbar.setVisibility(View.GONE);
-//        }else{//向下滑
-//            mAnimator = new ObjectAnimator().ofFloat(toolbar,"translationY",
-//                    toolbar.getTranslationY(),0);
-//        }
-//
-//        mAnimator.start();
-//    }
 
     private void resetTextView() {
         //改变字体颜色
@@ -515,16 +439,7 @@ public class MainActivity extends AppCompatActivity
             //头像修改
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://lsuplus.top/user/avatar"));
             startActivity(intent);
-//            Intent intent = new Intent("com.example.cw.slidemeuetest.ACTION_START");
-//            intent.addCategory("android.intent.category.DEFAULT");
-//            startActivity(intent);
-
-
-        }
-//        else if (id == R.id.nav_slideshow) {
-//
-//        }
-        else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_manage) {
             //设置
             Intent intent = new Intent(MainActivity.this,Setting.class);
             startActivity(intent);
@@ -827,32 +742,6 @@ public class MainActivity extends AppCompatActivity
         editor.commit();
     }
 
-    //退出登录 sendLogout
-    private void sendLogoutHttpURLConnection() {
-        //开启子线程访问网络 退出登录模块
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                HttpURLConnection connection = null;
-
-                try {
-                    URL url = new URL("http://lsuplus.top/auth/logout");
-                    connection = (HttpURLConnection)url.openConnection();
-                    connection.setRequestMethod("GET");
-                    connection.connect();
-
-                    //连接超时
-                    connection.setConnectTimeout(8000);
-                    connection.setReadTimeout(8000);
-
-
-                }   catch (Exception e) {
-                    Log.e("errss", e.getMessage());
-
-                }
-            }
-        }).start();
-    }
 
     //点击tab监听
     private class MyOnClickListener implements View.OnClickListener {
