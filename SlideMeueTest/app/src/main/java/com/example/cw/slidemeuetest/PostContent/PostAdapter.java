@@ -1,7 +1,6 @@
 package com.example.cw.slidemeuetest.PostContent;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,8 +77,6 @@ public class PostAdapter extends BaseAdapter {
         roundingParams.setBorder(R.color.colorWhite, (float) 1.0);
         roundingParams.setRoundAsCircle(true);
         viewHolder.imageView.getHierarchy().setRoundingParams(roundingParams);
-
-        Log.e("viewholder",bean.ItemContentpost);
 
         //防止为空时报错
         if(!bean.ItemContentpost.equals("")){
