@@ -12,10 +12,10 @@ public class DisscussConst {
     public static final String NEW_POST = "http://" + MainConst.HOST + "/api/discussions";
 
     /**
-     * 列出所有帖子
+     * 列出所有帖子 有分页
      * get
      */
-    public static final String GET_ALL_POST = "http://" + MainConst.HOST + "/api/discussions";
+    public static final String GET_ALL_POST = "http://" + MainConst.HOST + "/api/discussions?page=";
 
     /**
      * 帖子详情

@@ -9,21 +9,17 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <android.support.v4.widget.SwipeRefreshLayout
-                android:id="@+id/id_refreshtwo"
+            <com.scwang.smartrefresh.layout.SmartRefreshLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/id_discussRefreshLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-            <!--<ListView-->
-                <!--android:id="@+id/id_Discusslistview"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:scrollbars="none" />-->
-            <android.support.v7.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/id_discussRecyclerView"
-                android:scrollbars="vertical"/>
-            </android.support.v4.widget.SwipeRefreshLayout>
+                <android.support.v7.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/id_discussRecyclerView"
+                    android:scrollbars="vertical"/>
+            </com.scwang.smartrefresh.layout.SmartRefreshLayout>
             <com.melnykov.fab.FloatingActionButton
                 android:id="@+id/id_FABonepost"
                 android:layout_width="wrap_content"
@@ -38,16 +34,4 @@
                 fab:fab_colorRipple="@color/colorYello4"/>
 
     </FrameLayout>
-    <!--<WebView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:id="@+id/id_webViewTwo"></WebView>-->
-    <!--<TextView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:gravity="center"-->
-        <!--android:textSize="45sp"-->
-        <!--android:text="two"-->
-        <!--/>-->
-
 </LinearLayout>
