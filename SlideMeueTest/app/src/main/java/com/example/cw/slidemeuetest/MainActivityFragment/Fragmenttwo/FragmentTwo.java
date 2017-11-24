@@ -2,6 +2,7 @@ package com.example.cw.slidemeuetest.MainActivityFragment.Fragmenttwo;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -16,9 +17,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.cw.slidemeuetest.PostContent.PostActivity;
 import com.example.cw.slidemeuetest.R;
 import com.example.cw.slidemeuetest.util.DisscussConst;
 import com.example.cw.slidemeuetest.util.MyDividerItemDecoration;
@@ -53,20 +54,16 @@ public class FragmentTwo extends Fragment {
     //图片检测
     private String imgfind = "http://lsuplus.top/uploads";
 
-    private TextView tvnull;
-
     //FAB 按钮
     private FloatingActionButton floatingActionButton;
 
     private List<ItemBean> itemBeen = new ArrayList<>();
 
-    //private ListView listView;
-
     private RecyclerView recyclerView;
 
     private RecyclerView.LayoutManager mLayoutManager;
 
-    private RecyclerView.Adapter mAdapter;
+    private DiscussAdapter mAdapter;
 
     private Handler myHandler;
 
@@ -127,14 +124,9 @@ public class FragmentTwo extends Fragment {
         recyclerView.addItemDecoration(new MyDividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
 
 
-        //listView = (ListView)getActivity().findViewById(R.id.id_Discusslistview);
         refreshtwo = (SwipeRefreshLayout) getActivity().findViewById(R.id.id_refreshtwo);
         floatingActionButton = (FloatingActionButton)getActivity().findViewById(R.id.id_FABonepost);
-        //floatingActionButton.attachToListView(listView); // or attachToRecyclerView
-
-        tvnull = (TextView)getActivity().findViewById(R.id.id_Tvpostnull);
-        //listView.setEmptyView(tvnull);
-
+        floatingActionButton.attachToRecyclerView(recyclerView); // or attachToRecyclerView
     }
 
     static class MyHandler extends Handler {
@@ -198,8 +190,35 @@ public class FragmentTwo extends Fragment {
                 //activity.listView.setAdapter(myAdapter);
                 activity.mAdapter = new DiscussAdapter(activity.itemBeen);
                 activity.recyclerView.setAdapter(activity.mAdapter);
+                activity.mAdapter.setOnItemClickListener(new DiscussAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, ItemBean itemBean, int position) {
+                        saveItemInfo(view, itemBean);
+                    }
+
+                    @Override
+                    public void onItemLongClick(View view, int position) {
+
+                    }
+                });
             }
 
+        }
+
+        private void saveItemInfo(View view, ItemBean bean) {
+            SharedPreferences sharedPreferences = view.getContext().getSharedPreferences("postInfo",
+                    Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("maintitle",bean.ItemTitle);
+            editor.putString("postone",bean.RawConten);
+            editor.putInt("postid",bean.getId());
+            editor.putString("userheadimg",bean.getUserImgUrl());
+            editor.putString("username",bean.ItemName);
+            editor.putString("creattime",bean.ItemCreatTime);
+            editor.commit();
+
+            Intent intent = new Intent(view.getContext(), PostActivity.class);
+            view.getContext().startActivity(intent);
         }
     }
 

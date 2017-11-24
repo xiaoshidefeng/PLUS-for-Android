@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.cw.slidemeuetest.R;
 import com.example.cw.slidemeuetest.util.IsNull;
@@ -25,6 +26,9 @@ public class DiscussAdapter extends RecyclerView.Adapter<DiscussAdapter.ViewHold
 
     private List<ItemBean> mList;
 
+    //点击事件回调
+    private DiscussAdapter.OnItemClickListener onItemClickListener;
+
     private int position;
 
     public DiscussAdapter(List<ItemBean> mList) {
@@ -34,6 +38,15 @@ public class DiscussAdapter extends RecyclerView.Adapter<DiscussAdapter.ViewHold
     public void updateData(List<ItemBean> data) {
         this.mList = data;
         notifyDataSetChanged();
+    }
+
+    /**
+     * 设置回调监听
+     *
+     * @param listener
+     */
+    public void setOnItemClickListener(DiscussAdapter.OnItemClickListener listener) {
+        this.onItemClickListener = listener;
     }
 
     @Override
@@ -46,7 +59,7 @@ public class DiscussAdapter extends RecyclerView.Adapter<DiscussAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(DiscussAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(final DiscussAdapter.ViewHolder holder, int position) {
         // 绑定数据
         final ItemBean bean = mList.get(position);
         holder.name.setText(bean.ItemName);
@@ -77,16 +90,27 @@ public class DiscussAdapter extends RecyclerView.Adapter<DiscussAdapter.ViewHold
 
         }).into(holder.content);
 
-        //Fresco.initialize(holder.getContext());
-
         holder.imageView.setImageURI(bean.getUserImgUrl());
         holder.title.setText(bean.ItemTitle);
         holder.times.setText(bean.ItemCreatTime);
 
-        RoundingParams roundingParams = RoundingParams.fromCornersRadius(5f);
-        roundingParams.setBorder(R.color.colorWhite, (float) 1.0);
-        roundingParams.setRoundAsCircle(true);
-        holder.imageView.getHierarchy().setRoundingParams(roundingParams);
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(view.getContext(),"不给你看Ta的信息o(￣ヘ￣o＃)",Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+        holder.linearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (onItemClickListener != null) {
+                    int pos = holder.getLayoutPosition();
+                    onItemClickListener.onItemClick(holder.itemView, bean, pos);
+                }
+            }
+        });
 
     }
 
@@ -118,6 +142,11 @@ public class DiscussAdapter extends RecyclerView.Adapter<DiscussAdapter.ViewHold
             roundingParams.setRoundAsCircle(true);
             imageView.getHierarchy().setRoundingParams(roundingParams);
         }
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(View view, ItemBean itemBean, int position);
+        void onItemLongClick(View view, int position);
     }
 
 }
