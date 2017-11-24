@@ -10,16 +10,18 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.cw.slidemeuetest.R;
 import com.example.cw.slidemeuetest.util.DisscussConst;
+import com.example.cw.slidemeuetest.util.MyDividerItemDecoration;
 import com.melnykov.fab.FloatingActionButton;
 
 import org.json.JSONArray;
@@ -58,7 +60,13 @@ public class FragmentTwo extends Fragment {
 
     private List<ItemBean> itemBeen = new ArrayList<>();
 
-    private ListView listView;
+    //private ListView listView;
+
+    private RecyclerView recyclerView;
+
+    private RecyclerView.LayoutManager mLayoutManager;
+
+    private RecyclerView.Adapter mAdapter;
 
     private Handler myHandler;
 
@@ -113,14 +121,19 @@ public class FragmentTwo extends Fragment {
     }
 
     private void initview() {
-        refreshtwo = (SwipeRefreshLayout)getActivity().findViewById(R.id.id_refreshtwo);
-        listView = (ListView)getActivity().findViewById(R.id.id_Discusslistview);
+        mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        recyclerView = (RecyclerView) getActivity().findViewById(R.id.id_discussRecyclerView);
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.addItemDecoration(new MyDividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
 
+
+        //listView = (ListView)getActivity().findViewById(R.id.id_Discusslistview);
+        refreshtwo = (SwipeRefreshLayout) getActivity().findViewById(R.id.id_refreshtwo);
         floatingActionButton = (FloatingActionButton)getActivity().findViewById(R.id.id_FABonepost);
-        floatingActionButton.attachToListView(listView); // or attachToRecyclerView
+        //floatingActionButton.attachToListView(listView); // or attachToRecyclerView
 
         tvnull = (TextView)getActivity().findViewById(R.id.id_Tvpostnull);
-        listView.setEmptyView(tvnull);
+        //listView.setEmptyView(tvnull);
 
     }
 
@@ -181,8 +194,10 @@ public class FragmentTwo extends Fragment {
                         title,
                         "创建于"+created_at
                 ));
-                MyAdapter myAdapter = new MyAdapter(activity.getContext(), activity.itemBeen);
-                activity.listView.setAdapter(myAdapter);
+                //MyAdapter myAdapter = new MyAdapter(activity.getContext(), activity.itemBeen);
+                //activity.listView.setAdapter(myAdapter);
+                activity.mAdapter = new DiscussAdapter(activity.itemBeen);
+                activity.recyclerView.setAdapter(activity.mAdapter);
             }
 
         }
