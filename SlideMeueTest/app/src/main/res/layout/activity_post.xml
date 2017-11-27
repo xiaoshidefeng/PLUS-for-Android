@@ -84,13 +84,25 @@
         <!--fab:fab_colorRipple="@color/colorYello4"/>-->
 
 
-            <ListView
+            <!--<ListView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:id="@+id/id_lvPostContent"-->
+                <!--android:overScrollMode="never"-->
+                <!--android:scrollbars="none"-->
+                <!--android:layout_weight="1"></ListView>-->
+
+            <com.scwang.smartrefresh.layout.SmartRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/id_rvRefreshPost"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/id_lvPostContent"
-                android:overScrollMode="never"
-                android:scrollbars="none"
-                android:layout_weight="1"></ListView>
+                android:layout_height="match_parent">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/id_rvPost"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scrollbars="vertical" />
+            </com.scwang.smartrefresh.layout.SmartRefreshLayout>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -106,35 +118,41 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_gravity="bottom"
                 android:background="@drawable/post_reply_backgroung_with_shadow"
                 android:id="@+id/id_llEdit">
 
-
                 <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:hint="添加回复"
-                android:id="@+id/id_etReply"
-                android:inputType="textMultiLine"/>
-            <ImageView
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_gravity="bottom"
-                android:layout_marginTop="6dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="2dp"
-                android:layout_marginRight="14dp"
-                android:src="@drawable/ic_send_button"
-                android:id="@+id/id_IMSendpost"/>
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:hint="添加回复"
+                    android:id="@+id/id_etReply"
+                    android:inputType="textMultiLine"/>
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="bottom"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="14dp"
+                    android:src="@drawable/ic_send_button"
+                    android:id="@+id/id_IMSendpost"/>
 
-        </LinearLayout>
+            </LinearLayout>
     </FrameLayout>
 
     <!--</android.support.v4.widget.SwipeRefreshLayout>-->
