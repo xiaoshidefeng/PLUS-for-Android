@@ -37,6 +37,12 @@ public class PAdapter extends RecyclerView.Adapter<PAdapter.ViewHolder> {
         notifyDataSetChanged();
     }
 
+    //  添加数据
+    public void addData(int position, ItemBeanPost itemBeanPost) {
+        mList.add(position, itemBeanPost);
+        notifyItemInserted(position);
+    }
+
     /**
      * 设置回调监听
      *
@@ -54,6 +60,7 @@ public class PAdapter extends RecyclerView.Adapter<PAdapter.ViewHolder> {
         ViewHolder viewHolder = new ViewHolder(view);
         return viewHolder;
     }
+
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {

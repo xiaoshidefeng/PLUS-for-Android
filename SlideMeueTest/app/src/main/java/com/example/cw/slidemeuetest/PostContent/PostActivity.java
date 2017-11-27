@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -17,7 +18,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,11 +52,7 @@ public class PostActivity extends AppCompatActivity {
 
     private List<ItemBeanPost> itembeanpost = new ArrayList<>();
 
-    private ListView listviewpostone;
-
     private ProgressDialog progressDialog;
-
-    private TextView tvnull;
 
     //返回
     private TextView Tvback;
@@ -78,16 +74,11 @@ public class PostActivity extends AppCompatActivity {
 
     //回复内容
     private String replystr;
-    private String postid;
-    private String token;
-    private String userid;
 
     private int Id;
     private String PostOne;
     private String PostMainTitle;
     private String smalltail;
-
-    private PostAdapter postAdapter;
 
     private Handler myHandler;
 
@@ -223,23 +214,41 @@ public class PostActivity extends AppCompatActivity {
         @Override
         public void handleMessage(Message msg) {
             PostActivity activity = mActivityReference.get();
-            if (msg.what == 1) {
-                //获取所有评论
-                try {
+            try {
+                if (msg.what == 1) {
+                    //获取所有评论
                     showPage(msg, activity);
-                    //formatPost(activity, new JSONObject(msg.obj.toString()));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } finally {
-                    //隐藏进度条
-                    activity.progressBar.setVisibility(View.GONE);
+                } else if (msg.what == 2) {
+                    //发送评论
+                    ItemBeanPost itemBeanPost = formatNewComment(activity, new JSONObject(msg.obj.toString()));
+                    if (itemBeanPost == null) {
+                        Toast.makeText(activity, "回帖失败", Toast.LENGTH_SHORT).show();
+                    } else {
+                        activity.pAdapter.addData(activity.pAdapter.getItemCount(), itemBeanPost);
+                        activity.progressDialog.cancel();
+                    }
                 }
-            } else if (msg.what == 2) {
-                //发送评论
-                activity.getPostinfo();
-                activity.progressDialog.cancel();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } finally {
+                //隐藏进度条
+                activity.progressBar.setVisibility(View.GONE);
             }
+        }
 
+        private ItemBeanPost formatNewComment(PostActivity activity, JSONObject jsonObject) throws JSONException {
+            if (jsonObject.has("data")) {
+                JSONObject data = jsonObject.getJSONObject("data");
+                if (data.has("user")) {
+                    String created_at = data.getString("updated_at");
+                    String body = data.getString("body");
+                    JSONObject user = data.getJSONObject("user");
+                    String name = user.getString("name");
+                    String img = user.getString("avatar");
+                    return new ItemBeanPost(name, body, created_at, img);
+                }
+            }
+            return null;
         }
 
         private void showPage(Message msg, PostActivity activity) throws JSONException {
@@ -361,7 +370,6 @@ public class PostActivity extends AppCompatActivity {
         llEdit = (LinearLayout) findViewById(R.id.id_llEdit);
         imSend = (ImageView) findViewById(R.id.id_IMSendpost);
         etreply = (EditText) findViewById(R.id.id_etReply);
-        tvnull = (TextView) findViewById(R.id.id_tvpostonenull);
 
         itembeanpost = new ArrayList<>();
         mLayoutManager = new LinearLayoutManager(PostActivity.this, LinearLayoutManager.VERTICAL, false);
@@ -370,18 +378,10 @@ public class PostActivity extends AppCompatActivity {
         recyclerView.addItemDecoration(new MyDividerItemDecoration(PostActivity.this, LinearLayoutManager.VERTICAL));
         pAdapter = new PAdapter(itembeanpost);
         recyclerView.setAdapter(pAdapter);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
 
         itembeanpost.clear();
 
-        //listviewpostone = (ListView) findViewById(R.id.id_lvPostContent);
-//        listviewpostone.setTranscriptMode(ListView.TRANSCRIPT_MODE_NORMAL);
-//        postAdapter = new PostAdapter(getApplicationContext(),
-//                itembeanpost);
-//
-//        View footerView = getLayoutInflater().inflate(R.layout.foot_layout, null, false);
-//
-//        listviewpostone.addFooterView(footerView);
-//        listviewpostone.setEmptyView(tvnull);
     }
 
 }

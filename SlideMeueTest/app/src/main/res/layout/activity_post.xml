@@ -57,40 +57,11 @@
             android:layout_marginLeft="15dp"
             android:layout_marginTop="10dp"/>
 
-        <!--<android.support.v4.widget.SwipeRefreshLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:id="@+id/id_SRFpostone">-->
-
-
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/id_TvpostMaintitle"
             android:id="@+id/id_framelayout">
-
-            <!--<com.melnykov.fab.FloatingActionButton-->
-        <!--android:id="@+id/id_FABonepost"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="bottom|right"-->
-        <!--android:layout_marginRight="16dp"-->
-        <!--android:layout_marginBottom="46dp"-->
-        <!--fab:fab_type="normal"-->
-        <!--fab:fab_shadow="true"-->
-        <!--android:src="@drawable/ic_talks"-->
-        <!--fab:fab_colorNormal="@color/colorYello3"-->
-        <!--fab:fab_colorPressed="@color/colorYello4"-->
-        <!--fab:fab_colorRipple="@color/colorYello4"/>-->
-
-
-            <!--<ListView-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:id="@+id/id_lvPostContent"-->
-                <!--android:overScrollMode="never"-->
-                <!--android:scrollbars="none"-->
-                <!--android:layout_weight="1"></ListView>-->
 
             <com.scwang.smartrefresh.layout.SmartRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/id_rvRefreshPost"
@@ -100,16 +71,12 @@
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/id_rvPost"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="450dp"
+                    android:layout_weight="1"
+                    android:overScrollMode="never"
                     android:scrollbars="vertical" />
             </com.scwang.smartrefresh.layout.SmartRefreshLayout>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/somethingwrong"
-                android:id="@+id/id_tvpostonenull"
-                android:layout_gravity="center"
-                android:gravity="center"/>
+
             <ProgressBar
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
