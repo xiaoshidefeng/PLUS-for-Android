@@ -52,9 +52,9 @@ import com.example.cw.slidemeuetest.MainActivityFragment.FragmentThree;
 import com.example.cw.slidemeuetest.MainActivityFragment.Fragmenttwo.FragmentTwo;
 import com.example.cw.slidemeuetest.MainActivityFragment.Fragmenttwo.NewPostActivity;
 import com.example.cw.slidemeuetest.Setting.Setting;
+import com.example.cw.slidemeuetest.util.HeadImgUtil;
 import com.example.cw.slidemeuetest.util.TokenUtil;
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.generic.RoundingParams;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.xys.libzxing.zxing.activity.CaptureActivity;
 
@@ -458,10 +458,8 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(MainActivity.this, Register_main.class);
             startActivity(intent);
         } else {
-
             return;
         }
-
 
     }
 
@@ -470,24 +468,6 @@ public class MainActivity extends AppCompatActivity
         IntentFilter filter = new IntentFilter("com.example.broadcasttest.USERUI_BROADCAST");
         registerReceiver(receiver, filter);
     }
-
-    private void showNewVersionDia() {
-        //不是最新版本 需要更新
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setTitle(R.string.needupdata);
-        builder.setMessage("检测到您当前的版本(" + oldversion + ")不是最新版本" +
-                "(" + newversion + ")是否立即下载更新");
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(downloadapkUrl));
-                startActivity(intent);
-            }
-        });
-        builder.setNegativeButton("取消", null);
-        builder.show();
-    }
-
 
     public class UserBroadcastReceiver extends BroadcastReceiver {
         @Override
@@ -522,19 +502,35 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+
+    private void showNewVersionDia() {
+        //不是最新版本 需要更新
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle(R.string.needupdata);
+        builder.setMessage("检测到您当前的版本(" + oldversion + ")不是最新版本" +
+                "(" + newversion + ")是否立即下载更新");
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(downloadapkUrl));
+                startActivity(intent);
+            }
+        });
+        builder.setNegativeButton("取消", null);
+        builder.show();
+    }
+
+
     private void GetHeadImg() {
         SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-
         String userimgurl = sharedPreferences.getString("imgurl", "");
 
         userImg = (SimpleDraweeView) findViewById(R.id.UserHeadImg);
         userImg.setImageURI(userimgurl);
-        RoundingParams roundingParams = RoundingParams.fromCornersRadius(5f);
-        roundingParams.setBorder(R.color.colorWhite, (float) 1.0);
-        roundingParams.setRoundAsCircle(true);
-        userImg.getHierarchy().setRoundingParams(roundingParams);
-
+        userImg.getHierarchy().setRoundingParams(HeadImgUtil.getRoundingParams(5f, 1));
     }
+
+
 
     private void sendQrloginHttpURLConnection() {
         //开启子线程访问网络 扫码登录模块

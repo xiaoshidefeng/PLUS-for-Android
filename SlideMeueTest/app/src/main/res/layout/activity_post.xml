@@ -74,10 +74,10 @@
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/id_rvPost"
                         android:layout_width="match_parent"
-                        android:layout_height="450dp"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:overScrollMode="never"
-                        android:scrollbars="vertical" />
+                        android:scrollbars="none" />
                 </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
                 <LinearLayout

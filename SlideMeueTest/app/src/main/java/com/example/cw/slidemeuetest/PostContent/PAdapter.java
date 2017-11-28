@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.cw.slidemeuetest.R;
-import com.facebook.drawee.generic.RoundingParams;
+import com.example.cw.slidemeuetest.util.HeadImgUtil;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.zzhoujay.richtext.ImageHolder;
 import com.zzhoujay.richtext.RichText;
@@ -113,10 +113,7 @@ public class PAdapter extends RecyclerView.Adapter<PAdapter.ViewHolder> {
             times = (TextView)view.findViewById(R.id.id_TvPostTime);
 
             //设置头像为圆
-            RoundingParams roundingParams = RoundingParams.fromCornersRadius(5f);
-            roundingParams.setBorder(R.color.colorWhite, (float) 1.0);
-            roundingParams.setRoundAsCircle(true);
-            imageView.getHierarchy().setRoundingParams(roundingParams);
+            imageView.getHierarchy().setRoundingParams(HeadImgUtil.getRoundingParams(5f, 1));
         }
     }
 

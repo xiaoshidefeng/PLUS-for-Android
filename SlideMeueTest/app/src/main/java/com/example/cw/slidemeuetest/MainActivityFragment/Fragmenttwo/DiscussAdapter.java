@@ -9,8 +9,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.cw.slidemeuetest.R;
+import com.example.cw.slidemeuetest.util.HeadImgUtil;
 import com.example.cw.slidemeuetest.util.IsNull;
-import com.facebook.drawee.generic.RoundingParams;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.zzhoujay.richtext.ImageHolder;
 import com.zzhoujay.richtext.RichText;
@@ -137,10 +137,7 @@ public class DiscussAdapter extends RecyclerView.Adapter<DiscussAdapter.ViewHold
             linearLayout = (LinearLayout)view.findViewById(R.id.id_lltoonepost);
 
             //设置头像为圆
-            RoundingParams roundingParams = RoundingParams.fromCornersRadius(5f);
-            roundingParams.setBorder(R.color.colorWhite, (float) 1.0);
-            roundingParams.setRoundAsCircle(true);
-            imageView.getHierarchy().setRoundingParams(roundingParams);
+            imageView.getHierarchy().setRoundingParams(HeadImgUtil.getRoundingParams(5f, 1));
         }
     }
 
