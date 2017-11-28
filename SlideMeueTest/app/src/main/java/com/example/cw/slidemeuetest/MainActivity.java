@@ -9,7 +9,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
@@ -53,13 +52,11 @@ import com.example.cw.slidemeuetest.MainActivityFragment.FragmentThree;
 import com.example.cw.slidemeuetest.MainActivityFragment.Fragmenttwo.FragmentTwo;
 import com.example.cw.slidemeuetest.MainActivityFragment.Fragmenttwo.NewPostActivity;
 import com.example.cw.slidemeuetest.Setting.Setting;
+import com.example.cw.slidemeuetest.util.HeadImgUtil;
 import com.example.cw.slidemeuetest.util.TokenUtil;
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.generic.RoundingParams;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.xys.libzxing.zxing.activity.CaptureActivity;
-
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -133,7 +130,7 @@ public class MainActivity extends AppCompatActivity
     private static String tokenValidTestUrl = "http://lsuplus.top/api/refresh/?token=";
 
     //扫码登录接口
-    public  String QRloninUrl="http://lsuplus.top/QRLogin/";
+    public String QRloninUrl = "http://lsuplus.top/QRLogin/";
 
     //更新
     private String updataUrl = "http://lsuplus.top/version";
@@ -158,7 +155,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.id_toolbar);
 
-        if(Build.VERSION.SDK_INT > 21){
+        if (Build.VERSION.SDK_INT > 21) {
             //透明状态栏实现
             getWindow().setStatusBarColor(Color.TRANSPARENT);
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
@@ -170,19 +167,14 @@ public class MainActivity extends AppCompatActivity
         //初始化tabline
         initTabline();
 
-
         //初始化viewpager
         initViewPager();
-
-
-        //获取版本
-        getVersion();
 
         //检测网络状态
         intentFilter = new IntentFilter();
         intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         networkChangeReciver = new NetworkChangeReciver();
-        registerReceiver(networkChangeReciver,intentFilter);
+        registerReceiver(networkChangeReciver, intentFilter);
 
 
         registerBroadcastReceiver();
@@ -196,28 +188,29 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
-                if(slideOffset==0.1)
+                if (slideOffset == 0.1) {
                     Log.d("slide", "onDrawerSlide: ");
-                SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-                name = sharedPreferences.getString("name","");
-                email = sharedPreferences.getString("email","");
-                userName =(TextView)findViewById(R.id.id_userNameText);
-                userEmail =(TextView)findViewById(R.id.id_userEmailText);
-                Log.d("slide", name);
-                if((name!="")&&(!name.equals(""))) {
+                    SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+                    name = sharedPreferences.getString("name", "");
+                    email = sharedPreferences.getString("email", "");
+                    userName = (TextView) findViewById(R.id.id_userNameText);
+                    userEmail = (TextView) findViewById(R.id.id_userEmailText);
+                    Log.d("slide", name);
+                    if ((name != "") && (!name.equals(""))) {
 
-                    userName.setText(name);
-                    userEmail.setText(email);
+                        userName.setText(name);
+                        userEmail.setText(email);
 
-                }else{
-                    userName.setText("立即登录");
-                    userEmail.setText("");
+                    } else {
+                        userName.setText("立即登录");
+                        userEmail.setText("");
+                    }
                 }
+
             }
 
             @Override
             public void onDrawerOpened(View drawerView) {
-                Log.d("slide", "onDrawerOpened: ");
                 GetHeadImg();
             }
 
@@ -228,7 +221,6 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onDrawerStateChanged(int newState) {
-                Log.d("slide", "onDrawerStateChanged: ");
             }
         });
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -239,13 +231,13 @@ public class MainActivity extends AppCompatActivity
     private void initTabline() {
 
         //初始化tabline
-        mTabline = (ImageView)findViewById(R.id.id_ivTabline);
+        mTabline = (ImageView) findViewById(R.id.id_ivTabline);
         //获取屏幕宽度和高度
         Display display = getWindow().getWindowManager().getDefaultDisplay();
         DisplayMetrics outMetrics = new DisplayMetrics();
         display.getMetrics(outMetrics);
 
-        mScreen1_3 = outMetrics.widthPixels/3;
+        mScreen1_3 = outMetrics.widthPixels / 3;
         ViewGroup.LayoutParams lp = mTabline.getLayoutParams();
         lp.width = mScreen1_3;
         mTabline.setLayoutParams(lp);
@@ -255,17 +247,17 @@ public class MainActivity extends AppCompatActivity
     private void initViewPager() {
         //初始化ViewPager相关控件
         //mViewPager.setOffscreenPageLimit(2);
-        mViewPager = (ViewPager)findViewById(R.id.id_viewpager);
-        texttabone = (TextView)findViewById(R.id.id_TVtabone);
-        texttabtwo = (TextView)findViewById(R.id.id_TVtabtwo);
-        texttabthree = (TextView)findViewById(R.id.id_TVtabthree);
+        mViewPager = (ViewPager) findViewById(R.id.id_viewpager);
+        texttabone = (TextView) findViewById(R.id.id_TVtabone);
+        texttabtwo = (TextView) findViewById(R.id.id_TVtabtwo);
+        texttabthree = (TextView) findViewById(R.id.id_TVtabthree);
 
         //缓存页数设置
         mViewPager.setOffscreenPageLimit(2);
 
-        L1 = (LinearLayout)findViewById(R.id.id_LLaoutOne);
-        L2 = (LinearLayout)findViewById(R.id.id_LLaoutTwo);
-        L3 = (LinearLayout)findViewById(R.id.id_LLaoutThree);
+        L1 = (LinearLayout) findViewById(R.id.id_LLaoutOne);
+        L2 = (LinearLayout) findViewById(R.id.id_LLaoutTwo);
+        L3 = (LinearLayout) findViewById(R.id.id_LLaoutThree);
 
         mDatas = new ArrayList<android.support.v4.app.Fragment>();
         FragmentOne fragmentone = new FragmentOne();
@@ -294,30 +286,27 @@ public class MainActivity extends AppCompatActivity
         mViewPager.setAdapter(mAdapter);
 
 
-
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 //滑动时
                 LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) mTabline.getLayoutParams();
 
-
                 //如果从0到1
-                if(mCurrentIndex==0&&position==0){
-                    layoutParams.leftMargin = (int) (positionOffset*mScreen1_3
-                            +mCurrentIndex*mScreen1_3);
-                }else if(mCurrentIndex==1&&position==0){
+                if (mCurrentIndex == 0 && position == 0) {
+                    layoutParams.leftMargin = (int) (positionOffset * mScreen1_3
+                            + mCurrentIndex * mScreen1_3);
+                } else if (mCurrentIndex == 1 && position == 0) {
                     //第一页到第0页
-                    layoutParams.leftMargin = (int) (mCurrentIndex*mScreen1_3+(positionOffset-1)*mScreen1_3);
-                }else if(mCurrentIndex==1&&position==1){
+                    layoutParams.leftMargin = (int) (mCurrentIndex * mScreen1_3 + (positionOffset - 1) * mScreen1_3);
+                } else if (mCurrentIndex == 1 && position == 1) {
                     //从1到2
-                    layoutParams.leftMargin = (int)(mCurrentIndex*mScreen1_3+positionOffset*mScreen1_3);
-                }else if(mCurrentIndex==2&&position==1){
+                    layoutParams.leftMargin = (int) (mCurrentIndex * mScreen1_3 + positionOffset * mScreen1_3);
+                } else if (mCurrentIndex == 2 && position == 1) {
                     //从2到1
-                    layoutParams.leftMargin = (int) (mCurrentIndex*mScreen1_3+(positionOffset-1)*mScreen1_3);
+                    layoutParams.leftMargin = (int) (mCurrentIndex * mScreen1_3 + (positionOffset - 1) * mScreen1_3);
                 }
                 mTabline.setLayoutParams(layoutParams);
-
 
             }
 
@@ -325,8 +314,7 @@ public class MainActivity extends AppCompatActivity
             public void onPageSelected(int position) {
                 //滑动结束
                 resetTextView();
-                switch (position)
-                {
+                switch (position) {
                     case 0:
                         texttabone.setTextColor(Color.WHITE);
                         break;
@@ -406,7 +394,7 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection Simplifiab0leIfStatement
         if (id == R.id.action_settings) {
-            Intent intent = new Intent(MainActivity.this,HelpActivity.class);
+            Intent intent = new Intent(MainActivity.this, HelpActivity.class);
             startActivity(intent);
 
             return true;
@@ -423,15 +411,15 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_camera) {
             // Handle the camera action
-            if(isNetworkAvailable(this)){
+            if (isNetworkAvailable(this)) {
                 //相机权限申请
                 requestPermission();
 
                 //二维码
                 Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
-                startActivityForResult(intent,0);
-            }else {
-                Toast.makeText(MainActivity.this,"请连接网络",Toast.LENGTH_SHORT).show();
+                startActivityForResult(intent, 0);
+            } else {
+                Toast.makeText(MainActivity.this, "请连接网络", Toast.LENGTH_SHORT).show();
             }
 
 
@@ -441,12 +429,12 @@ public class MainActivity extends AppCompatActivity
             startActivity(intent);
         } else if (id == R.id.nav_manage) {
             //设置
-            Intent intent = new Intent(MainActivity.this,Setting.class);
+            Intent intent = new Intent(MainActivity.this, Setting.class);
             startActivity(intent);
 
         } else if (id == R.id.nav_share) {
 
-            Toast.makeText(MainActivity.this,"敬请期待",Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "敬请期待", Toast.LENGTH_SHORT).show();
 
         } else if (id == R.id.nav_send) {
             Intent intent = new Intent(MainActivity.this, NewPostActivity.class);
@@ -460,131 +448,41 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    public void login(View v)
-    {
-        userName =(TextView)findViewById(R.id.id_userNameText);
+    public void login(View v) {
+        userName = (TextView) findViewById(R.id.id_userNameText);
         String loginStatus = (String) userName.getText();
-        if(!isNetworkAvailable(this)){
-        Toast.makeText(MainActivity.this,"请连接网络",Toast.LENGTH_SHORT).show();
-        }else if(loginStatus.equals("立即登录")){
+        if (!isNetworkAvailable(this)) {
+            Toast.makeText(MainActivity.this, "请连接网络", Toast.LENGTH_SHORT).show();
+        } else if (loginStatus.equals("立即登录")) {
             //还未登录
             Intent intent = new Intent(MainActivity.this, Register_main.class);
             startActivity(intent);
-        } else{
-
+        } else {
             return;
         }
 
-
     }
 
-    private void registerBroadcastReceiver(){
+    private void registerBroadcastReceiver() {
         UserBroadcastReceiver receiver = new UserBroadcastReceiver();
         IntentFilter filter = new IntentFilter("com.example.broadcasttest.USERUI_BROADCAST");
         registerReceiver(receiver, filter);
     }
 
-    public void getVersion() {
-        try {
-            PackageManager packagemanager = this.getPackageManager();
-            PackageInfo info = packagemanager.getPackageInfo(this.getPackageName(),0);
-
-            oldversion = info.versionName.toString();
-            getNewVersionmsg();
-
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-            Toast.makeText(MainActivity.this,"版本获取失败",Toast.LENGTH_SHORT).show();
-
-        }
-
-
-    }
-
-    private void getNewVersionmsg() {
-
-        //开启子线程访问网络 更新检测模块
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                HttpURLConnection connection = null;
-                try {
-
-                    URL url = new URL(updataUrl);
-
-                    connection = (HttpURLConnection)url.openConnection();
-                    connection.setRequestMethod("GET");
-                    connection.connect();
-
-                    //连接超时设置
-                    connection.setConnectTimeout(8000);
-                    connection.setReadTimeout(8000);
-
-                    //获取输入流
-                    InputStream in = connection.getInputStream();
-
-                    //对获取的流进行读取
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(in,"utf-8"));
-                    StringBuilder responses = new StringBuilder();
-                    String line=null;
-                    while ((line=reader.readLine())!=null){
-                        responses.append(line);
-                    }
-
-                    JSONObject Jupdata = new JSONObject(responses.toString());
-                    if(Jupdata.has("version")){
-                        newversion = Jupdata.getString("version");
-
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                if(!newversion.equals(oldversion)){
-                                    //不是最新版本 需要更新
-                                    AlertDialog.Builder builder=new AlertDialog.Builder(MainActivity.this);
-                                    builder.setTitle(R.string.needupdata);
-                                    builder.setMessage("检测到您当前的版本("+oldversion+")不是最新版本"+
-                                            "("+newversion + ")是否立即下载更新");
-                                    builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(downloadapkUrl));
-                                            startActivity(intent);
-                                        }
-                                    });
-                                    builder.setNegativeButton("取消",null);
-                                    builder.show();
-                                }
-
-
-                            }
-                        });
-                    }
-
-
-                }   catch (Exception e) {
-
-                }
-            }
-        }).start();
-    }
-
-
     public class UserBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-            name = sharedPreferences.getString("name","");
-            email = sharedPreferences.getString("email","");
-            id = sharedPreferences.getInt("id",0);
-            userName =(TextView)findViewById(R.id.id_userNameText);
-            userEmail =(TextView)findViewById(R.id.id_userEmailText);
+            name = sharedPreferences.getString("name", "");
+            email = sharedPreferences.getString("email", "");
+            id = sharedPreferences.getInt("id", 0);
+            userName = (TextView) findViewById(R.id.id_userNameText);
+            userEmail = (TextView) findViewById(R.id.id_userEmailText);
 
-            userName =(TextView)findViewById(R.id.id_userNameText);
-            userEmail =(TextView)findViewById(R.id.id_userEmailText);
+            userName = (TextView) findViewById(R.id.id_userNameText);
+            userEmail = (TextView) findViewById(R.id.id_userEmailText);
 
-            if(name!=""||!name.equals("")) {
+            if (name != "" || !name.equals("")) {
                 GetHeadImg();
                 userName.setText(name);
                 userEmail.setText(email);
@@ -597,26 +495,42 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode== Activity.RESULT_OK){
-            QrScanResult= data.getExtras().getString("result");
+        if (resultCode == Activity.RESULT_OK) {
+            QrScanResult = data.getExtras().getString("result");
             RefreshToken();
             //sendQrloginHttpURLConnection();
         }
     }
 
-    private void GetHeadImg(){
-        SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
 
-        String userimgurl = sharedPreferences.getString("imgurl","");
-
-        userImg = (SimpleDraweeView)findViewById(R.id.UserHeadImg);
-        userImg.setImageURI(userimgurl);
-        RoundingParams roundingParams = RoundingParams.fromCornersRadius(5f);
-        roundingParams.setBorder(R.color.colorWhite, (float) 1.0);
-        roundingParams.setRoundAsCircle(true);
-        userImg.getHierarchy().setRoundingParams(roundingParams);
-
+    private void showNewVersionDia() {
+        //不是最新版本 需要更新
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle(R.string.needupdata);
+        builder.setMessage("检测到您当前的版本(" + oldversion + ")不是最新版本" +
+                "(" + newversion + ")是否立即下载更新");
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(downloadapkUrl));
+                startActivity(intent);
+            }
+        });
+        builder.setNegativeButton("取消", null);
+        builder.show();
     }
+
+
+    private void GetHeadImg() {
+        SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        String userimgurl = sharedPreferences.getString("imgurl", "");
+
+        userImg = (SimpleDraweeView) findViewById(R.id.UserHeadImg);
+        userImg.setImageURI(userimgurl);
+        userImg.getHierarchy().setRoundingParams(HeadImgUtil.getRoundingParams(5f, 1));
+    }
+
+
 
     private void sendQrloginHttpURLConnection() {
         //开启子线程访问网络 扫码登录模块
@@ -627,12 +541,12 @@ public class MainActivity extends AppCompatActivity
 
                 //获取SharedPreferences里的用户信息
                 SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-                token = sharedPreferences.getString("token","");
+                token = sharedPreferences.getString("token", "");
 
                 try {
-                    URL url = new URL(QRloninUrl+QrScanResult+"/?token="+token.toString());
+                    URL url = new URL(QRloninUrl + QrScanResult + "/?token=" + token.toString());
 
-                    connection = (HttpURLConnection)url.openConnection();
+                    connection = (HttpURLConnection) url.openConnection();
                     connection.setRequestMethod("POST");
                     connection.connect();
 
@@ -644,16 +558,16 @@ public class MainActivity extends AppCompatActivity
                     InputStream in = connection.getInputStream();
 
                     //对获取的流进行读取
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(in,"utf-8"));
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(in, "utf-8"));
                     StringBuilder response = new StringBuilder();
-                    String line=null;
-                    while ((line=reader.readLine())!=null){
+                    String line = null;
+                    while ((line = reader.readLine()) != null) {
                         response.append(line);
 
                     }
                     Log.e("url", url.toString());
 
-                }   catch (Exception e) {
+                } catch (Exception e) {
                     Log.e("errss", e.getMessage());
 
                 }
@@ -662,7 +576,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     //更新token
-    private void RefreshToken(){
+    private void RefreshToken() {
 
         //取出token
         token = TokenUtil.getToken(this);
@@ -676,9 +590,9 @@ public class MainActivity extends AppCompatActivity
                 HttpURLConnection connection = null;
                 try {
 
-                    URL url = new URL(tokenValidTestUrl+token);
+                    URL url = new URL(tokenValidTestUrl + token);
 
-                    connection = (HttpURLConnection)url.openConnection();
+                    connection = (HttpURLConnection) url.openConnection();
                     connection.setRequestMethod("GET");
                     connection.connect();
 
@@ -690,36 +604,36 @@ public class MainActivity extends AppCompatActivity
                     InputStream in = connection.getInputStream();
 
                     //对获取的流进行读取
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(in,"utf-8"));
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(in, "utf-8"));
                     final StringBuilder response = new StringBuilder();
-                    String line=null;
-                    while ((line=reader.readLine())!=null){
+                    String line = null;
+                    while ((line = reader.readLine()) != null) {
                         response.append(line);
                     }
 
                     token = connection.getHeaderField("Authorization");
-                    token = token.substring(7,token.length());
+                    token = token.substring(7, token.length());
                     savaToken();
                     sendQrloginHttpURLConnection();
 
-                }   catch (Exception e) {
+                } catch (Exception e) {
                     try {
                         int status_code = connection.getResponseCode();
-                        if (status_code==400){
+                        if (status_code == 400) {
                             String error = connection.getResponseMessage();
-                            if(error == "token_invalid"){
+                            if (error == "token_invalid") {
                                 //登录时间到达两周 需要重新登录
 
-                                Toast.makeText(MainActivity.this,"长时间未登录 请重新登录！",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MainActivity.this, "长时间未登录 请重新登录！", Toast.LENGTH_SHORT).show();
 
                                 //跳转到登录界面
                                 Intent intent = new Intent(MainActivity.this, Register_main.class);
                                 startActivity(intent);
 
 
-                            }else {
+                            } else {
 
-                                Toast.makeText(MainActivity.this,"未知错误！",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MainActivity.this, "未知错误！", Toast.LENGTH_SHORT).show();
 
                             }
 
@@ -738,7 +652,7 @@ public class MainActivity extends AppCompatActivity
         //保存token
         SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("token",token);
+        editor.putString("token", token);
         editor.commit();
     }
 
@@ -746,6 +660,7 @@ public class MainActivity extends AppCompatActivity
     //点击tab监听
     private class MyOnClickListener implements View.OnClickListener {
         private int index = 0;
+
         public MyOnClickListener(int i) {
             index = i;
         }
@@ -794,6 +709,7 @@ public class MainActivity extends AppCompatActivity
             isQuit = false;
         }
     };
+
     //实体按键检测
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -809,7 +725,7 @@ public class MainActivity extends AppCompatActivity
 
     //判断是网页返回还是app退出
     private boolean BackOrExit() {
-        if(mCurrentIndex==0) {
+        if (mCurrentIndex == 0) {
             if (FragmentOne.goback()) {
                 //如果网页能返回 则返回true 直接跳出
                 return true;
@@ -826,7 +742,7 @@ public class MainActivity extends AppCompatActivity
                 moveTaskToBack(false);
 
             }
-        }else if(mCurrentIndex == 1){
+        } else if (mCurrentIndex == 1) {
 //            if(FragmentTwo.goback()){
 //                //如果网页能返回 则返回true 直接跳出
 //                return true;
@@ -845,8 +761,8 @@ public class MainActivity extends AppCompatActivity
 //                System.exit(0);
             }
 //        }
-        }else if(mCurrentIndex == 2){
-            if(FragmentThree.goback()){
+        } else if (mCurrentIndex == 2) {
+            if (FragmentThree.goback()) {
                 //如果网页能返回 则返回true 直接跳出
                 return true;
             }
@@ -874,11 +790,9 @@ public class MainActivity extends AppCompatActivity
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivity != null) {
             NetworkInfo info = connectivity.getActiveNetworkInfo();
-            if (info != null && info.isConnected())
-            {
+            if (info != null && info.isConnected()) {
                 // 当前网络是连接的
-                if (info.getState() == NetworkInfo.State.CONNECTED)
-                {
+                if (info.getState() == NetworkInfo.State.CONNECTED) {
                     // 当前所连接的网络可用
                     return true;
                 }

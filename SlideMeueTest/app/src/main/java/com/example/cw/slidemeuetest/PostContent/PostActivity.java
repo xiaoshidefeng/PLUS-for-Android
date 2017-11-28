@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -15,7 +18,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,7 +25,11 @@ import android.widget.Toast;
 import com.example.cw.slidemeuetest.R;
 import com.example.cw.slidemeuetest.util.DisscussConst;
 import com.example.cw.slidemeuetest.util.IsNull;
+import com.example.cw.slidemeuetest.util.MyDividerItemDecoration;
 import com.example.cw.slidemeuetest.util.TokenUtil;
+import com.scwang.smartrefresh.header.BezierCircleHeader;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,11 +52,7 @@ public class PostActivity extends AppCompatActivity {
 
     private List<ItemBeanPost> itembeanpost = new ArrayList<>();
 
-    private ListView listviewpostone;
-
     private ProgressDialog progressDialog;
-
-    private TextView tvnull;
 
     //返回
     private TextView Tvback;
@@ -72,21 +74,23 @@ public class PostActivity extends AppCompatActivity {
 
     //回复内容
     private String replystr;
-    private String postid;
-    private String token;
-    private String userid;
 
     private int Id;
     private String PostOne;
     private String PostMainTitle;
     private String smalltail;
 
-    private PostAdapter postAdapter;
-
-
     private Handler myHandler;
 
     private OkHttpClient client = new OkHttpClient();
+
+    private RecyclerView recyclerView;
+
+    private RecyclerView.LayoutManager mLayoutManager;
+
+    private RefreshLayout refreshLayout;
+
+    private PAdapter pAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +101,8 @@ public class PostActivity extends AppCompatActivity {
         //进度条开始转动
         progressBar.setVisibility(View.VISIBLE);
         getPostinfo();
+
+        reFreshItemListener();
 
         try {
             TokenUtil.reFreshToken(getApplicationContext());
@@ -145,20 +151,12 @@ public class PostActivity extends AppCompatActivity {
                 int length = etreply.getText().length();
                 if (length == 0) {
                     return;
+                } else if (IsNull.isNullField(TokenUtil.getToken(PostActivity.this))) {
+                    Toast.makeText(PostActivity.this, "请先登录", Toast.LENGTH_SHORT).show();
+                    return;
                 } else {
-
-                    SharedPreferences sharedPreferences = getSharedPreferences("postInfo", Context.MODE_PRIVATE);
-                    postid = String.valueOf(sharedPreferences.getInt("postid", 0));
-
                     SharedPreferences sharedPreferences2 = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-                    token = sharedPreferences2.getString("token", "");
-                    userid = String.valueOf(sharedPreferences2.getInt("id", 0));
                     smalltail = sharedPreferences2.getString("smalltail", "");
-
-                    if (IsNull.isNullField(token)) {
-                        Toast.makeText(PostActivity.this, "请先登录", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
 
                     replystr = etreply.getText().toString();
 
@@ -188,6 +186,21 @@ public class PostActivity extends AppCompatActivity {
 
     }
 
+    private void reFreshItemListener() {
+        refreshLayout = (RefreshLayout) findViewById(R.id.id_rvRefreshPost);
+        //设置 Header 为 BezierCircleHeader
+        refreshLayout.setRefreshHeader(new BezierCircleHeader(PostActivity.this));
+        refreshLayout.setPrimaryColors(getResources().getColor(R.color.colorPrimary));
+        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(RefreshLayout refreshlayout) {
+//                reFreshPost();
+            }
+        });
+
+
+    }
+
     /**
      * 内部静态Handler 类 防止内存泄漏
      */
@@ -201,26 +214,49 @@ public class PostActivity extends AppCompatActivity {
         @Override
         public void handleMessage(Message msg) {
             PostActivity activity = mActivityReference.get();
-            if (msg.what == 1) {
-                //获取所有评论
-                try {
-                    formatPost(activity, new JSONObject(msg.obj.toString()));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } finally {
-                    //隐藏进度条
-                    activity.progressBar.setVisibility(View.GONE);
+            try {
+                if (msg.what == 1) {
+                    //获取所有评论
+                    showPage(msg, activity);
+                } else if (msg.what == 2) {
+                    //发送评论
+                    ItemBeanPost itemBeanPost = formatNewComment(activity, new JSONObject(msg.obj.toString()));
+                    if (itemBeanPost == null) {
+                        Toast.makeText(activity, "回帖失败", Toast.LENGTH_SHORT).show();
+                    } else {
+                        activity.pAdapter.addData(activity.pAdapter.getItemCount(), itemBeanPost);
+                        activity.progressDialog.cancel();
+                    }
                 }
-            } else if (msg.what == 2) {
-                //发送评论
-                activity.getPostinfo();
-                activity.progressDialog.cancel();
-
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } finally {
+                //隐藏进度条
+                activity.progressBar.setVisibility(View.GONE);
             }
-
         }
 
-        private void formatPost(PostActivity activity, JSONObject jsonObject) throws JSONException {
+        private ItemBeanPost formatNewComment(PostActivity activity, JSONObject jsonObject) throws JSONException {
+            if (jsonObject.has("data")) {
+                JSONObject data = jsonObject.getJSONObject("data");
+                if (data.has("user")) {
+                    String created_at = data.getString("updated_at");
+                    String body = data.getString("body");
+                    JSONObject user = data.getJSONObject("user");
+                    String name = user.getString("name");
+                    String img = user.getString("avatar");
+                    return new ItemBeanPost(name, body, created_at, img);
+                }
+            }
+            return null;
+        }
+
+        private void showPage(Message msg, PostActivity activity) throws JSONException {
+            List<ItemBeanPost> itemBeanList = formatPost(activity, new JSONObject(msg.obj.toString()));
+            activity.pAdapter.updateData(itemBeanList);
+        }
+
+        private List<ItemBeanPost> formatPost(PostActivity activity, JSONObject jsonObject) throws JSONException {
             if (jsonObject.has("data")) {
                 JSONObject data = jsonObject.getJSONObject("data");
                 if (data.has("comments")) {
@@ -240,12 +276,11 @@ public class PostActivity extends AppCompatActivity {
                                 userImgUrl
                         ));
                     }
-                    activity.listviewpostone.setAdapter(activity.postAdapter);
-
                 }
             } else {
                 Toast.makeText(activity, "获取贴子信息失败", Toast.LENGTH_SHORT).show();
             }
+            return activity.itembeanpost;
         }
     }
 
@@ -335,17 +370,18 @@ public class PostActivity extends AppCompatActivity {
         llEdit = (LinearLayout) findViewById(R.id.id_llEdit);
         imSend = (ImageView) findViewById(R.id.id_IMSendpost);
         etreply = (EditText) findViewById(R.id.id_etReply);
-        tvnull = (TextView) findViewById(R.id.id_tvpostonenull);
+
         itembeanpost = new ArrayList<>();
-        listviewpostone = (ListView) findViewById(R.id.id_lvPostContent);
-        listviewpostone.setTranscriptMode(ListView.TRANSCRIPT_MODE_NORMAL);
-        postAdapter = new PostAdapter(getApplicationContext(),
-                itembeanpost);
+        mLayoutManager = new LinearLayoutManager(PostActivity.this, LinearLayoutManager.VERTICAL, false);
+        recyclerView = (RecyclerView) findViewById(R.id.id_rvPost);
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.addItemDecoration(new MyDividerItemDecoration(PostActivity.this, LinearLayoutManager.VERTICAL));
+        pAdapter = new PAdapter(itembeanpost);
+        recyclerView.setAdapter(pAdapter);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        View footerView = getLayoutInflater().inflate(R.layout.foot_layout, null, false);
+        itembeanpost.clear();
 
-        listviewpostone.addFooterView(footerView);
-        listviewpostone.setEmptyView(tvnull);
     }
 
 }
